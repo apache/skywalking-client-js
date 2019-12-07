@@ -14,10 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSErrors from './errors/jsErrors';
+import { TClientMonitor, TErrorsType } from './types';
 
 export default class ClientMonitor {
 
-  public init() {
-    // console.log('enter');
+  private errorTypes: TErrorsType = {
+    jsErrors: true,
+    promiseErrors: true,
+    consoleErrors: false,
+    vueErrors: false,
+    reactErrors: false,
+    ajaxErrors: true,
+    resourceErrors: true,
+  };
+
+  public init(options: TClientMonitor) {
+    this.errorTypes = options;
+    if (this.errorTypes.jsErrors) {
+      this.errorTypes.jsErrors = options.jsErrors;
+      new JSErrors();
+    }
+    if (this.errorTypes.promiseErrors) {
+      this.errorTypes.promiseErrors = options.promiseErrors || this.errorTypes.promiseErrors;
+    }
+    if (this.errorTypes.resourceErrors) {
+      this.errorTypes.resourceErrors = options.resourceErrors;
+    }
+    if (this.errorTypes.ajaxErrors) {
+      this.errorTypes.ajaxErrors = options.ajaxErrors || this.errorTypes.ajaxErrors;
+    }
   }
 }
