@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import ClientMonitor from 'monitor';
+import ClientMonitor from './monitor';
 
 (window as any).ClientMonitor = ClientMonitor;
 
