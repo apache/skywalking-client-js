@@ -29,11 +29,11 @@ export default class ClientMonitor {
     resourceErrors: true,
   };
 
-  public init(options: TClientMonitor) {
+  public init(options: TClientMonitor & TErrorsType) {
     this.errorTypes = options;
     if (this.errorTypes.jsErrors) {
       this.errorTypes.jsErrors = options.jsErrors;
-      new JSErrors();
+      JSErrors.handleErrors({reportUrl: options.reportUrl});
     }
     if (this.errorTypes.promiseErrors) {
       this.errorTypes.promiseErrors = options.promiseErrors || this.errorTypes.promiseErrors;

@@ -14,26 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import Trace from '../services/trace';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
-
-class JSErrors extends Trace {
-  public handleErrors(options: {reportUrl: string}) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        reportUrl: options.reportUrl,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.WARNING,
-        url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
-  }
+export interface TraceFields {
+  category: string;
+  grade: string;
+  message: any;
+  url: string;
+  line: number;
+  col: number;
+  errorInfo: any;
+  reportUrl: string;
 }
-export default new JSErrors();

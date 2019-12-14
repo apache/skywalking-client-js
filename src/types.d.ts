@@ -14,8 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface TClientMonitor extends TErrorsType {
+export interface TClientMonitor {
   reportUrl: string;
+  modulesName?: string;
 }
 
 export interface TErrorsType {

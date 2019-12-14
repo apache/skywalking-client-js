@@ -14,26 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import Report from './report';
 
-import Trace from '../services/trace';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
+class TaskQueue {
+  private queues: any[] = [];
 
-class JSErrors extends Trace {
-  public handleErrors(options: {reportUrl: string}) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        reportUrl: options.reportUrl,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.WARNING,
-        url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
+  public addTask(reportUrl: string, data: any) {
+    this.queues.push({reportUrl, data});
+  }
+
+  public fireTasks() {
+    if (!this.queues || !this.queues.length) {
+      return;
+    }
+    const item = this.queues[0];
+    if (item.reportUrl) {
+      new Report(item.reportUrl).sendByXhr(item.data);
+    }
+    this.queues.splice(0, 1);
+    this.fireTasks();
   }
 }
-export default new JSErrors();
+
+export default new TaskQueue();

@@ -14,26 +14,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import Trace from '../services/trace';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
-
-class JSErrors extends Trace {
-  public handleErrors(options: {reportUrl: string}) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        reportUrl: options.reportUrl,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.WARNING,
-        url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
-  }
+export enum ErrorsCategory {
+  AJAX_ERROR = 'ajaxError',
+  RESOURCE_ERROR = 'resourceError',
+  VUE_ERROR = 'vueError',
+  PROMISE_ERROR = 'promiseError',
+  JS_ERROR = 'jsError',
+  CONSOLE_INFO = 'consoleInfo',
+  CONSOLE_WARN = 'consoleWarn',
+  CONSOLE_ERROR = 'consoleError',
+  CROSS_SCRIPT_ERROR = 'crossSrciptError',
+  UNKNOW_ERROR = 'unknowError',
 }
-export default new JSErrors();
+export enum GradeTypeEnum {
+  INFO = 'Info',
+  WARNING = 'Warning',
+  ERROR = 'Error',
+}
