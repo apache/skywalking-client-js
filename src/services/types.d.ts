@@ -15,12 +15,28 @@
  * limitations under the License.
  */
 export interface TraceFields {
+  reportUrl: string;
   category: string;
   grade: string;
   message: any;
   url: string;
-  line: number;
+  line: number; 
   col: number;
   errorInfo: any;
-  reportUrl: string;
+  performanceInfo?: performanceInfoFields;
+  resources?: any;
+  time?: string;
+  userId?: string;
+  pageUv?: string;
+  pageId?: string;
+  deviceInfo?: any;
+}
+export interface performanceInfoFields {
+  redirectTime: string;
+  dnsTime: string;
+  reqTime: string;
+  analysisTime: string;
+  blankTime: string;
+  domReadyTime: string;
+  loadPage: string;
 }

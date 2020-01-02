@@ -17,6 +17,6 @@
 
 import ClientMonitor from './monitor';
 
-(window as any).ClientMonitor = ClientMonitor;
+(window as any).ClientMonitor = new ClientMonitor();
 
-export default ClientMonitor;
+export default new ClientMonitor();
