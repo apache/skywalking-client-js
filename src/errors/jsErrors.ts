@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import BaseMonitor from '../services/BaseMonitor';
+import BaseMonitor from '../services/base';
 import { GradeTypeEnum } from '../services/constant';
 import { ErrorsCategory } from '../services/constant';
 
