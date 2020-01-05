@@ -14,22 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const express = require("express");
-const webpack = require("webpack");
-const webpackDevMiddleware = require("webpack-dev-middleware");
+export interface TraceFields {
+  reportUrl: string;
+  serviceName?: string;
+  errorInfo: errorInfoFeilds;
+  performanceInfo?: performanceInfoFields;
+  resources?: any;
+  pageId?: string;
+  deviceInfo?: any;
+}
+export interface performanceInfoFields {
+  redirectTime: string;
+  dnsTime: string;
+  reqTime: string;
+  analysisTime: string;
+  blankTime: string;
+  domReadyTime: string;
+  loadPage: string;
+}
 
-const app = express();
-const config = require("./webpack.config.js");
-const compiler = webpack(config);
-
-// Tell express to use the webpack-dev-middleware and use the webpack.config.js
-// configuration file as a base.
-app.use(
-  webpackDevMiddleware(compiler, {
-    publicPath: config.output.publicPath
-  })
-);
-// Serve the files on port 3000.
-app.listen(3000, function() {
-  console.log("Example app listening on port 3000!\n");
-});
+export interface errorInfoFeilds {
+  category: string;
+  grade: string;
+  message: any;
+  errorUrl: string;
+  line: number; 
+  col: number;
+  errorInfo: any;
+}

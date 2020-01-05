@@ -14,22 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-const express = require("express");
-const webpack = require("webpack");
-const webpackDevMiddleware = require("webpack-dev-middleware");
+import Report from './report';
 
-const app = express();
-const config = require("./webpack.config.js");
-const compiler = webpack(config);
+class TaskQueue {
+  private queues: any[] = [];
 
-// Tell express to use the webpack-dev-middleware and use the webpack.config.js
-// configuration file as a base.
-app.use(
-  webpackDevMiddleware(compiler, {
-    publicPath: config.output.publicPath
-  })
-);
-// Serve the files on port 3000.
-app.listen(3000, function() {
-  console.log("Example app listening on port 3000!\n");
-});
+  public addTask(reportUrl: string, data: any) {
+    this.queues.push({reportUrl, data});
+  }
+
+  public fireTasks() {
+    if (!this.queues || !this.queues.length) {
+      return;
+    }
+    const item = this.queues[0];
+    if (item.reportUrl) {
+      new Report(item.reportUrl).sendByXhr(item.data);
+    }
+    this.queues.splice(0, 1);
+    this.fireTasks();
+  }
+}
+
+export default new TaskQueue();
