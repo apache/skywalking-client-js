@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import Trace from '../services/trace';
+import BaseMonitor from '../services/BaseMonitor';
 import { GradeTypeEnum } from '../services/constant';
 import { ErrorsCategory } from '../services/constant';
 
-class JSErrors extends Trace {
+class JSErrors extends BaseMonitor {
   public handleErrors(options: {reportUrl: string}) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {

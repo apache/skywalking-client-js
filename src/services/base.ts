@@ -18,7 +18,7 @@ import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
 import { errorInfoFeilds } from './types';
 
-export default class Trace {
+export default class BaseMonitor {
   public logInfo: errorInfoFeilds & {reportUrl: string} = {
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
