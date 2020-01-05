@@ -25,7 +25,7 @@ class JSErrors extends Trace {
       this.logInfo = {
         reportUrl: options.reportUrl,
         category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.WARNING,
+        grade: GradeTypeEnum.ERROR,
         errorUrl: url,
         line,
         col,
