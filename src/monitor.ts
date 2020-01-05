@@ -17,9 +17,8 @@
 import JSErrors from './errors/jsErrors';
 import { TClientMonitor, TErrorsType } from './types';
 
-export default class ClientMonitor {
-
-  private errorTypes: TErrorsType = {
+const ClientMonitor = {
+  errorTypes: {
     jsErrors: true,
     promiseErrors: true,
     consoleErrors: false,
@@ -27,9 +26,9 @@ export default class ClientMonitor {
     reactErrors: false,
     ajaxErrors: true,
     resourceErrors: true,
-  };
+  } as TErrorsType,
 
-  public init(options: TClientMonitor & TErrorsType) {
+  register(options: TClientMonitor & TErrorsType) {
     this.errorTypes = options;
     if (this.errorTypes.jsErrors) {
       this.errorTypes.jsErrors = options.jsErrors;
@@ -44,5 +43,7 @@ export default class ClientMonitor {
     if (this.errorTypes.ajaxErrors) {
       this.errorTypes.ajaxErrors = options.ajaxErrors || this.errorTypes.ajaxErrors;
     }
-  }
-}
+  },
+};
+
+export default ClientMonitor;

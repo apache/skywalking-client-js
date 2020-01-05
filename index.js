@@ -15,25 +15,6 @@
  * limitations under the License.
  */
 
-import Trace from '../services/trace';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
+import './src/index';
 
-class JSErrors extends Trace {
-  public handleErrors(options: {reportUrl: string}) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        reportUrl: options.reportUrl,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.WARNING,
-        errorUrl: url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
-  }
-}
-export default new JSErrors();
+export default ClientMonitor;

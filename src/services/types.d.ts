@@ -16,18 +16,10 @@
  */
 export interface TraceFields {
   reportUrl: string;
-  category: string;
-  grade: string;
-  message: any;
-  url: string;
-  line: number; 
-  col: number;
-  errorInfo: any;
+  serviceName?: string;
+  errorInfo: errorInfoFeilds;
   performanceInfo?: performanceInfoFields;
   resources?: any;
-  time?: string;
-  userId?: string;
-  pageUv?: string;
   pageId?: string;
   deviceInfo?: any;
 }
@@ -39,4 +31,14 @@ export interface performanceInfoFields {
   blankTime: string;
   domReadyTime: string;
   loadPage: string;
+}
+
+export interface errorInfoFeilds {
+  category: string;
+  grade: string;
+  message: any;
+  errorUrl: string;
+  line: number; 
+  col: number;
+  errorInfo: any;
 }

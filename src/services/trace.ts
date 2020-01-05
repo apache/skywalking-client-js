@@ -16,18 +16,18 @@
  */
 import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
-import { TraceFields } from './types';
+import { errorInfoFeilds } from './types';
 
 export default class Trace {
-  public logInfo: TraceFields = {
+  public logInfo: errorInfoFeilds & {reportUrl: string} = {
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
-    url: '',
+    errorUrl: '',
     line: 0,
     col: 0,
     errorInfo: '',
-    reportUrl: '',
     message: '',
+    reportUrl: '',
   };
 
   public traceInfo() {
@@ -42,8 +42,8 @@ export default class Trace {
       if (!this.logInfo.message) {
         return;
       }
-      if (this.logInfo.reportUrl && this.logInfo.url &&
-        this.logInfo.url.toLowerCase().includes(this.logInfo.reportUrl.toLowerCase())) {
+      if (this.logInfo.reportUrl && this.logInfo.errorUrl &&
+        this.logInfo.errorUrl.toLowerCase().includes(this.logInfo.reportUrl.toLowerCase())) {
         return;
       }
       const errorInfo = this.handleErrorInfo();
@@ -57,7 +57,7 @@ export default class Trace {
 
   private handleErrorInfo() {
     let message = `error category:${this.logInfo.category}\r\n log info:${this.logInfo.message}\r\n
-      error url: ${this.logInfo.url}\r\n `;
+      error url: ${this.logInfo.errorUrl}\r\n `;
     switch (this.logInfo.category) {
         case ErrorsCategory.JS_ERROR:
           message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
