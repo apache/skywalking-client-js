@@ -19,7 +19,9 @@ import { ErrorsCategory, GradeTypeEnum } from './constant';
 import { errorInfoFeilds } from './types';
 
 export default class Base {
-  public logInfo: errorInfoFeilds & {reportUrl: string} = {
+  public reportUrl: string;
+  public serviceName: string;
+  public logInfo: errorInfoFeilds = {
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
     errorUrl: '',
@@ -27,7 +29,6 @@ export default class Base {
     col: 0,
     errorInfo: '',
     message: '',
-    reportUrl: '',
   };
 
   public traceInfo() {
@@ -42,13 +43,13 @@ export default class Base {
       if (!this.logInfo.message) {
         return;
       }
-      if (this.logInfo.reportUrl && this.logInfo.errorUrl &&
-        this.logInfo.errorUrl.toLowerCase().includes(this.logInfo.reportUrl.toLowerCase())) {
+      if (this.reportUrl && this.logInfo.errorUrl &&
+        this.logInfo.errorUrl.toLowerCase().includes(this.reportUrl.toLowerCase())) {
         return;
       }
       const errorInfo = this.handleErrorInfo();
 
-      Task.addTask(this.logInfo.reportUrl, errorInfo);
+      Task.addTask(this.reportUrl, errorInfo);
 
     } catch (error) {
       // console.log(error);
@@ -73,6 +74,10 @@ export default class Base {
       ...this.logInfo,
       message,
     };
-    return recordInfo;
+    return {
+      errorLogs: recordInfo,
+      serviceName: this.serviceName,
+      reportUrl: this.reportUrl,
+    };
   }
 }

@@ -30,23 +30,23 @@ const ClientMonitor = {
   } as CustomOptionsType,
 
   register(options: CustomOptionsType) {
-    const reportUrl = options.reportUrl;
+    const { serviceName, reportUrl } = options;
 
     this.customOptions = options;
     if (this.customOptions.jsErrors) {
       this.customOptions.jsErrors = options.jsErrors;
-      JSErrors.handleErrors({reportUrl});
+      JSErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.promiseErrors) {
       this.customOptions.promiseErrors = options.promiseErrors || this.customOptions.promiseErrors;
-      PromiseErrors.handleErrors({reportUrl});
+      PromiseErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.resourceErrors) {
       this.customOptions.resourceErrors = options.resourceErrors;
     }
     if (this.customOptions.ajaxErrors) {
       this.customOptions.ajaxErrors = options.ajaxErrors || this.customOptions.ajaxErrors;
-      AjaxErrors.handleError({reportUrl});
+      AjaxErrors.handleError({reportUrl, serviceName});
     }
   },
 };

@@ -19,16 +19,18 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class AjaxErrors extends Base {
-  public handleError(options: {reportUrl: string}) {
+  public handleError(options: {reportUrl: string; serviceName: string}) {
     if (!window.XMLHttpRequest) {
       return;
     }
+    this.reportUrl = options.reportUrl;
+    this.serviceName = options.serviceName;
+
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {
       try {
         if (event && event.currentTarget && event.currentTarget.status !== 200) {
           this.logInfo = {
-            reportUrl: options.reportUrl,
             category: ErrorsCategory.AJAX_ERROR,
             grade: GradeTypeEnum.ERROR,
             errorUrl: event.target.responseURL,

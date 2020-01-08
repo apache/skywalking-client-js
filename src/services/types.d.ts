@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 export interface TraceFields {
-  reportUrl: string;
-  serviceName?: string;
+  serviceName: string;
   errorInfo: errorInfoFeilds;
   performanceInfo?: performanceInfoFields;
   resources?: any;

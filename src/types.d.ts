@@ -17,7 +17,7 @@
 
 export interface CustomOptionsType {
   reportUrl: string;
-  modulesName?: string;
+  serviceName?: string;
   jsErrors: boolean;
   promiseErrors: boolean;
   consoleErrors: boolean;
