@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 export interface TraceFields {
-  reportUrl: string;
-  serviceName?: string;
+  serviceName: string;
   errorInfo: errorInfoFeilds;
   performanceInfo?: performanceInfoFields;
   resources?: any;
@@ -38,7 +37,7 @@ export interface errorInfoFeilds {
   grade: string;
   message: any;
   errorUrl: string;
-  line: number; 
-  col: number;
-  errorInfo: any;
+  line?: number; 
+  col?: number;
+  errorInfo?: any;
 }

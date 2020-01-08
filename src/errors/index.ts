@@ -14,26 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSErrors from './js';
+import PromiseErrors from './promise';
+import AjaxErrors from './ajax';
 
-import BaseMonitor from '../services/base';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
-
-class JSErrors extends BaseMonitor {
-  public handleErrors(options: {reportUrl: string}) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        reportUrl: options.reportUrl,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.ERROR,
-        errorUrl: url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
-  }
-}
-export default new JSErrors();
+export {
+  JSErrors, PromiseErrors, AjaxErrors,
+};

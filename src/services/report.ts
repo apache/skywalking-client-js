@@ -27,14 +27,16 @@ class Report {
     if (!this.checkUrl(this.url)) {
       return;
     }
+
+    delete data.reportUrl;
+    console.log(data);
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', this.url, true);
       xhr.setRequestHeader('Content-Type', 'application/json');
-      console.log(data);
       xhr.send(JSON.stringify(data));
     } catch (error) {
-    //   console.log(error);
+      console.log(error);
     }
   }
 

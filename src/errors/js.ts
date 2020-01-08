@@ -15,14 +15,25 @@
  * limitations under the License.
  */
 
-export interface CustomOptionsType {
-  reportUrl: string;
-  serviceName?: string;
-  jsErrors: boolean;
-  promiseErrors: boolean;
-  consoleErrors: boolean;
-  vueErrors: boolean;
-  reactErrors: boolean;
-  ajaxErrors: boolean;
-  resourceErrors: boolean;
+import Base from '../services/base';
+import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+
+class JSErrors extends Base {
+  public handleErrors(options: {reportUrl: string; serviceName: string}) {
+    window.onerror = (message, url, line, col, error) => {
+      this.reportUrl = options.reportUrl;
+      this.serviceName = options.serviceName;
+      this.logInfo = {
+        category: ErrorsCategory.JS_ERROR,
+        grade: GradeTypeEnum.ERROR,
+        errorUrl: url,
+        line,
+        col,
+        errorInfo: error,
+        message,
+      };
+      this.traceInfo();
+    };
+  }
 }
+export default new JSErrors();
