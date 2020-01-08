@@ -35,6 +35,7 @@ class PromiseErrors extends Base {
           grade: GradeTypeEnum.ERROR,
           errorUrl: url,
           message: event.reason,
+          errorInfo: event.reason,
         };
         this.traceInfo();
       } catch (error) {
