@@ -14,15 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import JSErrors from './js';
+import PromiseErrors from './promise';
+import AjaxErrors from './ajax';
 
-export interface CustomOptionsType {
-  reportUrl: string;
-  modulesName?: string;
-  jsErrors: boolean;
-  promiseErrors: boolean;
-  consoleErrors: boolean;
-  vueErrors: boolean;
-  reactErrors: boolean;
-  ajaxErrors: boolean;
-  resourceErrors: boolean;
-}
+export {
+  JSErrors, PromiseErrors, AjaxErrors,
+};

@@ -38,7 +38,7 @@ export interface errorInfoFeilds {
   grade: string;
   message: any;
   errorUrl: string;
-  line: number; 
-  col: number;
-  errorInfo: any;
+  line?: number; 
+  col?: number;
+  errorInfo?: any;
 }

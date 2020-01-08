@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-import BaseMonitor from '../services/base';
-import { GradeTypeEnum } from '../services/constant';
-import { ErrorsCategory } from '../services/constant';
+import Base from '../services/base';
+import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
-class JSErrors extends BaseMonitor {
+class JSErrors extends Base {
   public handleErrors(options: {reportUrl: string}) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {

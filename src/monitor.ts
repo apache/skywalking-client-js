@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import JSErrors from './errors/jsErrors';
-import { TClientMonitor, TErrorsType } from './types';
+
+import { CustomOptionsType } from './types';
+import { JSErrors, PromiseErrors, AjaxErrors } from './errors/index';
 
 const ClientMonitor = {
-  errorTypes: {
+  customOptions: {
     jsErrors: true,
     promiseErrors: true,
     consoleErrors: false,
@@ -26,22 +27,26 @@ const ClientMonitor = {
     reactErrors: false,
     ajaxErrors: true,
     resourceErrors: true,
-  } as TErrorsType,
+  } as CustomOptionsType,
 
-  register(options: TClientMonitor & TErrorsType) {
-    this.errorTypes = options;
-    if (this.errorTypes.jsErrors) {
-      this.errorTypes.jsErrors = options.jsErrors;
-      JSErrors.handleErrors({reportUrl: options.reportUrl});
+  register(options: CustomOptionsType) {
+    const reportUrl = options.reportUrl;
+
+    this.customOptions = options;
+    if (this.customOptions.jsErrors) {
+      this.customOptions.jsErrors = options.jsErrors;
+      JSErrors.handleErrors({reportUrl});
     }
-    if (this.errorTypes.promiseErrors) {
-      this.errorTypes.promiseErrors = options.promiseErrors || this.errorTypes.promiseErrors;
+    if (this.customOptions.promiseErrors) {
+      this.customOptions.promiseErrors = options.promiseErrors || this.customOptions.promiseErrors;
+      PromiseErrors.handleErrors({reportUrl});
     }
-    if (this.errorTypes.resourceErrors) {
-      this.errorTypes.resourceErrors = options.resourceErrors;
+    if (this.customOptions.resourceErrors) {
+      this.customOptions.resourceErrors = options.resourceErrors;
     }
-    if (this.errorTypes.ajaxErrors) {
-      this.errorTypes.ajaxErrors = options.ajaxErrors || this.errorTypes.ajaxErrors;
+    if (this.customOptions.ajaxErrors) {
+      this.customOptions.ajaxErrors = options.ajaxErrors || this.customOptions.ajaxErrors;
+      AjaxErrors.handleError({reportUrl});
     }
   },
 };
