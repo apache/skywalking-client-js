@@ -27,8 +27,9 @@ class Report {
     if (!this.checkUrl(this.url)) {
       return;
     }
-    console.log(data);
+
     delete data.reportUrl;
+    console.log(data);
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', this.url, true);
