@@ -17,7 +17,8 @@
 import JSErrors from './js';
 import PromiseErrors from './promise';
 import AjaxErrors from './ajax';
+import ResourceErrors from './resource';
 
 export {
-  JSErrors, PromiseErrors, AjaxErrors,
+  JSErrors, PromiseErrors, AjaxErrors, ResourceErrors,
 };

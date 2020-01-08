@@ -16,7 +16,7 @@
  */
 
 import { CustomOptionsType } from './types';
-import { JSErrors, PromiseErrors, AjaxErrors } from './errors/index';
+import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors } from './errors/index';
 
 const ClientMonitor = {
   customOptions: {
@@ -43,6 +43,7 @@ const ClientMonitor = {
     }
     if (this.customOptions.resourceErrors) {
       this.customOptions.resourceErrors = options.resourceErrors;
+      ResourceErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.ajaxErrors) {
       this.customOptions.ajaxErrors = options.ajaxErrors || this.customOptions.ajaxErrors;

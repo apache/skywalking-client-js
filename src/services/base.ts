@@ -20,7 +20,9 @@ import { errorInfoFeilds } from './types';
 
 export default class Base {
   public reportUrl: string;
+
   public serviceName: string;
+
   public logInfo: errorInfoFeilds = {
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
@@ -52,7 +54,7 @@ export default class Base {
       Task.addTask(this.reportUrl, errorInfo);
 
     } catch (error) {
-      // console.log(error);
+      throw error;
     }
   }
 
