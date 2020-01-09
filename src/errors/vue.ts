@@ -15,13 +15,29 @@
  * limitations under the License.
  */
 
-export interface CustomOptionsType {
-  reportUrl: string;
-  serviceName?: string;
-  jsErrors: boolean;
-  promiseErrors: boolean;
-  consoleErrors: boolean;
-  vueErrors: boolean;
-  ajaxErrors: boolean;
-  resourceErrors: boolean;
+import Base from '../services/base';
+import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+
+class VueErrors extends Base {
+  public handleErrors(options: {reportUrl: string; serviceName: string}, Vue: any) {
+    Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
+      console.log(error);
+      try {
+        this.reportUrl = options.reportUrl;
+        this.serviceName = options.serviceName;
+        this.logInfo = {
+          category: ErrorsCategory.VUE_ERROR,
+          grade: GradeTypeEnum.ERROR,
+          errorUrl: '',
+          errorInfo: error,
+          message: info,
+        };
+        this.traceInfo();
+      } catch (error) {
+        throw error;
+      }
+    };
+  }
 }
+
+export default new VueErrors();
