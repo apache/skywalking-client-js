@@ -20,7 +20,9 @@ import { errorInfoFeilds } from './types';
 
 export default class Base {
   public reportUrl: string;
+
   public serviceName: string;
+
   public logInfo: errorInfoFeilds = {
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
@@ -52,7 +54,7 @@ export default class Base {
       Task.addTask(this.reportUrl, errorInfo);
 
     } catch (error) {
-      // console.log(error);
+      throw error;
     }
   }
 
@@ -60,15 +62,15 @@ export default class Base {
     let message = `error category:${this.logInfo.category}\r\n log info:${this.logInfo.message}\r\n
       error url: ${this.logInfo.errorUrl}\r\n `;
     switch (this.logInfo.category) {
-        case ErrorsCategory.JS_ERROR:
-          message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
-          if (this.logInfo.errorInfo && this.logInfo.errorInfo.stack) {
-            message += `error stack: ${this.logInfo.errorInfo.stack}\r\n`;
-          }
-          break;
-        default:
-          message += `other error: ${this.logInfo.errorInfo}\r\n`;
-          break;
+      case ErrorsCategory.JS_ERROR:
+        message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
+        if (this.logInfo.errorInfo && this.logInfo.errorInfo.stack) {
+          message += `error stack: ${this.logInfo.errorInfo.stack}\r\n`;
+        }
+        break;
+      default:
+        message += `other error: ${this.logInfo.errorInfo}\r\n`;
+        break;
     }
     const recordInfo = {
       ...this.logInfo,

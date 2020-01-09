@@ -16,7 +16,7 @@
  */
 
 import { CustomOptionsType } from './types';
-import { JSErrors, PromiseErrors, AjaxErrors } from './errors/index';
+import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 
 const ClientMonitor = {
   customOptions: {
@@ -24,7 +24,6 @@ const ClientMonitor = {
     promiseErrors: true,
     consoleErrors: false,
     vueErrors: false,
-    reactErrors: false,
     ajaxErrors: true,
     resourceErrors: true,
   } as CustomOptionsType,
@@ -32,21 +31,25 @@ const ClientMonitor = {
   register(options: CustomOptionsType) {
     const { serviceName, reportUrl } = options;
 
-    this.customOptions = options;
+    this.customOptions = {
+      ...this.customOptions,
+      ...options,
+    };
+
     if (this.customOptions.jsErrors) {
-      this.customOptions.jsErrors = options.jsErrors;
       JSErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.promiseErrors) {
-      this.customOptions.promiseErrors = options.promiseErrors || this.customOptions.promiseErrors;
       PromiseErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.resourceErrors) {
-      this.customOptions.resourceErrors = options.resourceErrors;
+      ResourceErrors.handleErrors({reportUrl, serviceName});
     }
     if (this.customOptions.ajaxErrors) {
-      this.customOptions.ajaxErrors = options.ajaxErrors || this.customOptions.ajaxErrors;
       AjaxErrors.handleError({reportUrl, serviceName});
+    }
+    if (this.customOptions.vueErrors && this.customOptions.vue) {
+      VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
     }
   },
 };
