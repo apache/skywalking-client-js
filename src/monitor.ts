@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import { CustomOptionsType } from './types';
+import { CustomOptionsType, CustomPerfOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
+import Performance from './performance/index';
 
 const ClientMonitor = {
   customOptions: {
@@ -27,6 +28,12 @@ const ClientMonitor = {
     ajaxErrors: true,
     resourceErrors: true,
   } as CustomOptionsType,
+
+  customPerfOptions: {
+    pageId: '',
+    serviceName: '',
+    reportUrl: '',
+  } as CustomPerfOptionsType,
 
   register(options: CustomOptionsType) {
     const { serviceName, reportUrl } = options;
@@ -51,6 +58,10 @@ const ClientMonitor = {
     if (this.customOptions.vueErrors && this.customOptions.vue) {
       VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
     }
+  },
+
+  tracePerfDetail(options: any) {
+    Performance.recordPerf(options);
   },
 };
 

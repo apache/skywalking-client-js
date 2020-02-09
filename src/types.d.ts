@@ -25,3 +25,8 @@ export interface CustomOptionsType {
   ajaxErrors: boolean;
   resourceErrors: boolean;
 }
+export type CustomPerfOptionsType = {
+  pageId: string;
+  reportUrl: string;
+  serviceName: string;
+}
