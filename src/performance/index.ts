@@ -27,9 +27,9 @@ class TracePerf {
     perfDetail: {},
   } as any;
 
-  public recordPerf(options: CustomPerfOptionsType) {
+  public async recordPerf(options: CustomPerfOptionsType) {
     if (this.isPerf) {
-      this.perfConfig.performance = pagePerf.getPerfTiming();
+      this.perfConfig.performance = await pagePerf.getPerfTiming();
     }
     const perfInfo = {
       perfDetail: this.perfConfig.perfDetail,
