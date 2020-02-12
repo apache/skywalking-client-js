@@ -32,14 +32,14 @@ export default class Base {
     col: 0,
     errorInfo: '',
     message: '',
-    jsErrorPv: false,
+    isFirstPageJSErrorReport: false,
   };
 
   public traceInfo() {
     // mark js error pv
     if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
       jsErrorPv = true;
-      this.logInfo.jsErrorPv = true;
+      this.logInfo.isFirstPageJSErrorReport = true;
     }
     this.handleRecordError();
     setTimeout(() => {
