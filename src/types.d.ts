@@ -29,4 +29,6 @@ export type CustomPerfOptionsType = {
   pageId: string;
   reportUrl: string;
   serviceName: string;
+  serviceId: string;
+  versionId: string;
 }

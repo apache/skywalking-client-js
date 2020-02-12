@@ -18,6 +18,7 @@ import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
 import { errorInfoFeilds } from './types';
 
+let jsErrorPv = false;
 export default class Base {
   public reportUrl: string;
 
@@ -31,9 +32,15 @@ export default class Base {
     col: 0,
     errorInfo: '',
     message: '',
+    jsErrorPv: false,
   };
 
   public traceInfo() {
+    // mark js error pv
+    if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
+      jsErrorPv = true;
+      this.logInfo.jsErrorPv = true;
+    }
     this.handleRecordError();
     setTimeout(() => {
       Task.fireTasks();

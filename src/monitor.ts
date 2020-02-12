@@ -60,8 +60,12 @@ const ClientMonitor = {
     }
   },
 
-  tracePerfDetail(options: any) {
-    Performance.recordPerf(options);
+  tracePerfDetail(options: CustomPerfOptionsType) {
+    const customPerfOptions = {
+      ...this.customPerfOptions,
+      ...options,
+    };
+    Performance.recordPerf(customPerfOptions);
   },
 };
 
