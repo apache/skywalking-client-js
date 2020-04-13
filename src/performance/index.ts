@@ -23,21 +23,23 @@ import pagePerf from './perf';
 class TracePerf {
   private isPerf: boolean = true;
   private perfConfig = {
-    resources: [],
+    // resources: [],
     perfDetail: {},
   } as any;
 
-  public async recordPerf(options: CustomPerfOptionsType) {
-    if (this.isPerf) {
-      this.perfConfig.performance = await pagePerf.getPerfTiming();
-    }
-    const perfInfo = {
-      perfDetail: this.perfConfig.perfDetail,
-      resources: this.perfConfig.resources,
-      ...options,
-    };
-    new Report(options.reportUrl).sendByXhr(perfInfo);
-    this.clearPerf();
+  public recordPerf(options: CustomPerfOptionsType) {
+    setTimeout(async () => {
+      if (this.isPerf) {
+        this.perfConfig.perfDetail = await pagePerf.getPerfTiming();
+      }
+      const perfInfo = {
+        perfDetail: this.perfConfig.perfDetail,
+        // resources: this.perfConfig.resources,
+        ...options,
+      };
+      new Report(options.reportUrl).sendByXhr(perfInfo);
+      this.clearPerf();
+    }, 100);
   }
 
   private clearPerf() {
@@ -46,7 +48,7 @@ class TracePerf {
     }
     window.performance.clearResourceTimings();
     this.perfConfig = {
-      resources: [],
+      // resources: [],
       perfDetail: {},
     };
   }

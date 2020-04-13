@@ -26,26 +26,28 @@ class PagePerf {
       }
       const { timing } = window.performance;
       const loadTime = timing.loadEventEnd - timing.loadEventStart;
+      const navigationStart = timing.navigationStart;
+
       if (loadTime < 0) {
         setTimeout(() => {
           this.getPerfTiming();
         }, 300);
         return;
       }
-      const perfTime = {
+
+      return {
         redirectTime: timing.redirectEnd - timing.redirectStart,
         dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
-        ttfbTime: timing.responseStart - timing.navigationStart,
+        ttfbTime: timing.responseStart - navigationStart,
         appcacheTime: timing.domainLookupStart - timing.fetchStart,
         unloadTime: timing.unloadEventEnd - timing.unloadEventStart,
         tcpTime: timing.connectEnd - timing.connectStart,
         reqTime: timing.responseEnd - timing.responseStart,
         analysisTime: timing.domComplete - timing.domInteractive,
-        blankTime: timing.domLoading - timing.navigationStart,
-        domReadyTime: timing.domContentLoadedEventEnd - timing.navigationStart,
-        loadPage: timing.loadEventEnd - timing.navigationStart,
+        blankTime: timing.domLoading - navigationStart,
+        domReadyTime: timing.domContentLoadedEventEnd - navigationStart,
+        loadPage: timing.loadEventEnd - navigationStart,
       };
-      return perfTime;
     } catch (e) {
       throw e;
     }
