@@ -26,7 +26,7 @@ class PagePerf {
       }
       const { timing } = window.performance;
       const loadTime = timing.loadEventEnd - timing.loadEventStart;
-      const navigationStart = timing.navigationStart;
+      let redirectTime = 0;
 
       if (loadTime < 0) {
         setTimeout(() => {
@@ -35,18 +35,30 @@ class PagePerf {
         return;
       }
 
+      if (timing.navigationStart !== undefined) {
+        redirectTime = timing.fetchStart - timing.navigationStart;
+      } else if (timing.redirectEnd !== undefined) {
+        redirectTime = timing.redirectEnd - timing.redirectStart;
+      } else {
+        redirectTime = 0;
+      }
+
       return {
-        redirectTime: timing.redirectEnd - timing.redirectStart,
+        redirectTime,
         dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
-        ttfbTime: timing.responseStart - navigationStart,
-        appcacheTime: timing.domainLookupStart - timing.fetchStart,
-        unloadTime: timing.unloadEventEnd - timing.unloadEventStart,
+        ttfbTime: timing.responseStart - timing.requestStart, // Time to First Byte
+        // appcacheTime: timing.domainLookupStart - timing.fetchStart,
+        // unloadTime: timing.unloadEventEnd - timing.unloadEventStart,
         tcpTime: timing.connectEnd - timing.connectStart,
-        reqTime: timing.responseEnd - timing.responseStart,
-        analysisTime: timing.domComplete - timing.domInteractive,
-        blankTime: timing.domLoading - navigationStart,
-        domReadyTime: timing.domContentLoadedEventEnd - navigationStart,
-        loadPage: timing.loadEventEnd - navigationStart,
+        transTime: timing.responseEnd - timing.responseStart,
+        domAnalysisTime: timing.domInteractive - timing.responseEnd,
+        fptTime: timing.responseEnd - timing.fetchStart, // First Paint Time or Blank Screen Time
+        domReadyTime: timing.domContentLoadedEventEnd - timing.fetchStart,
+        loadPage: timing.loadEventStart - timing.fetchStart, // Page full load time
+        resTime: timing.loadEventStart - timing.domContentLoadedEventEnd, // Synchronous load resources in the page
+        sslTime: timing.connectEnd - timing.secureConnectionStart, // Only valid for HTTPS
+        ttlTime: timing.domInteractive - timing.fetchStart, // time to interact
+        firstPackTime: timing.responseStart - timing.domainLookupStart, // first pack time
       };
     } catch (e) {
       throw e;
