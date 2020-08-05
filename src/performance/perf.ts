@@ -16,7 +16,13 @@
  * limitations under the License.
  */
 
+import FMP from './fmp';
 class PagePerf {
+  private fmpTime: number = 0;
+
+  constructor() {
+    new FMP(this.getFmpTiming);
+  }
 
   public getPerfTiming() {
     try {
@@ -31,7 +37,7 @@ class PagePerf {
       if (loadTime < 0) {
         setTimeout(() => {
           this.getPerfTiming();
-        }, 300);
+        }, 3000);
         return;
       }
 
@@ -42,13 +48,10 @@ class PagePerf {
       } else {
         redirectTime = 0;
       }
-
       return {
         redirectTime,
         dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
         ttfbTime: timing.responseStart - timing.requestStart, // Time to First Byte
-        // appcacheTime: timing.domainLookupStart - timing.fetchStart,
-        // unloadTime: timing.unloadEventEnd - timing.unloadEventStart,
         tcpTime: timing.connectEnd - timing.connectStart,
         transTime: timing.responseEnd - timing.responseStart,
         domAnalysisTime: timing.domInteractive - timing.responseEnd,
@@ -59,10 +62,16 @@ class PagePerf {
         sslTime: timing.connectEnd - timing.secureConnectionStart, // Only valid for HTTPS
         ttlTime: timing.domInteractive - timing.fetchStart, // time to interact
         firstPackTime: timing.responseStart - timing.domainLookupStart, // first pack time
+        fmpTime: this.fmpTime, // First Meaningful Paint
       };
     } catch (e) {
       throw e;
     }
+  }
+
+  private getFmpTiming(data: any) {
+    console.log(data);
+    this.fmpTime = data.fmpTiming;
   }
 }
 
