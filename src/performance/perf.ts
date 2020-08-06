@@ -47,7 +47,7 @@ class PagePerf {
         loadPage: timing.loadEventStart - timing.fetchStart, // Page full load time
         resTime: timing.loadEventStart - timing.domContentLoadedEventEnd, // Synchronous load resources in the page
         // Only valid for HTTPS
-        sslTime: location.protocol.includes('https') ? timing.connectEnd - timing.secureConnectionStart : null,
+        sslTime: location.protocol.includes('https') ? timing.connectEnd - timing.secureConnectionStart : undefined,
         ttlTime: timing.domInteractive - timing.fetchStart, // time to interact
         firstPackTime: timing.responseStart - timing.domainLookupStart, // first pack time
         fmpTime: 0, // First Meaningful Paint
