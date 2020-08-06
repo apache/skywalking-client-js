@@ -19,27 +19,29 @@
 import { CustomPerfOptionsType } from '../types';
 import Report from '../services/report';
 import pagePerf from './perf';
+import FMP from './fmp';
+import { IPerfDetail } from './type';
 
 class TracePerf {
   private isPerf: boolean = true;
   private perfConfig = {
-    // resources: [],
     perfDetail: {},
-  } as any;
+  } as { perfDetail: IPerfDetail };
 
-  public recordPerf(options: CustomPerfOptionsType) {
-    setTimeout(async () => {
-      if (this.isPerf) {
-        this.perfConfig.perfDetail = await pagePerf.getPerfTiming();
-      }
+  public async recordPerf(options: CustomPerfOptionsType) {
+    if (this.isPerf) {
+      this.perfConfig.perfDetail = await new pagePerf().getPerfTiming();
+    }
+    const fmp: {fmpTime: number} = await new FMP();
+
+    setTimeout(() => {
       const perfInfo = {
-        perfDetail: this.perfConfig.perfDetail,
-        // resources: this.perfConfig.resources,
+        perfDetail: {...this.perfConfig.perfDetail, fmpTime: fmp.fmpTime},
         ...options,
       };
       new Report(options.reportUrl).sendByXhr(perfInfo);
       this.clearPerf();
-    }, 100);
+    }, 5000);
   }
 
   private clearPerf() {
@@ -48,9 +50,8 @@ class TracePerf {
     }
     window.performance.clearResourceTimings();
     this.perfConfig = {
-      // resources: [],
       perfDetail: {},
-    };
+    } as { perfDetail: IPerfDetail };
   }
 }
 

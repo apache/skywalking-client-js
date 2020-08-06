@@ -14,16 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-function getStyle(element: Element | any, attr: any) {
+import { ICalScore, Els } from './type';
+
+const getStyle = (element: Element | any, attr: any) => {
   if (window.getComputedStyle) {
     return window.getComputedStyle(element, null)[attr];
   } else {
     return element.currentStyle[attr];
   }
-}
-
-const START_TIME: number = performance.now();
-const IGNORE_TAG_SET: string[] = ['SCRIPT', 'STYLE', 'META', 'HEAD', 'LINK'];
+};
 
 enum ELE_WEIGHT {
   SVG = 2,
@@ -34,33 +33,22 @@ enum ELE_WEIGHT {
   VIDEO = 4,
 }
 
+const START_TIME: number = performance.now();
+const IGNORE_TAG_SET: string[] = ['SCRIPT', 'STYLE', 'META', 'HEAD', 'LINK'];
 const LIMIT: number = 3000;
 const WW: number = window.innerWidth;
 const WH: number = window.innerHeight;
 const DELAY: number = 500;
-interface ICalScore {
-  dpss: ICalScore[];
-  st: number;
-  els: Els;
-  root?: Element;
-}
-type Els = Array<{
-  $node: Element;
-  st: number;
-  weight: number;
-}>;
 
 class FMPTiming {
+  public fmpTime: number = 0;
   private statusCollector: Array<{time: number}> = [];
   private flag: boolean = true;
   private observer: MutationObserver = null;
   private callbackCount: number = 0;
   private entries: any = {};
-  private fmpCallback: any = null;
-  constructor(fmpCallback?: (res: any) => void) {
-    if (fmpCallback) {
-      this.fmpCallback = fmpCallback;
-    }
+
+  constructor() {
     this.initObserver();
   }
   private getFirstSnapShot(): void {
@@ -118,24 +106,11 @@ class FMPTiming {
           this.entries[item.name] = item.responseEnd;
         });
         if (!tp) {
-          if (this.fmpCallback) {
-            this.fmpCallback({
-              tp: null,
-              resultEls: [],
-              fmpTiming: 0,
-            });
-          }
           return false;
         }
         const resultEls: Els = this.filterResult(tp.els);
         const fmpTiming: number = this.getFmpTime(resultEls);
-        if (this.fmpCallback) {
-          this.fmpCallback({
-            tp,
-            resultEls,
-            fmpTiming,
-          });
-        }
+        this.fmpTime = fmpTiming;
     } else {
       setTimeout(() => {
         this.calculateFinalScore();
@@ -162,7 +137,7 @@ class FMPTiming {
           if (match && match[1]) {
             url = match[1];
           }
-          if (url.indexOf('http') === -1) {
+          if (!url.includes('http')) {
             url = location.protocol + match[1];
           }
           time = this.entries[url];

@@ -15,31 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import FMP from './fmp';
+import { IPerfDetail } from './type';
 class PagePerf {
-  private fmpTime: number = 0;
 
-  constructor() {
-    new FMP(this.getFmpTiming);
-  }
-
-  public getPerfTiming() {
+  public getPerfTiming(): IPerfDetail {
     try {
       if (!window.performance || !window.performance.timing) {
         console.log('your browser do not support performance');
         return;
       }
       const { timing } = window.performance;
-      const loadTime = timing.loadEventEnd - timing.loadEventStart;
       let redirectTime = 0;
-
-      if (loadTime < 0) {
-        setTimeout(() => {
-          this.getPerfTiming();
-        }, 3000);
-        return;
-      }
 
       if (timing.navigationStart !== undefined) {
         redirectTime = timing.fetchStart - timing.navigationStart;
@@ -48,6 +34,7 @@ class PagePerf {
       } else {
         redirectTime = 0;
       }
+
       return {
         redirectTime,
         dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
@@ -59,20 +46,16 @@ class PagePerf {
         domReadyTime: timing.domContentLoadedEventEnd - timing.fetchStart,
         loadPage: timing.loadEventStart - timing.fetchStart, // Page full load time
         resTime: timing.loadEventStart - timing.domContentLoadedEventEnd, // Synchronous load resources in the page
-        sslTime: timing.connectEnd - timing.secureConnectionStart, // Only valid for HTTPS
+        // Only valid for HTTPS
+        sslTime: location.protocol.includes('https') ? timing.connectEnd - timing.secureConnectionStart : null,
         ttlTime: timing.domInteractive - timing.fetchStart, // time to interact
         firstPackTime: timing.responseStart - timing.domainLookupStart, // first pack time
-        fmpTime: this.fmpTime, // First Meaningful Paint
+        fmpTime: 0, // First Meaningful Paint
       };
     } catch (e) {
       throw e;
     }
   }
-
-  private getFmpTiming(data: any) {
-    console.log(data);
-    this.fmpTime = data.fmpTiming;
-  }
 }
 
-export default new PagePerf();
+export default PagePerf;

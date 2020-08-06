@@ -65,7 +65,13 @@ const ClientMonitor = {
       ...this.customPerfOptions,
       ...options,
     };
-    Performance.recordPerf(customPerfOptions);
+    if (document.readyState === 'complete') {
+      Performance.recordPerf(customPerfOptions);
+    } else {
+      window.addEventListener('load', () => {
+        Performance.recordPerf(customPerfOptions);
+      }, false);
+    }
   },
 };
 
