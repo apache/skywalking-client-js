@@ -35,7 +35,7 @@ class TracePerf {
         fmp = await new FMP();
       }
     }
-
+    // auto report pv and perf data
     setTimeout(() => {
       const perfInfo = {
         perfDetail: options.autoTracePerf ? {
@@ -48,6 +48,7 @@ class TracePerf {
         serviceId: options.serviceId,
       };
       new Report(options.reportUrl).sendByXhr(perfInfo);
+      // clear perf data
       this.clearPerf();
     }, 5000);
   }

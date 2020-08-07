@@ -22,8 +22,6 @@ import Performance from './performance/index';
 const ClientMonitor = {
   customOptions: {
     jsErrors: true,
-    promiseErrors: true,
-    vueErrors: false,
     apiErrors: true, // ajax promise
     resourceErrors: true,
     autoTracePerf: true,

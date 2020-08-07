@@ -23,7 +23,7 @@ const getStyle = (element: Element | any, attr: any) => {
     return element.currentStyle[attr];
   }
 };
-
+// element weight for calculate score
 enum ELE_WEIGHT {
   SVG = 2,
   IMG = 2,
@@ -38,20 +38,24 @@ const IGNORE_TAG_SET: string[] = ['SCRIPT', 'STYLE', 'META', 'HEAD', 'LINK'];
 const LIMIT: number = 3000;
 const WW: number = window.innerWidth;
 const WH: number = window.innerHeight;
-const DELAY: number = 500;
+const DELAY: number = 500; // fmp retry interval
 
 class FMPTiming {
   public fmpTime: number = 0;
-  private statusCollector: Array<{time: number}> = [];
+  private statusCollector: Array<{time: number}> = []; // nodes change time
   private flag: boolean = true;
   private observer: MutationObserver = null;
   private callbackCount: number = 0;
   private entries: any = {};
 
   constructor() {
+    if (!performance || !performance.getEntries) {
+      console.log('your browser do not support performance.getEntries');
+      return;
+    }
     this.initObserver();
   }
-  private getFirstSnapShot(): void {
+  private getFirstSnapShot() {
     const time: number = performance.now();
     const $body: HTMLElement = document.body;
     if ($body) {
@@ -74,10 +78,12 @@ class FMPTiming {
         time,
       });
     });
+    // observe all child nodes
     this.observer.observe(document, {
       childList: true,
       subtree: true,
     });
+    // calculate score when page loaded
     if (document.readyState === 'complete') {
       this.calculateFinalScore();
     } else {
@@ -89,11 +95,12 @@ class FMPTiming {
   private calculateFinalScore() {
     if (MutationEvent && this.flag) {
       if (this.checkNeedCancel(START_TIME)) {
+        // cancel observer for dom change
         this.observer.disconnect();
         this.flag = false;
         const res = this.getTreeScore(document.body);
         let tp: ICalScore = null;
-        res.dpss.forEach((item: any) => {
+        for (const item of res.dpss) {
           if (tp && tp.st) {
             if (tp.st < item.st) {
               tp = item;
@@ -101,7 +108,7 @@ class FMPTiming {
           } else {
             tp = item;
           }
-        });
+        }
         performance.getEntries().forEach((item: PerformanceResourceTiming) => {
           this.entries[item.name] = item.responseEnd;
         });
@@ -261,6 +268,7 @@ class FMPTiming {
     }
     return (overlapX * overlapY) / (width * height);
   }
+  // Depth first traversal to mark nodes
   private setTag(target: Element, callbackCount: number): void {
     const tagName: string = target.tagName;
     if (IGNORE_TAG_SET.indexOf(tagName) === -1) {

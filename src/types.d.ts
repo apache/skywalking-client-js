@@ -18,23 +18,13 @@
 export interface CustomOptionsType {
   reportUrl: string;
   serviceName?: string;
-  pageId: '',
+  pageId: string,
   versionId: string;
   serviceId: string;
   jsErrors: boolean;
-  promiseErrors: boolean;
-  consoleErrors: boolean;
-  vueErrors: boolean;
   apiErrors: boolean;
   resourceErrors: boolean;
   autoTracePerf: boolean;
   traceResource: boolean;
   useFmp: boolean;
-}
-export type CustomPerfOptionsType = {
-  pageId: string;
-  reportUrl: string;
-  serviceName: string;
-  serviceId: string;
-  versionId: string;
 }
