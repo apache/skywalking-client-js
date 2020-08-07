@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { CustomOptionsType, CustomPerfOptionsType } from './types';
+import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
 
@@ -23,17 +23,13 @@ const ClientMonitor = {
   customOptions: {
     jsErrors: true,
     promiseErrors: true,
-    consoleErrors: false,
     vueErrors: false,
-    ajaxErrors: true,
+    apiErrors: true, // ajax promise
     resourceErrors: true,
+    autoTracePerf: true,
+    traceResource: false,
+    useFmp: false,
   } as CustomOptionsType,
-
-  customPerfOptions: {
-    pageId: '',
-    serviceName: '',
-    reportUrl: '',
-  } as CustomPerfOptionsType,
 
   register(options: CustomOptionsType) {
     const { serviceName, reportUrl } = options;
@@ -45,31 +41,23 @@ const ClientMonitor = {
 
     if (this.customOptions.jsErrors) {
       JSErrors.handleErrors({reportUrl, serviceName});
+      if (this.customOptions.vue) {
+        VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
+      }
     }
-    if (this.customOptions.promiseErrors) {
+    if (this.customOptions.apiErrors) {
       PromiseErrors.handleErrors({reportUrl, serviceName});
+      AjaxErrors.handleError({reportUrl, serviceName});
     }
     if (this.customOptions.resourceErrors) {
       ResourceErrors.handleErrors({reportUrl, serviceName});
     }
-    if (this.customOptions.ajaxErrors) {
-      AjaxErrors.handleError({reportUrl, serviceName});
-    }
-    if (this.customOptions.vueErrors && this.customOptions.vue) {
-      VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
-    }
-  },
-
-  tracePerfDetail(options: CustomPerfOptionsType) {
-    const customPerfOptions = {
-      ...this.customPerfOptions,
-      ...options,
-    };
+    // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      Performance.recordPerf(customPerfOptions);
+      Performance.recordPerf(this.customOptions);
     } else {
       window.addEventListener('load', () => {
-        Performance.recordPerf(customPerfOptions);
+        Performance.recordPerf(this.customOptions);
       }, false);
     }
   },

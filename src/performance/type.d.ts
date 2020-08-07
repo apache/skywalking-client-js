@@ -29,7 +29,7 @@ export type IPerfDetail = {
   redirectTime: number | undefined; // Time of redirection
   dnsTime: number | undefined; // DNS query time
   ttfbTime: number | undefined; // Time to First Byte
-  tcpTime: number | undefined; // tcp connection time
+  tcpTime: number | undefined; // Tcp connection time
   transTime: number | undefined; // Content transfer time
   domAnalysisTime: number | undefined; // Dom parsing time
   fptTime: number | undefined; // First Paint Time or Blank Screen Time

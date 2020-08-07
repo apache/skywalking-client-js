@@ -16,28 +16,36 @@
  * limitations under the License.
  */
 
-import { CustomPerfOptionsType } from '../types';
+import { CustomOptionsType } from '../types';
 import Report from '../services/report';
 import pagePerf from './perf';
 import FMP from './fmp';
 import { IPerfDetail } from './type';
 
 class TracePerf {
-  private isPerf: boolean = true;
   private perfConfig = {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
-  public async recordPerf(options: CustomPerfOptionsType) {
-    if (this.isPerf) {
+  public async recordPerf(options: CustomOptionsType) {
+    let fmp: {fmpTime: number | undefined} = {fmpTime: undefined};
+    if (options.autoTracePerf) {
       this.perfConfig.perfDetail = await new pagePerf().getPerfTiming();
+      if (options.useFmp) {
+        fmp = await new FMP();
+      }
     }
-    const fmp: {fmpTime: number} = await new FMP();
 
     setTimeout(() => {
       const perfInfo = {
-        perfDetail: {...this.perfConfig.perfDetail, fmpTime: fmp.fmpTime},
-        ...options,
+        perfDetail: options.autoTracePerf ? {
+          ...this.perfConfig.perfDetail,
+          fmpTime: options.useFmp ? fmp.fmpTime : undefined,
+        } : undefined,
+        pageId: options.pageId,
+        serviceName: options.serviceName,
+        versionId: options.versionId,
+        serviceId: options.serviceId,
       };
       new Report(options.reportUrl).sendByXhr(perfInfo);
       this.clearPerf();
