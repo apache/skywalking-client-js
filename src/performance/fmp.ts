@@ -109,6 +109,7 @@ class FMPTiming {
             tp = item;
           }
         }
+        // Get all of soures load time
         performance.getEntries().forEach((item: PerformanceResourceTiming) => {
           this.entries[item.name] = item.responseEnd;
         });
@@ -169,6 +170,10 @@ class FMPTiming {
     });
     return rt;
   }
+  /**
+   * The nodes with the highest score in the visible area are collected and the average value is taken,
+   * and the low score ones are eliminated
+   */
   private filterResult(els: Els): Els {
     if (els.length === 1) {
       return els;
@@ -196,6 +201,7 @@ class FMPTiming {
     const dpss = [];
     const children: any = node.children;
     for (const child of children) {
+      // Only calculate marked elements
       if (!child.getAttribute('fmp_c')) {
         continue;
       }
@@ -223,16 +229,20 @@ class FMPTiming {
       sdp += item.st;
     });
     let weight: number = Number(ELE_WEIGHT[$node.tagName as any]) || 1;
+    // If there is a common element of the background image, it is calculated according to the picture
     if (weight === 1
       && getStyle($node, 'background-image')
       && getStyle($node, 'background-image') !== 'initial'
       && getStyle($node, 'background-image') !== 'none') {
       weight = ELE_WEIGHT.IMG;
     }
+    // score = the area of element
     let st: number = isInViewPort ? width * height * weight : 0;
     let els = [{ $node, st, weight }];
     const root = $node;
+    // The percentage of the current element in the viewport
     const areaPercent = this.calculateAreaParent($node);
+    // If the sum of the child's weights is greater than the parent's true weight
     if (sdp > st * areaPercent || areaPercent === 0) {
       st = sdp;
       els = [];
@@ -277,6 +287,7 @@ class FMPTiming {
         for (let i = $children.length - 1; i >= 0; i--) {
           const $child: Element = $children[i];
           const hasSetTag = $child.getAttribute('fmp_c') !== null;
+          // If it is not marked, whether the marking condition is met is detected
           if (!hasSetTag) {
             const {
               left,

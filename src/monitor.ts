@@ -24,9 +24,8 @@ const ClientMonitor = {
     jsErrors: true,
     apiErrors: true, // ajax promise
     resourceErrors: true,
-    autoTracePerf: true,
-    traceResource: false,
-    useFmp: false,
+    autoTracePerf: true, // trace performance detail
+    useFmp: false, // use first meaningful paint
   } as CustomOptionsType,
 
   register(options: CustomOptionsType) {

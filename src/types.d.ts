@@ -25,6 +25,5 @@ export interface CustomOptionsType {
   apiErrors: boolean;
   resourceErrors: boolean;
   autoTracePerf: boolean;
-  traceResource: boolean;
   useFmp: boolean;
 }
