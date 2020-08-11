@@ -34,7 +34,7 @@ export type IPerfDetail = {
   domAnalysisTime: number | undefined; // Dom parsing time
   fptTime: number | undefined; // First Paint Time or Blank Screen Time
   domReadyTime: number | undefined; // Dom ready time
-  loadPage: number | undefined; // Page full load time
+  loadPageTime: number | undefined; // Page full load time
   resTime: number | undefined; // Synchronous load resources in the page
   sslTime: number | undefined; // Only valid for HTTPS
   ttlTime: number | undefined; // Time to interact

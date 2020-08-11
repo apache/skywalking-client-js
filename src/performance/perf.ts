@@ -44,7 +44,7 @@ class PagePerf {
         domAnalysisTime: timing.domInteractive - timing.responseEnd,
         fptTime: timing.responseEnd - timing.fetchStart, // First Paint Time or Blank Screen Time
         domReadyTime: timing.domContentLoadedEventEnd - timing.fetchStart,
-        loadPage: timing.loadEventStart - timing.fetchStart, // Page full load time
+        loadPageTime: timing.loadEventStart - timing.fetchStart, // Page full load time
         resTime: timing.loadEventStart - timing.domContentLoadedEventEnd, // Synchronous load resources in the page
         // Only valid for HTTPS
         sslTime: location.protocol.includes('https') ? timing.connectEnd - timing.secureConnectionStart : undefined,

@@ -21,8 +21,8 @@ import Performance from './performance/index';
 
 const ClientMonitor = {
   customOptions: {
-    jsErrors: true,
-    apiErrors: true, // ajax promise
+    jsErrors: true, // vue, js and promise errors
+    apiErrors: true,
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
@@ -38,12 +38,12 @@ const ClientMonitor = {
 
     if (this.customOptions.jsErrors) {
       JSErrors.handleErrors({reportUrl, serviceName});
+      PromiseErrors.handleErrors({reportUrl, serviceName});
       if (this.customOptions.vue) {
         VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
       }
     }
     if (this.customOptions.apiErrors) {
-      PromiseErrors.handleErrors({reportUrl, serviceName});
       AjaxErrors.handleError({reportUrl, serviceName});
     }
     if (this.customOptions.resourceErrors) {
