@@ -20,10 +20,6 @@ export enum ErrorsCategory {
   VUE_ERROR = 'vueError',
   PROMISE_ERROR = 'promiseError',
   JS_ERROR = 'jsError',
-  CONSOLE_INFO = 'consoleInfo',
-  CONSOLE_WARN = 'consoleWarn',
-  CONSOLE_ERROR = 'consoleError',
-  CROSS_SCRIPT_ERROR = 'crossSrciptError',
   UNKNOW_ERROR = 'unknowError',
 }
 export enum GradeTypeEnum {

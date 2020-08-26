@@ -18,10 +18,12 @@
 export interface CustomOptionsType {
   reportUrl: string;
   serviceName?: string;
+  pageId: string,
+  versionId: string;
+  serviceId: string;
   jsErrors: boolean;
-  promiseErrors: boolean;
-  consoleErrors: boolean;
-  vueErrors: boolean;
-  ajaxErrors: boolean;
+  apiErrors: boolean;
   resourceErrors: boolean;
+  autoTracePerf: boolean;
+  useFmp: boolean;
 }

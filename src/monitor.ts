@@ -17,15 +17,15 @@
 
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
+import Performance from './performance/index';
 
 const ClientMonitor = {
   customOptions: {
-    jsErrors: true,
-    promiseErrors: true,
-    consoleErrors: false,
-    vueErrors: false,
-    ajaxErrors: true,
+    jsErrors: true, // vue, js and promise errors
+    apiErrors: true,
     resourceErrors: true,
+    autoTracePerf: true, // trace performance detail
+    useFmp: false, // use first meaningful paint
   } as CustomOptionsType,
 
   register(options: CustomOptionsType) {
@@ -38,18 +38,24 @@ const ClientMonitor = {
 
     if (this.customOptions.jsErrors) {
       JSErrors.handleErrors({reportUrl, serviceName});
-    }
-    if (this.customOptions.promiseErrors) {
       PromiseErrors.handleErrors({reportUrl, serviceName});
+      if (this.customOptions.vue) {
+        VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
+      }
+    }
+    if (this.customOptions.apiErrors) {
+      AjaxErrors.handleError({reportUrl, serviceName});
     }
     if (this.customOptions.resourceErrors) {
       ResourceErrors.handleErrors({reportUrl, serviceName});
     }
-    if (this.customOptions.ajaxErrors) {
-      AjaxErrors.handleError({reportUrl, serviceName});
-    }
-    if (this.customOptions.vueErrors && this.customOptions.vue) {
-      VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
+    // trace and report perf data and pv to serve when page loaded
+    if (document.readyState === 'complete') {
+      Performance.recordPerf(this.customOptions);
+    } else {
+      window.addEventListener('load', () => {
+        Performance.recordPerf(this.customOptions);
+      }, false);
     }
   },
 };

@@ -40,4 +40,5 @@ export interface errorInfoFeilds {
   line?: number; 
   col?: number;
   errorInfo?: any;
+  isFirstPageJSErrorReport?: boolean;
 }

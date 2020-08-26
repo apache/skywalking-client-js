@@ -17,7 +17,6 @@
 
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
-
 class JSErrors extends Base {
   public handleErrors(options: {reportUrl: string; serviceName: string}) {
     window.onerror = (message, url, line, col, error) => {
