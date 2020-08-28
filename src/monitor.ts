@@ -26,15 +26,35 @@ const ClientMonitor = {
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
+    enableSPA: false,
   } as CustomOptionsType,
 
-  register(options: CustomOptionsType) {
-    const { serviceName, reportUrl } = options;
-
+  register(configs: CustomOptionsType) {
     this.customOptions = {
       ...this.customOptions,
-      ...options,
+      ...configs,
     };
+    this.errors(configs);
+    this.performance();
+  },
+  performance() {
+    // trace and report perf data and pv to serve when page loaded
+    if (document.readyState === 'complete') {
+      Performance.recordPerf(this.customOptions);
+    } else {
+      window.addEventListener('load', () => {
+        Performance.recordPerf(this.customOptions);
+      }, false);
+    }
+    if (this.customOptions.enableSPA) {
+      // hash router
+      window.addEventListener('hashchange', () => {
+        Performance.recordPerf(this.customOptions);
+      }, false);
+    }
+  },
+  errors(options: CustomOptionsType) {
+    const { serviceName, reportUrl } = options;
 
     if (this.customOptions.jsErrors) {
       JSErrors.handleErrors({reportUrl, serviceName});
@@ -49,14 +69,14 @@ const ClientMonitor = {
     if (this.customOptions.resourceErrors) {
       ResourceErrors.handleErrors({reportUrl, serviceName});
     }
-    // trace and report perf data and pv to serve when page loaded
-    if (document.readyState === 'complete') {
-      Performance.recordPerf(this.customOptions);
-    } else {
-      window.addEventListener('load', () => {
-        Performance.recordPerf(this.customOptions);
-      }, false);
-    }
+  },
+  setPerformance(configs: CustomOptionsType) {
+    // history router
+    this.customOptions = {
+      ...this.customOptions,
+      ...configs,
+    };
+    Performance.recordPerf(this.customOptions);
   },
 };
 

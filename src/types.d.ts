@@ -26,4 +26,5 @@ export interface CustomOptionsType {
   resourceErrors: boolean;
   autoTracePerf: boolean;
   useFmp: boolean;
+  enableSPA: boolean;
 }
