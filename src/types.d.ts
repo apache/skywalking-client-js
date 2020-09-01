@@ -17,13 +17,15 @@
 
 export interface CustomOptionsType {
   reportUrl: string;
-  serviceName?: string;
-  pageId: string,
-  versionId: string;
-  serviceId: string;
+  service: string;
+  pagePath: string;
+  serviceVersion: string;
   jsErrors: boolean;
   apiErrors: boolean;
   resourceErrors: boolean;
   autoTracePerf: boolean;
   useFmp: boolean;
+  enableSPA: boolean;
+  autoSendPerf: boolean;
+  vue: any;
 }

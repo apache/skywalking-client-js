@@ -16,15 +16,16 @@
  */
 import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
-import { errorInfoFeilds } from './types';
+import { ErrorInfoFeilds, ReportFields } from './types';
 
 let jsErrorPv = false;
 export default class Base {
-  public reportUrl: string;
 
-  public serviceName: string;
-
-  public logInfo: errorInfoFeilds = {
+  public logInfo: ErrorInfoFeilds & ReportFields = {
+    reportUrl: '',
+    service: '',
+    serviceVersion: '',
+    pagePath: '',
     category: ErrorsCategory.UNKNOW_ERROR,
     grade: GradeTypeEnum.INFO,
     errorUrl: '',
@@ -32,14 +33,14 @@ export default class Base {
     col: 0,
     errorInfo: '',
     message: '',
-    isFirstPageJSErrorReport: false,
+    firstReportedError: false,
   };
 
   public traceInfo() {
     // mark js error pv
     if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
       jsErrorPv = true;
-      this.logInfo.isFirstPageJSErrorReport = true;
+      this.logInfo.firstReportedError = true;
     }
     this.handleRecordError();
     setTimeout(() => {
@@ -52,13 +53,13 @@ export default class Base {
       if (!this.logInfo.message) {
         return;
       }
-      if (this.reportUrl && this.logInfo.errorUrl &&
-        this.logInfo.errorUrl.toLowerCase().includes(this.reportUrl.toLowerCase())) {
+      if (this.logInfo.reportUrl && this.logInfo.errorUrl &&
+        this.logInfo.errorUrl.toLowerCase().includes(this.logInfo.reportUrl.toLowerCase())) {
         return;
       }
       const errorInfo = this.handleErrorInfo();
 
-      Task.addTask(this.reportUrl, errorInfo);
+      Task.addTask(this.logInfo.reportUrl, errorInfo);
 
     } catch (error) {
       throw error;
@@ -83,10 +84,6 @@ export default class Base {
       ...this.logInfo,
       message,
     };
-    return {
-      errorLogs: recordInfo,
-      serviceName: this.serviceName,
-      reportUrl: this.reportUrl,
-    };
+    return recordInfo;
   }
 }

@@ -37,15 +37,15 @@ class TracePerf {
     }
     // auto report pv and perf data
     setTimeout(() => {
+      const perfDetail = options.autoTracePerf ? {
+        ...this.perfConfig.perfDetail,
+        fmpTime: options.useFmp ? fmp.fmpTime : undefined,
+      } : undefined;
       const perfInfo = {
-        perfDetail: options.autoTracePerf ? {
-          ...this.perfConfig.perfDetail,
-          fmpTime: options.useFmp ? fmp.fmpTime : undefined,
-        } : undefined,
-        pageId: options.pageId,
-        serviceName: options.serviceName,
-        versionId: options.versionId,
-        serviceId: options.serviceId,
+        ...perfDetail,
+        pagePath: options.pagePath,
+        serviceVersion: options.serviceVersion,
+        service: options.service,
       };
       new Report(options.reportUrl).sendByXhr(perfInfo);
       // clear perf data

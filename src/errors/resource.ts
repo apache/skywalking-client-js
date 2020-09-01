@@ -19,14 +19,17 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: {reportUrl: string; serviceName: string}) {
+  public handleErrors(options: {
+    reportUrl: string;
+    service: string;
+    pagePath: string;
+    serviceVersion: string;
+  }) {
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
           return;
         }
-        this.reportUrl = options.reportUrl;
-        this.serviceName = options.serviceName;
         const target: any = event.target || event.srcElement;
         const isElementTarget = target instanceof HTMLScriptElement
         || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
@@ -35,6 +38,10 @@ class ResourceErrors extends Base {
             return;
         }
         this.logInfo = {
+          reportUrl: options.reportUrl,
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
           errorUrl: target.src || target.href,
