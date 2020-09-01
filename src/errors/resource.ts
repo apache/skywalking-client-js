@@ -30,10 +30,6 @@ class ResourceErrors extends Base {
         if (!event) {
           return;
         }
-        this.reportUrl = options.reportUrl;
-        this.service = options.service;
-        this.serviceVersion = options.serviceVersion;
-        this.pagePath = options.pagePath;
         const target: any = event.target || event.srcElement;
         const isElementTarget = target instanceof HTMLScriptElement
         || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
@@ -42,6 +38,10 @@ class ResourceErrors extends Base {
             return;
         }
         this.logInfo = {
+          reportUrl: options.reportUrl,
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
           errorUrl: target.src || target.href,

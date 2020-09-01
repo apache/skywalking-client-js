@@ -31,14 +31,14 @@ class PromiseErrors extends Base {
         if (!event || !event.reason) {
           return;
         }
-        this.reportUrl = options.reportUrl;
-        this.service = options.service;
-        this.serviceVersion = options.serviceVersion;
-        this.pagePath = options.pagePath;
         if (event.reason.config && event.reason.config.url) {
           url = event.reason.config.url;
         }
         this.logInfo = {
+          reportUrl: options.reportUrl,
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
           category: ErrorsCategory.PROMISE_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: url,

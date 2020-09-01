@@ -14,25 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export interface TraceFields {
-  serviceName: string;
-  errorInfo: errorInfoFeilds;
-  performanceInfo?: performanceInfoFields;
-  resources?: any;
-  pageId?: string;
-  deviceInfo?: any;
-}
-export interface performanceInfoFields {
-  redirectTime: string;
-  dnsTime: string;
-  reqTime: string;
-  analysisTime: string;
-  blankTime: string;
-  domReadyTime: string;
-  loadPage: string;
-}
 
-export interface errorInfoFeilds {
+export interface ErrorInfoFeilds {
   category: string;
   grade: string;
   message: any;
@@ -40,5 +23,12 @@ export interface errorInfoFeilds {
   line?: number; 
   col?: number;
   errorInfo?: any;
-  isFirstPageJSErrorReport?: boolean;
+  firstReportedError?: boolean;
+}
+
+export interface ReportFields {
+  reportUrl: string;
+  service: string;
+  serviceVersion: string;
+  pagePath: string;
 }

@@ -25,11 +25,11 @@ class JSErrors extends Base {
     pagePath: string;
   }) {
     window.onerror = (message, url, line, col, error) => {
-      this.reportUrl = options.reportUrl;
-      this.service = options.service;
-      this.serviceVersion = options.serviceVersion;
-      this.pagePath = options.pagePath;
       this.logInfo = {
+        reportUrl: options.reportUrl,
+        service: options.service,
+        serviceVersion: options.serviceVersion,
+        pagePath: options.pagePath,
         category: ErrorsCategory.JS_ERROR,
         grade: GradeTypeEnum.ERROR,
         errorUrl: url,

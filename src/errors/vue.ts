@@ -23,11 +23,11 @@ class VueErrors extends Base {
     options: { reportUrl: string; service: string; pagePath: string; serviceVersion: string; }, Vue: any) {
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
-        this.reportUrl = options.reportUrl;
-        this.service = options.service;
-        this.serviceVersion = options.serviceVersion;
-        this.pagePath = options.pagePath;
         this.logInfo = {
+          reportUrl: options.reportUrl,
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
           category: ErrorsCategory.VUE_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: '',

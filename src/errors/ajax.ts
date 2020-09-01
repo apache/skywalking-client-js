@@ -28,16 +28,15 @@ class AjaxErrors extends Base {
     if (!window.XMLHttpRequest) {
       return;
     }
-    this.reportUrl = options.reportUrl;
-    this.service = options.service;
-    this.serviceVersion = options.serviceVersion;
-    this.pagePath = options.pagePath;
-
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {
       try {
         if (event && event.currentTarget && event.currentTarget.status !== 200) {
           this.logInfo = {
+            reportUrl: options.reportUrl,
+            service: options.service,
+            serviceVersion: options.serviceVersion,
+            pagePath: options.pagePath,
             category: ErrorsCategory.AJAX_ERROR,
             grade: GradeTypeEnum.ERROR,
             errorUrl: event.target.responseURL,
