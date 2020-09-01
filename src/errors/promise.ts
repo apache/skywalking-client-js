@@ -19,7 +19,12 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class PromiseErrors extends Base {
-  public handleErrors(options: {reportUrl: string; serviceName: string}) {
+  public handleErrors(options: {
+    reportUrl: string;
+    service: string;
+    serviceVersion: string;
+    pagePath: string;
+  }) {
     window.addEventListener('unhandledrejection', (event) => {
       try {
         let url = '';
@@ -27,7 +32,9 @@ class PromiseErrors extends Base {
           return;
         }
         this.reportUrl = options.reportUrl;
-        this.serviceName = options.serviceName;
+        this.service = options.service;
+        this.serviceVersion = options.serviceVersion;
+        this.pagePath = options.pagePath;
         if (event.reason.config && event.reason.config.url) {
           url = event.reason.config.url;
         }

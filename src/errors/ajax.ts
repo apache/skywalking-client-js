@@ -19,12 +19,19 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class AjaxErrors extends Base {
-  public handleError(options: {reportUrl: string; serviceName: string}) {
+  public handleError(options: {
+    reportUrl: string;
+    service: string;
+    serviceVersion: string;
+    pagePath: string;
+  }) {
     if (!window.XMLHttpRequest) {
       return;
     }
     this.reportUrl = options.reportUrl;
-    this.serviceName = options.serviceName;
+    this.service = options.service;
+    this.serviceVersion = options.serviceVersion;
+    this.pagePath = options.pagePath;
 
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {

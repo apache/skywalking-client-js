@@ -18,10 +18,17 @@
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class JSErrors extends Base {
-  public handleErrors(options: {reportUrl: string; serviceName: string}) {
+  public handleErrors(options: {
+    reportUrl: string;
+    service: string;
+    serviceVersion: string;
+    pagePath: string;
+  }) {
     window.onerror = (message, url, line, col, error) => {
       this.reportUrl = options.reportUrl;
-      this.serviceName = options.serviceName;
+      this.service = options.service;
+      this.serviceVersion = options.serviceVersion;
+      this.pagePath = options.pagePath;
       this.logInfo = {
         category: ErrorsCategory.JS_ERROR,
         grade: GradeTypeEnum.ERROR,

@@ -153,7 +153,7 @@ class FMPTiming {
       } else if (item.weight === 4) {
         if (item.$node.tagName === 'CANVAS') {
           const index: number = parseInt(item.$node.getAttribute('fmp_c'), 10);
-          time = this.statusCollector[index].time;
+          time = this.statusCollector[index] && this.statusCollector[index].time;
         } else if (item.$node.tagName === 'VIDEO') {
           time = this.entries[(item.$node as HTMLVideoElement).src];
           if (!time) {

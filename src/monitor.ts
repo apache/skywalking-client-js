@@ -27,6 +27,7 @@ const ClientMonitor = {
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
     enableSPA: false,
+    autoSendPerf: true,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
@@ -35,7 +36,9 @@ const ClientMonitor = {
       ...configs,
     };
     this.errors(configs);
-    this.performance();
+    if (this.customOptions.autoSendPerf) {
+      this.performance();
+    }
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded
@@ -54,20 +57,20 @@ const ClientMonitor = {
     }
   },
   errors(options: CustomOptionsType) {
-    const { serviceName, reportUrl } = options;
+    const { service, reportUrl, pagePath, serviceVersion } = options;
 
     if (this.customOptions.jsErrors) {
-      JSErrors.handleErrors({reportUrl, serviceName});
-      PromiseErrors.handleErrors({reportUrl, serviceName});
+      JSErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
+      PromiseErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
       if (this.customOptions.vue) {
-        VueErrors.handleErrors({reportUrl, serviceName}, this.customOptions.vue);
+        VueErrors.handleErrors({reportUrl, service, pagePath, serviceVersion}, this.customOptions.vue);
       }
     }
     if (this.customOptions.apiErrors) {
-      AjaxErrors.handleError({reportUrl, serviceName});
+      AjaxErrors.handleError({reportUrl, service, pagePath, serviceVersion});
     }
     if (this.customOptions.resourceErrors) {
-      ResourceErrors.handleErrors({reportUrl, serviceName});
+      ResourceErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
     }
   },
   setPerformance(configs: CustomOptionsType) {
@@ -76,7 +79,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    Performance.recordPerf(this.customOptions);
+    this.performance();
   },
 };
 

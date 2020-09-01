@@ -19,14 +19,21 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: {reportUrl: string; serviceName: string}) {
+  public handleErrors(options: {
+    reportUrl: string;
+    service: string;
+    pagePath: string;
+    serviceVersion: string;
+  }) {
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
           return;
         }
         this.reportUrl = options.reportUrl;
-        this.serviceName = options.serviceName;
+        this.service = options.service;
+        this.serviceVersion = options.serviceVersion;
+        this.pagePath = options.pagePath;
         const target: any = event.target || event.srcElement;
         const isElementTarget = target instanceof HTMLScriptElement
         || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;

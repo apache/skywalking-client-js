@@ -22,7 +22,11 @@ let jsErrorPv = false;
 export default class Base {
   public reportUrl: string;
 
-  public serviceName: string;
+  public service: string;
+
+  public serviceVersion: string;
+
+  public pagePath: string;
 
   public logInfo: errorInfoFeilds = {
     category: ErrorsCategory.UNKNOW_ERROR,
@@ -84,8 +88,10 @@ export default class Base {
       message,
     };
     return {
-      errorLogs: recordInfo,
-      serviceName: this.serviceName,
+      ...recordInfo,
+      service: this.service,
+      serviceVersion: this.serviceVersion,
+      pagePath: this.pagePath,
       reportUrl: this.reportUrl,
     };
   }
