@@ -8,38 +8,6 @@ Apache SkyWalking Client JS
 - Provide metrics and error collection to SkyWalking backend.
 - Lightweight
 
-# Usage
-* Install: the skywalking-client-js runtime library is available at npm
-`$ npm install skywalking-client-js --save`
-* Init SDK
-`import ClientMonitor from 'skywalking-client-js';`
-`ClientMonitor.register({`
-  `service: 'test-ui',`
-  `pagePath: 'http://localhost:8080/',`
-  `serviceVersion: 'v1.0.0',`
-});
-* General SDK configuration
-  Parameter|Type|Description|Required|Default Value
-  -|:-:|-:
-  service|String|project id|true|-
-  serviceVersion|String|project verison|true|-
-  pagePath|String|project path|true|-
-  jsErrors|Boolean|Support js errors monitoring|true|true
-  apiErrors|Boolean|Support API errors monitoring|true|true
-  resourceErrors|Boolean|Support resource errors monitoring|true|true
-  useFmp|Boolean|Support resource errors monitoring|true|false
-  enableSPA|Boolean|Support resource errors monitoring|true|true
-  autoSendPerf|Boolean|Support resource errors monitoring|true|true
-  vue|Boolean|Support resource errors monitoring|true|true
-* API
-`register()`
-`setPerformance()`
-
-# Development
-* yarn install
-* yarn start
-* yarn link skywalking-client-js
-
 # Contact Us
 * Submit an [issue](https://github.com/apache/skywalking/issues)
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
