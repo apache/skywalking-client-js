@@ -22,6 +22,7 @@ let jsErrorPv = false;
 export default class Base {
 
   public logInfo: ErrorInfoFeilds & ReportFields = {
+    uniqueId: '',
     service: '',
     serviceVersion: '',
     pagePath: '',

@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { v4 as uuidv4 } from 'uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class JSErrors extends Base {
@@ -25,6 +26,7 @@ class JSErrors extends Base {
   }) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {
+        uniqueId: uuidv4(),
         service: options.service,
         serviceVersion: options.serviceVersion,
         pagePath: options.pagePath,

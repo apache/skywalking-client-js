@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import { v4 as uuidv4 } from 'uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
@@ -24,6 +25,7 @@ class VueErrors extends Base {
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
         this.logInfo = {
+          uniqueId: uuidv4(),
           service: options.service,
           serviceVersion: options.serviceVersion,
           pagePath: options.pagePath,
