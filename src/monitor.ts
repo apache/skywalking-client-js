@@ -57,20 +57,20 @@ const ClientMonitor = {
     }
   },
   errors(options: CustomOptionsType) {
-    const { service, reportUrl, pagePath, serviceVersion } = options;
+    const { service, pagePath, serviceVersion } = options;
 
     if (this.customOptions.jsErrors) {
-      JSErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
-      PromiseErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
+      JSErrors.handleErrors({ service, pagePath, serviceVersion});
+      PromiseErrors.handleErrors({ service, pagePath, serviceVersion});
       if (this.customOptions.vue) {
-        VueErrors.handleErrors({reportUrl, service, pagePath, serviceVersion}, this.customOptions.vue);
+        VueErrors.handleErrors({ service, pagePath, serviceVersion}, this.customOptions.vue);
       }
     }
     if (this.customOptions.apiErrors) {
-      AjaxErrors.handleError({reportUrl, service, pagePath, serviceVersion});
+      AjaxErrors.handleError({ service, pagePath, serviceVersion});
     }
     if (this.customOptions.resourceErrors) {
-      ResourceErrors.handleErrors({reportUrl, service, pagePath, serviceVersion});
+      ResourceErrors.handleErrors({ service, pagePath, serviceVersion});
     }
   },
   setPerformance(configs: CustomOptionsType) {

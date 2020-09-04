@@ -47,7 +47,7 @@ class TracePerf {
         serviceVersion: options.serviceVersion,
         service: options.service,
       };
-      new Report(options.reportUrl).sendByXhr(perfInfo);
+      new Report('PERF').sendByXhr(perfInfo);
       // clear perf data
       this.clearPerf();
     }, 5000);

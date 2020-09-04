@@ -19,8 +19,8 @@ import Report from './report';
 class TaskQueue {
   private queues: any[] = [];
 
-  public addTask(reportUrl: string, data: any) {
-    this.queues.push({reportUrl, data});
+  public addTask(data: any) {
+    this.queues.push({data});
   }
 
   public fireTasks() {
@@ -28,9 +28,7 @@ class TaskQueue {
       return;
     }
     const item = this.queues[0];
-    if (item.reportUrl) {
-      new Report(item.reportUrl).sendByXhr(item.data);
-    }
+    new Report('ERROR').sendByXhr(item.data);
     this.queues.splice(0, 1);
     this.fireTasks();
   }

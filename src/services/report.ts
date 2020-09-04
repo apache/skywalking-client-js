@@ -14,22 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { ReportTypes } from './constant';
 class Report {
 
   private url: string = '';
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(type: string) {
+    if (type === 'ERROR') {
+      this.url = ReportTypes.ERROR;
+    } else if (type === 'ERRORS') {
+      this.url = ReportTypes.ERRORS;
+    } else {
+      this.url = ReportTypes.PERF;
+    }
   }
 
   public sendByXhr(data: any) {
-    if (!this.checkUrl(this.url)) {
-      return;
-    }
-
-    delete data.reportUrl;
-    console.log(data);
     try {
       const xhr = new XMLHttpRequest();
       xhr.open('POST', this.url, true);

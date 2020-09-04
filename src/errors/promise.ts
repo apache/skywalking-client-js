@@ -20,7 +20,6 @@ import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class PromiseErrors extends Base {
   public handleErrors(options: {
-    reportUrl: string;
     service: string;
     serviceVersion: string;
     pagePath: string;
@@ -35,7 +34,6 @@ class PromiseErrors extends Base {
           url = event.reason.config.url;
         }
         this.logInfo = {
-          reportUrl: options.reportUrl,
           service: options.service,
           serviceVersion: options.serviceVersion,
           pagePath: options.pagePath,

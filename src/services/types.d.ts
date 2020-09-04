@@ -27,7 +27,6 @@ export interface ErrorInfoFeilds {
 }
 
 export interface ReportFields {
-  reportUrl: string;
   service: string;
   serviceVersion: string;
   pagePath: string;

@@ -22,7 +22,6 @@ let jsErrorPv = false;
 export default class Base {
 
   public logInfo: ErrorInfoFeilds & ReportFields = {
-    reportUrl: '',
     service: '',
     serviceVersion: '',
     pagePath: '',
@@ -53,13 +52,9 @@ export default class Base {
       if (!this.logInfo.message) {
         return;
       }
-      if (this.logInfo.reportUrl && this.logInfo.errorUrl &&
-        this.logInfo.errorUrl.toLowerCase().includes(this.logInfo.reportUrl.toLowerCase())) {
-        return;
-      }
       const errorInfo = this.handleErrorInfo();
 
-      Task.addTask(this.logInfo.reportUrl, errorInfo);
+      Task.addTask(errorInfo);
 
     } catch (error) {
       throw error;

@@ -1,3 +1,5 @@
+import Report from "./report";
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -26,4 +28,9 @@ export enum GradeTypeEnum {
   INFO = 'Info',
   WARNING = 'Warning',
   ERROR = 'Error',
+}
+export enum ReportTypes {
+  ERROR = '/browser/errorLog',
+  ERRORS = '/browser/errorLogs',
+  PERF = '/browser/perfData',
 }

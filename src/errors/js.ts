@@ -19,14 +19,12 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class JSErrors extends Base {
   public handleErrors(options: {
-    reportUrl: string;
     service: string;
     serviceVersion: string;
     pagePath: string;
   }) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {
-        reportUrl: options.reportUrl,
         service: options.service,
         serviceVersion: options.serviceVersion,
         pagePath: options.pagePath,
