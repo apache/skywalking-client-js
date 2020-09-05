@@ -29,15 +29,18 @@ class Report {
     }
   }
 
-  public sendByXhr(data: any) {
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', this.url, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(data));
-    } catch (error) {
-      console.log(error);
-    }
+  public sendByFetch(data: any) {
+    const sendRequest = new Request(this.url, {method: 'POST', body: JSON.stringify(data)});
+
+    fetch(sendRequest)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error('Something went wrong on api server!');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   private reportByImg(data: any) {
