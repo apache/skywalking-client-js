@@ -39,7 +39,7 @@ class TracePerf {
     setTimeout(() => {
       const perfDetail = options.autoTracePerf ? {
         ...this.perfConfig.perfDetail,
-        fmpTime: options.useFmp ? fmp.fmpTime : undefined,
+        fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
       } : undefined;
       const perfInfo = {
         ...perfDetail,
