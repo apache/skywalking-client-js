@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
+import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class VueErrors extends Base {
   public handleErrors(
-    options: { reportUrl: string; service: string; pagePath: string; serviceVersion: string; }, Vue: any) {
+    options: { service: string; pagePath: string; serviceVersion: string; }, Vue: any) {
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
         this.logInfo = {
-          reportUrl: options.reportUrl,
+          uniqueId: uuid(),
           service: options.service,
           serviceVersion: options.serviceVersion,
           pagePath: options.pagePath,

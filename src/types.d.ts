@@ -16,7 +16,6 @@
  */
 
 export interface CustomOptionsType {
-  reportUrl: string;
   service: string;
   pagePath: string;
   serviceVersion: string;

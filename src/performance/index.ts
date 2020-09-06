@@ -39,7 +39,7 @@ class TracePerf {
     setTimeout(() => {
       const perfDetail = options.autoTracePerf ? {
         ...this.perfConfig.perfDetail,
-        fmpTime: options.useFmp ? fmp.fmpTime : undefined,
+        fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
       } : undefined;
       const perfInfo = {
         ...perfDetail,
@@ -47,7 +47,7 @@ class TracePerf {
         serviceVersion: options.serviceVersion,
         service: options.service,
       };
-      new Report(options.reportUrl).sendByXhr(perfInfo);
+      new Report('PERF').sendByFetch(perfInfo);
       // clear perf data
       this.clearPerf();
     }, 5000);

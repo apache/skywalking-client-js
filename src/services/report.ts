@@ -14,30 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import { ReportTypes } from './constant';
 class Report {
 
   private url: string = '';
 
-  constructor(url: string) {
-    this.url = url;
+  constructor(type: string) {
+    if (type === 'ERROR') {
+      this.url = ReportTypes.ERROR;
+    } else if (type === 'ERRORS') {
+      this.url = ReportTypes.ERRORS;
+    } else {
+      this.url = ReportTypes.PERF;
+    }
   }
 
-  public sendByXhr(data: any) {
-    if (!this.checkUrl(this.url)) {
-      return;
-    }
+  public sendByFetch(data: any) {
+    const sendRequest = new Request(this.url, {method: 'POST', body: JSON.stringify(data)});
 
-    delete data.reportUrl;
-    console.log(data);
-    try {
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', this.url, true);
-      xhr.setRequestHeader('Content-Type', 'application/json');
-      xhr.send(JSON.stringify(data));
-    } catch (error) {
-      console.log(error);
-    }
+    fetch(sendRequest)
+    .then((response) => {
+      if (response.status !== 200) {
+        throw new Error('Something went wrong on api server!');
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });
   }
 
   private reportByImg(data: any) {

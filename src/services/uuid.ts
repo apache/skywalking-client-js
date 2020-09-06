@@ -14,24 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import Report from './report';
 
-class TaskQueue {
-  private queues: any[] = [];
+export default function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    /* tslint:disable */
+    const r = (Math.random() * 16) | 0;
+    /* tslint:disable */
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
 
-  public addTask(data: any) {
-    this.queues.push({data});
-  }
-
-  public fireTasks() {
-    if (!this.queues || !this.queues.length) {
-      return;
-    }
-    const item = this.queues[0];
-    new Report('ERROR').sendByFetch(item.data);
-    this.queues.splice(0, 1);
-    this.fireTasks();
-  }
+    return v.toString(16);
+  });
 }
-
-export default new TaskQueue();

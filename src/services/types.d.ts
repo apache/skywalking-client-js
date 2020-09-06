@@ -16,6 +16,7 @@
  */
 
 export interface ErrorInfoFeilds {
+  uniqueId: string;
   category: string;
   grade: string;
   message: any;
@@ -27,7 +28,6 @@ export interface ErrorInfoFeilds {
 }
 
 export interface ReportFields {
-  reportUrl: string;
   service: string;
   serviceVersion: string;
   pagePath: string;
