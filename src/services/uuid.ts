@@ -15,31 +15,13 @@
  * limitations under the License.
  */
 
-import uuid from '../services/uuid';
-import Base from '../services/base';
-import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
-class JSErrors extends Base {
-  public handleErrors(options: {
-    service: string;
-    serviceVersion: string;
-    pagePath: string;
-  }) {
-    window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
-        uniqueId: uuid(),
-        service: options.service,
-        serviceVersion: options.serviceVersion,
-        pagePath: options.pagePath,
-        category: ErrorsCategory.JS_ERROR,
-        grade: GradeTypeEnum.ERROR,
-        errorUrl: url,
-        line,
-        col,
-        errorInfo: error,
-        message,
-      };
-      this.traceInfo();
-    };
-  }
+export default function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    /* tslint:disable */
+    const r = (Math.random() * 16) | 0;
+    /* tslint:disable */
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+
+    return v.toString(16);
+  });
 }
-export default new JSErrors();

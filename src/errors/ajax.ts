@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { v4 as uuidv4 } from 'uuid';
+import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
@@ -33,7 +33,7 @@ class AjaxErrors extends Base {
       try {
         if (event && event.currentTarget && event.currentTarget.status !== 200) {
           this.logInfo = {
-            uniqueId: uuidv4(),
+            uniqueId: uuid(),
             service: options.service,
             serviceVersion: options.serviceVersion,
             pagePath: options.pagePath,
