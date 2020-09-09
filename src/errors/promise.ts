@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
@@ -34,6 +35,7 @@ class PromiseErrors extends Base {
           url = event.reason.config.url;
         }
         this.logInfo = {
+          uniqueId: uuid(),
           service: options.service,
           serviceVersion: options.serviceVersion,
           pagePath: options.pagePath,

@@ -16,6 +16,7 @@
  */
 
 export interface ErrorInfoFeilds {
+  uniqueId: string;
   category: string;
   grade: string;
   message: any;
