@@ -15,6 +15,6 @@
  * limitations under the License.
  */
 
-import './src/index';
+import './dist/index';
 
 export default ClientMonitor;

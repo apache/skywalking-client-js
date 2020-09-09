@@ -16,7 +16,6 @@
  */
 import { ReportTypes } from './constant';
 class Report {
-
   private url: string = '';
 
   constructor(type: string) {
@@ -30,17 +29,17 @@ class Report {
   }
 
   public sendByFetch(data: any) {
-    const sendRequest = new Request(this.url, {method: 'POST', body: JSON.stringify(data)});
+    const sendRequest = new Request(this.url, { method: 'POST', body: JSON.stringify(data) });
 
     fetch(sendRequest)
-    .then((response) => {
-      if (response.status !== 200) {
-        throw new Error('Something went wrong on api server!');
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      .then((response) => {
+        if (response.status !== 200) {
+          throw new Error('Something went wrong on api server!');
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   }
 
   private reportByImg(data: any) {
@@ -52,14 +51,14 @@ class Report {
 
       imgObj.src = `${this.url}?v=${new Date().getTime()}&${this.formatParams(data)}`;
     } catch (error) {
-        // console.log(error);
+      // console.log(error);
     }
   }
 
   private formatParams(data: any) {
-    return Object.keys(data).map((name: string) =>
-    `${encodeURIComponent(name)}=${encodeURIComponent(data[name])}`,
-    ).join('&');
+    return Object.keys(data)
+      .map((name: string) => `${encodeURIComponent(name)}=${encodeURIComponent(data[name])}`)
+      .join('&');
   }
 
   private checkUrl(url: string) {
