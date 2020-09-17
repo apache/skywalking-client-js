@@ -20,11 +20,8 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class AjaxErrors extends Base {
-  public handleError(options: {
-    service: string;
-    serviceVersion: string;
-    pagePath: string;
-  }) {
+  // get http error info
+  public handleError(options: { service: string; serviceVersion: string; pagePath: string }) {
     if (!window.XMLHttpRequest) {
       return;
     }
@@ -52,14 +49,19 @@ class AjaxErrors extends Base {
         console.log(error);
       }
     };
-    XMLHttpRequest.prototype.send = function() {
+    XMLHttpRequest.prototype.send = function () {
       if (this.addEventListener) {
         this.addEventListener('error', xhrEvent);
         this.addEventListener('load', xhrEvent);
         this.addEventListener('abort', xhrEvent);
+        this.addEventListener('loadstart', xhrEvent);
+        this.addEventListener('progress', xhrEvent);
+        this.addEventListener('timeout', xhrEvent);
+        this.addEventListener('loadend', xhrEvent);
+        this.addEventListener('readystatechange', xhrEvent);
       } else {
         const stateChange = this.onreadystatechange;
-        this.onreadystatechange = function(event: any) {
+        this.onreadystatechange = function (event: any) {
           stateChange.apply(this, arguments);
           if (this.readyState === 4) {
             xhrEvent(event);

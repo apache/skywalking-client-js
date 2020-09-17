@@ -10,15 +10,23 @@ Apache SkyWalking Client JS
 
 # Usage
 * Install: the skywalking-client-js runtime library is available at npm
-`$ npm install skywalking-client-js --save`
+```
+$ npm install skywalking-client-js --save
+```
 * Init SDK
-`import ClientMonitor from 'skywalking-client-js';`
-`ClientMonitor.register({`
-  `service: 'test-ui',`
-  `pagePath: 'http://localhost:8080/',`
-  `serviceVersion: 'v1.0.0',`
+```
+import ClientMonitor from 'skywalking-client-js';
+```
+```
+ClientMonitor.register({
+  service: 'test-ui',
+  pagePath: 'http://localhost:8080/',
+  serviceVersion: 'v1.0.0',
 });
+```
 * General SDK configuration
+
+
   Parameter|Type|Description|Required|Default Value
   -|:-:|-:
   service|String|project id|true|-
@@ -31,14 +39,19 @@ Apache SkyWalking Client JS
   enableSPA|Boolean|Support resource errors monitoring|true|true
   autoSendPerf|Boolean|Support resource errors monitoring|true|true
   vue|Boolean|Support resource errors monitoring|true|true
+
 * API
-`register()`
-`setPerformance()`
+```
+register()
+```
+```
+setPerformance()
+```
 
 # Development
 * npm install
-* npm run start
 * npm link skywalking-client-js
+* npm run start
 
 # Contact Us
 * Submit an [issue](https://github.com/apache/skywalking/issues)
