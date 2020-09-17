@@ -27,7 +27,6 @@ const ClientMonitor = {
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
     enableSPA: false,
-    autoSendPerf: true,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
@@ -36,7 +35,7 @@ const ClientMonitor = {
       ...configs,
     };
     this.errors(configs);
-    if (this.customOptions.autoSendPerf) {
+    if (this.customOptions.autoTracePerf) {
       this.performance();
     }
   },
@@ -45,32 +44,40 @@ const ClientMonitor = {
     if (document.readyState === 'complete') {
       Performance.recordPerf(this.customOptions);
     } else {
-      window.addEventListener('load', () => {
-        Performance.recordPerf(this.customOptions);
-      }, false);
+      window.addEventListener(
+        'load',
+        () => {
+          Performance.recordPerf(this.customOptions);
+        },
+        false,
+      );
     }
     if (this.customOptions.enableSPA) {
       // hash router
-      window.addEventListener('hashchange', () => {
-        Performance.recordPerf(this.customOptions);
-      }, false);
+      window.addEventListener(
+        'hashchange',
+        () => {
+          Performance.recordPerf(this.customOptions);
+        },
+        false,
+      );
     }
   },
   errors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion } = options;
 
     if (this.customOptions.jsErrors) {
-      JSErrors.handleErrors({ service, pagePath, serviceVersion});
-      PromiseErrors.handleErrors({ service, pagePath, serviceVersion});
+      JSErrors.handleErrors({ service, pagePath, serviceVersion });
+      PromiseErrors.handleErrors({ service, pagePath, serviceVersion });
       if (this.customOptions.vue) {
-        VueErrors.handleErrors({ service, pagePath, serviceVersion}, this.customOptions.vue);
+        VueErrors.handleErrors({ service, pagePath, serviceVersion }, this.customOptions.vue);
       }
     }
     if (this.customOptions.apiErrors) {
-      AjaxErrors.handleError({ service, pagePath, serviceVersion});
+      AjaxErrors.handleError({ service, pagePath, serviceVersion });
     }
     if (this.customOptions.resourceErrors) {
-      ResourceErrors.handleErrors({ service, pagePath, serviceVersion});
+      ResourceErrors.handleErrors({ service, pagePath, serviceVersion });
     }
   },
   setPerformance(configs: CustomOptionsType) {

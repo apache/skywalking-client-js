@@ -11,7 +11,7 @@ Apache SkyWalking Client JS
 # Usage
 * Install: the skywalking-client-js runtime library is available at npm
 ```
-$ npm install skywalking-client-js --save
+npm install skywalking-client-js --save
 ```
 * Init SDK
 ```
@@ -24,29 +24,43 @@ ClientMonitor.register({
   serviceVersion: 'v1.0.0',
 });
 ```
-* General SDK configuration
+* SDK Reference
 
 
-  Parameter|Type|Description|Required|Default Value
-  -|:-:|-:
-  service|String|project id|true|-
-  serviceVersion|String|project verison|true|-
-  pagePath|String|project path|true|-
-  jsErrors|Boolean|Support js errors monitoring|true|true
-  apiErrors|Boolean|Support API errors monitoring|true|true
-  resourceErrors|Boolean|Support resource errors monitoring|true|true
-  useFmp|Boolean|Support resource errors monitoring|true|false
-  enableSPA|Boolean|Support resource errors monitoring|true|true
-  autoSendPerf|Boolean|Support resource errors monitoring|true|true
-  vue|Boolean|Support resource errors monitoring|true|true
+Parameter|Type|Description|Required|Default Value|
+-|:-:|-:|
+service|String|project id|true|-|
+serviceVersion|String|project verison|true|-|
+pagePath|String|project path|true|-|
+jsErrors|Boolean|Support js errors monitoring|false|true|
+apiErrors|Boolean|Support API errors monitoring|false|true|
+resourceErrors|Boolean|Support resource errors monitoring|false|true|
+useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
+enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
+autoTracePerf|Boolean|Support automatic sending of performance data|false|true|
+vue|Boolean|Support vue errors monitoring|false|true|
+  
 
-* API
+* API Reference
+
+**register()**
+After the SDK is initially completed, it calls the register() interface to revise some of the configuration items. For details of the SDK configuration item, see SDK reference.
+
+register() grammar
 ```
-register()
+ClientMonitor.register(params);
 ```
-```
-setPerformance()
-```
+
+register() call parameters
+Parameter|Type|Description|Required|Default Value|
+-|:-:|-:|
+params|Object|Configuration items and values to be modified|true|-|
+
+**setPerformance()**
+After the page onLoad, call the performance () interface to report the default performance metrics.
+
+How to use setPerformance()
+
 
 # Development
 * npm install
