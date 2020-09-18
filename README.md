@@ -27,7 +27,7 @@ ClientMonitor.register({
 * SDK Reference
 
 |Parameter|Type|Description|Required|Default Value|
-|-|:-:|-:|
+|----|----|----|----|----|
 |service|String|project id|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
@@ -50,9 +50,9 @@ ClientMonitor.register(params);
 ```
 
 register() call parameters  
-Parameter|Type|Description|Required|Default Value|
--|:-:|-:|
-params|Object|Configuration items and values to be modified|true|-|
+|Parameter|Type|Description|Required|Default Value|
+|----|----|---------|----|----|
+|params|Object|Configuration items and values to be modified|true|-|
 
 **setPerformance()**  
 After the page onLoad, call the setPerformance() interface to report the default performance metrics.  
