@@ -26,20 +26,18 @@ ClientMonitor.register({
 ```
 * SDK Reference
 
-
-Parameter|Type|Description|Required|Default Value|
--|:-:|-:|
-service|String|project id|true|-|
-serviceVersion|String|project verison|true|-|
-pagePath|String|project path|true|-|
-jsErrors|Boolean|Support js errors monitoring|false|true|
-apiErrors|Boolean|Support API errors monitoring|false|true|
-resourceErrors|Boolean|Support resource errors monitoring|false|true|
-useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
-enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
-autoTracePerf|Boolean|Support automatic sending of performance data|false|true|
-vue|Boolean|Support vue errors monitoring|false|true|
-  
+|Parameter|Type|Description|Required|Default Value|
+|-|:-:|-:|
+|service|String|project id|true|-|
+|serviceVersion|String|project verison|true|-|
+|pagePath|String|project path|true|-|
+|jsErrors|Boolean|Support js errors monitoring|false|true|
+|apiErrors|Boolean|Support API errors monitoring|false|true|
+|resourceErrors|Boolean|Support resource errors monitoring|false|true|
+|useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
+|enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
+|autoTracePerf|Boolean|Support automatic sending of performance data|false|true|
+|vue|Boolean|Support vue errors monitoring|false|true|
 
 * API Reference
 
@@ -61,7 +59,8 @@ After the page onLoad, call the setPerformance() interface to report the default
 
 How to use setPerformance()  
 1. Set the SDK configuration item autoTracePerf to false to turn off automatic reporting performance metrics and wait for manual triggering of escalation.  
-2. Call ClientMonitor.setPerformance (object) method to manually report user-defined indicators. In this process, the default performance metrics will also be automatically reported.  
+2. Call ClientMonitor.setPerformance (object) method to manually report user-defined indicators. In this process, the default performance metrics will also be automatically reported. 
+note:  
 
 setPerformance() examples of use  
 ```
