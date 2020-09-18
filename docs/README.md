@@ -79,7 +79,7 @@ ClientMonitor.setPerformance({
 
 **SPA页面**  
 在spa（单页应用程序）单页应用程序中，页面将只刷新一次。传统的方法在页面加载后只报告一次PV，不能统计每个子页面的PV，也不能使其他类型的日志按子页面聚合。   
-The SDK provides two processing methods for spa pages:  
+SDK为spa页面提供了两种处理方法：  
 1. 开启SPA自动解析  
 此方法适用于大部分以URL Hash作为路由的单页面应用场景.  
 在初始化的配置项中，设置enableSPA为true，即会开启页面的Hashchange事件监听（触发重新上报PV），并将URL Hash作为其他数据上报中的page字段。   
@@ -110,6 +110,7 @@ npm link path/skywalking-client-js
 ```
 ```
 import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
+
 ClientMonitor.register({
   service: 'test-ui',
   pagePath: 'http://localhost:8080/',
