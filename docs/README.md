@@ -9,8 +9,7 @@ Apache SkyWalking Client JS
 - 轻量级
 
 # 使用
-* 安装  
-skywalking-client-js运行库在npm上提供  
+* 安装, skywalking-client-js运行库在npm上提供  
 ```
 npm install skywalking-client-js --save
 ```
