@@ -9,7 +9,8 @@ Apache SkyWalking Client JS
 - Lightweight
 
 # Usage
-* Install: the skywalking-client-js runtime library is available at npm
+* Install  
+the skywalking-client-js runtime library is available at npm
 ```
 npm install skywalking-client-js --save
 ```
@@ -59,8 +60,7 @@ After the page onLoad, call the setPerformance() interface to report the default
 
 How to use setPerformance()  
 1. Set the SDK configuration item autoTracePerf to false to turn off automatic reporting performance metrics and wait for manual triggering of escalation.  
-2. Call ClientMonitor.setPerformance (object) method to manually report user-defined indicators. In this process, the default performance metrics will also be automatically reported. 
-note:  
+2. Call ClientMonitor.setPerformance(object) method to report automatically the default performance metrics.  
 
 setPerformance() examples of use  
 ```
@@ -74,11 +74,53 @@ ClientMonitor.setPerformance({
   useFmp: true
 });
 ```
+* Special scene
+
+**SPA Page**  
+In spa (single page application) single page application, the page will be refreshed only once. The traditional method only reports PV once after the page loading, but cannot count the PV of each sub-page, and can't make other types of logs aggregate by sub-page.  
+The SDK provides two processing methods for spa pages:  
+1. Enable spa automatic parsing  
+This method is suitable for most single page application scenarios with URL hash as the route.  
+In the initialized configuration item, set enableSPA to true, which will turn on the page's hashchange event listening (trigger re reporting PV), and use URL hash as the page field in other data reporting.  
+2. Manual reporting  
+This method can be used in all single page application scenarios. This method can be used if the first method is invalid.    
+The SDK provides a setpage method to manually update the page name when data is reported. When this method is called, the page PV will be re reported by default. For details, see setPerformance().  
+```
+app.on('routeChange', function (next) {
+  ClientMonitor.setPerformance({
+    reportUrl: 'http://example.com',
+    service: 'skywalking-ui',
+    serviceVersion: 'v8.1.0',
+    pagePath: location.href,
+    useFmp: true
+  });
+});   
+```
 
 # Development
-* npm install
-* npm link skywalking-client-js
-* npm run start
+* Install Modules
+```
+npm install
+```
+* Projects that use this project need to do the following  
+
+```
+npm link path/skywalking-client-js
+```
+```
+import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
+ClientMonitor.register({
+  service: 'test-ui',
+  pagePath: 'http://localhost:8080/',
+  serviceVersion: 'v1.0.0'
+});
+```
+* Front end agent
+Refer to [test project](https://github.com/SkyAPMTest/skywalking-client-test)
+* Start project
+```
+npm run start
+```
 
 # Contact Us
 * Submit an [issue](https://github.com/apache/skywalking/issues)
@@ -88,4 +130,3 @@ ClientMonitor.setPerformance({
 
 # License
 Apache 2.0
-
