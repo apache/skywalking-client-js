@@ -43,24 +43,38 @@ vue|Boolean|Support vue errors monitoring|false|true|
 
 * API Reference
 
-**register()**
-After the SDK is initially completed, it calls the register() interface to revise some of the configuration items. For details of the SDK configuration item, see SDK reference.
+**register()**  
+After the SDK is initially completed, it calls the register() interface to revise some of the configuration items. For details of the SDK configuration item, see SDK reference.  
 
-register() grammar
+register() grammar  
 ```
 ClientMonitor.register(params);
 ```
 
-register() call parameters
+register() call parameters  
 Parameter|Type|Description|Required|Default Value|
 -|:-:|-:|
 params|Object|Configuration items and values to be modified|true|-|
 
-**setPerformance()**
-After the page onLoad, call the performance () interface to report the default performance metrics.
+**setPerformance()**  
+After the page onLoad, call the setPerformance() interface to report the default performance metrics.  
 
-How to use setPerformance()
+How to use setPerformance()  
+1. Set the SDK configuration item autoTracePerf to false to turn off automatic reporting performance metrics and wait for manual triggering of escalation.  
+2. Call ClientMonitor.setPerformance (object) method to manually report user-defined indicators. In this process, the default performance metrics will also be automatically reported.  
 
+setPerformance() examples of use  
+```
+import ClientMonitor from 'skywalking-client-js';
+
+ClientMonitor.setPerformance({
+  reportUrl: 'http://example.com',
+  service: 'skywalking-ui',
+  serviceVersion: 'v8.1.0',
+  pagePath: location.href,
+  useFmp: true
+});
+```
 
 # Development
 * npm install
