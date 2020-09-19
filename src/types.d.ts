@@ -25,6 +25,5 @@ export interface CustomOptionsType {
   autoTracePerf: boolean;
   useFmp: boolean;
   enableSPA: boolean;
-  autoSendPerf: boolean;
   vue: any;
 }

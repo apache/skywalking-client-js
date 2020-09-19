@@ -29,6 +29,7 @@ class Report {
   }
 
   public sendByFetch(data: any) {
+    console.log(data);
     const sendRequest = new Request(this.url, { method: 'POST', body: JSON.stringify(data) });
 
     fetch(sendRequest)
