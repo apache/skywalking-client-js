@@ -20,7 +20,7 @@
     "build": "webpack",
     "start": "webpack-dev-server",
     "server": "node server.js",
-    "release": "create_source_release.sh"
+    "release": "./scripts/create_source_release.sh"
   },
   "husky": {
     "hooks": {
