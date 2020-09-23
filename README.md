@@ -20,6 +20,7 @@ import ClientMonitor from 'skywalking-client-js';
 ```
 ```
 ClientMonitor.register({
+  collector: 'http://localhost:8888',
   service: 'test-ui',
   pagePath: 'http://localhost:8080/',
   serviceVersion: 'v1.0.0',
@@ -29,6 +30,7 @@ ClientMonitor.register({
 
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
+|collector|String|report serve|true|-|
 |service|String|project id|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
@@ -67,7 +69,7 @@ setPerformance() examples of use
 import ClientMonitor from 'skywalking-client-js';
 
 ClientMonitor.setPerformance({
-  reportUrl: 'http://example.com',
+  collector: 'http://localhost:8888',
   service: 'skywalking-ui',
   serviceVersion: 'v8.1.0',
   pagePath: location.href,
@@ -88,7 +90,7 @@ The SDK provides a setpage method to manually update the page name when data is 
 ```
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
-    reportUrl: 'http://example.com',
+    collector: 'http://localhost:8888',
     service: 'skywalking-ui',
     serviceVersion: 'v8.1.0',
     pagePath: location.href,
@@ -110,6 +112,7 @@ npm link path/skywalking-client-js
 ```
 import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
 ClientMonitor.register({
+  collector: 'http://localhost:8888',
   service: 'test-ui',
   pagePath: 'http://localhost:8080/',
   serviceVersion: 'v1.0.0'
