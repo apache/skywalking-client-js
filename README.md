@@ -111,6 +111,7 @@ npm link path/skywalking-client-js
 ```
 ```
 import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
+
 ClientMonitor.register({
   collector: 'http://localhost:8888',
   service: 'test-ui',
