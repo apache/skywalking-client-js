@@ -20,7 +20,7 @@ class TaskQueue {
   private queues: any[] = [];
 
   public addTask(data: any) {
-    this.queues.push({data});
+    this.queues.push({ data });
   }
 
   public fireTasks() {
@@ -28,7 +28,7 @@ class TaskQueue {
       return;
     }
     const item = this.queues[0];
-    new Report('ERROR').sendByFetch(item.data);
+    new Report('ERROR', item.data.collector).sendByFetch(item.data);
     this.queues.splice(0, 1);
     this.fireTasks();
   }

@@ -20,8 +20,7 @@ import { ErrorInfoFeilds, ReportFields } from './types';
 
 let jsErrorPv = false;
 export default class Base {
-
-  public logInfo: ErrorInfoFeilds & ReportFields = {
+  public logInfo: ErrorInfoFeilds & ReportFields & { collector: string } = {
     uniqueId: '',
     service: '',
     serviceVersion: '',
@@ -34,6 +33,7 @@ export default class Base {
     errorInfo: '',
     message: '',
     firstReportedError: false,
+    collector: '',
   };
 
   public traceInfo() {
@@ -56,7 +56,6 @@ export default class Base {
       const errorInfo = this.handleErrorInfo();
 
       Task.addTask(errorInfo);
-
     } catch (error) {
       throw error;
     }

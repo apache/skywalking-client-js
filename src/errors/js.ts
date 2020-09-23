@@ -19,11 +19,7 @@ import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class JSErrors extends Base {
-  public handleErrors(options: {
-    service: string;
-    serviceVersion: string;
-    pagePath: string;
-  }) {
+  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {
         uniqueId: uuid(),
@@ -37,6 +33,7 @@ class JSErrors extends Base {
         col,
         errorInfo: error,
         message,
+        collector: options.collector,
       };
       this.traceInfo();
     };

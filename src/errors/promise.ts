@@ -20,11 +20,7 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class PromiseErrors extends Base {
-  public handleErrors(options: {
-    service: string;
-    serviceVersion: string;
-    pagePath: string;
-  }) {
+  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
     window.addEventListener('unhandledrejection', (event) => {
       try {
         let url = '';
@@ -44,6 +40,7 @@ class PromiseErrors extends Base {
           errorUrl: url,
           message: event.reason,
           errorInfo: event.reason,
+          collector: options.collector,
         };
         this.traceInfo();
       } catch (error) {
