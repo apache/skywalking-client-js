@@ -67,17 +67,17 @@ const ClientMonitor = {
   errors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion, collector } = options;
 
-    if (this.customOptions.jsErrors) {
+    if (options.jsErrors) {
       JSErrors.handleErrors({ service, pagePath, serviceVersion, collector });
       PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector });
-      if (this.customOptions.vue) {
-        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, this.customOptions.vue);
+      if (options.vue) {
+        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, options.vue);
       }
     }
-    if (this.customOptions.apiErrors) {
+    if (options.apiErrors) {
       AjaxErrors.handleError({ service, pagePath, serviceVersion, collector });
     }
-    if (this.customOptions.resourceErrors) {
+    if (options.resourceErrors) {
       ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
     }
   },

@@ -55,11 +55,7 @@ class AjaxErrors extends Base {
         this.addEventListener('error', xhrEvent);
         this.addEventListener('load', xhrEvent);
         this.addEventListener('abort', xhrEvent);
-        this.addEventListener('loadstart', xhrEvent);
-        this.addEventListener('progress', xhrEvent);
         this.addEventListener('timeout', xhrEvent);
-        this.addEventListener('loadend', xhrEvent);
-        this.addEventListener('readystatechange', xhrEvent);
       } else {
         const stateChange = this.onreadystatechange;
         this.onreadystatechange = function (event: any) {
