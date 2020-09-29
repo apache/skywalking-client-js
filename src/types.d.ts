@@ -16,6 +16,7 @@
  */
 
 export interface CustomOptionsType {
+  collector: string;
   service: string;
   pagePath: string;
   serviceVersion: string;

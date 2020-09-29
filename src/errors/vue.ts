@@ -21,7 +21,9 @@ import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class VueErrors extends Base {
   public handleErrors(
-    options: { service: string; pagePath: string; serviceVersion: string; }, Vue: any) {
+    options: { service: string; pagePath: string; serviceVersion: string; collector: string },
+    Vue: any,
+  ) {
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
         this.logInfo = {
@@ -34,6 +36,7 @@ class VueErrors extends Base {
           errorUrl: '',
           errorInfo: error,
           message: info,
+          collector: options.collector,
         };
         this.traceInfo();
       } catch (error) {

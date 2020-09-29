@@ -21,7 +21,7 @@ import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class AjaxErrors extends Base {
   // get http error info
-  public handleError(options: { service: string; serviceVersion: string; pagePath: string }) {
+  public handleError(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
     if (!window.XMLHttpRequest) {
       return;
     }
@@ -42,6 +42,7 @@ class AjaxErrors extends Base {
               status: event.target.status,
               statusText: event.target.statusText,
             },
+            collector: options.collector,
           };
           this.traceInfo();
         }
@@ -54,11 +55,7 @@ class AjaxErrors extends Base {
         this.addEventListener('error', xhrEvent);
         this.addEventListener('load', xhrEvent);
         this.addEventListener('abort', xhrEvent);
-        this.addEventListener('loadstart', xhrEvent);
-        this.addEventListener('progress', xhrEvent);
         this.addEventListener('timeout', xhrEvent);
-        this.addEventListener('loadend', xhrEvent);
-        this.addEventListener('readystatechange', xhrEvent);
       } else {
         const stateChange = this.onreadystatechange;
         this.onreadystatechange = function (event: any) {
