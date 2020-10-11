@@ -25,7 +25,7 @@ export default class Base {
     service: '',
     serviceVersion: '',
     pagePath: '',
-    category: ErrorsCategory.UNKNOW_ERROR,
+    category: ErrorsCategory.UNKNOWN_ERROR,
     grade: GradeTypeEnum.INFO,
     errorUrl: '',
     line: 0,
