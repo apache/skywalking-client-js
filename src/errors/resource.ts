@@ -20,22 +20,21 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: {
-    service: string;
-    pagePath: string;
-    serviceVersion: string;
-  }) {
+  public handleErrors(options: { service: string; pagePath: string; serviceVersion: string; collector: string }) {
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
           return;
         }
         const target: any = event.target || event.srcElement;
-        const isElementTarget = target instanceof HTMLScriptElement
-        || target instanceof HTMLLinkElement || target instanceof HTMLImageElement;
+        const isElementTarget =
+          target instanceof HTMLScriptElement ||
+          target instanceof HTMLLinkElement ||
+          target instanceof HTMLImageElement;
 
-        if (!isElementTarget) { // return js error
-            return;
+        if (!isElementTarget) {
+          // return js error
+          return;
         }
         this.logInfo = {
           uniqueId: uuid(),
@@ -45,8 +44,8 @@ class ResourceErrors extends Base {
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
           errorUrl: target.src || target.href,
-          errorInfo: target,
           message: `load ${target.tagName} resource error`,
+          collector: options.collector,
         };
         this.traceInfo();
       } catch (error) {

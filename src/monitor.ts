@@ -21,6 +21,7 @@ import Performance from './performance/index';
 
 const ClientMonitor = {
   customOptions: {
+    collector: '', // report serve
     jsErrors: true, // vue, js and promise errors
     apiErrors: true,
     resourceErrors: true,
@@ -34,7 +35,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    this.errors(configs);
+    this.errors(this.customOptions);
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
@@ -64,20 +65,20 @@ const ClientMonitor = {
     }
   },
   errors(options: CustomOptionsType) {
-    const { service, pagePath, serviceVersion } = options;
+    const { service, pagePath, serviceVersion, collector } = options;
 
-    if (this.customOptions.jsErrors) {
-      JSErrors.handleErrors({ service, pagePath, serviceVersion });
-      PromiseErrors.handleErrors({ service, pagePath, serviceVersion });
-      if (this.customOptions.vue) {
-        VueErrors.handleErrors({ service, pagePath, serviceVersion }, this.customOptions.vue);
+    if (options.jsErrors) {
+      JSErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      if (options.vue) {
+        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, options.vue);
       }
     }
-    if (this.customOptions.apiErrors) {
-      AjaxErrors.handleError({ service, pagePath, serviceVersion });
+    if (options.apiErrors) {
+      AjaxErrors.handleError({ service, pagePath, serviceVersion, collector });
     }
-    if (this.customOptions.resourceErrors) {
-      ResourceErrors.handleErrors({ service, pagePath, serviceVersion });
+    if (options.resourceErrors) {
+      ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
     }
   },
   setPerformance(configs: CustomOptionsType) {

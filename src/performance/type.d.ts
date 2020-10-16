@@ -17,11 +17,11 @@
 export interface ICalScore {
   dpss: ICalScore[];
   st: number;
-  els: Els;
+  els: ElementList;
   root?: Element;
 }
-export type Els = Array<{
-  $node: Element;
+export type ElementList = Array<{
+  ele: Element;
   st: number;
   weight: number;
 }>;

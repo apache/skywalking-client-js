@@ -20,20 +20,19 @@ import { ErrorInfoFeilds, ReportFields } from './types';
 
 let jsErrorPv = false;
 export default class Base {
-
-  public logInfo: ErrorInfoFeilds & ReportFields = {
+  public logInfo: ErrorInfoFeilds & ReportFields & { collector: string } = {
     uniqueId: '',
     service: '',
     serviceVersion: '',
     pagePath: '',
-    category: ErrorsCategory.UNKNOW_ERROR,
+    category: ErrorsCategory.UNKNOWN_ERROR,
     grade: GradeTypeEnum.INFO,
     errorUrl: '',
     line: 0,
     col: 0,
-    errorInfo: '',
     message: '',
     firstReportedError: false,
+    collector: '',
   };
 
   public traceInfo() {
@@ -56,7 +55,6 @@ export default class Base {
       const errorInfo = this.handleErrorInfo();
 
       Task.addTask(errorInfo);
-
     } catch (error) {
       throw error;
     }

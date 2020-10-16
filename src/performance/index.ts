@@ -1,4 +1,3 @@
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -28,7 +27,7 @@ class TracePerf {
   } as { perfDetail: IPerfDetail };
 
   public async recordPerf(options: CustomOptionsType) {
-    let fmp: {fmpTime: number | undefined} = {fmpTime: undefined};
+    let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
     if (options.autoTracePerf) {
       this.perfConfig.perfDetail = await new pagePerf().getPerfTiming();
       if (options.useFmp) {
@@ -37,17 +36,19 @@ class TracePerf {
     }
     // auto report pv and perf data
     setTimeout(() => {
-      const perfDetail = options.autoTracePerf ? {
-        ...this.perfConfig.perfDetail,
-        fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
-      } : undefined;
+      const perfDetail = options.autoTracePerf
+        ? {
+            ...this.perfConfig.perfDetail,
+            fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
+          }
+        : undefined;
       const perfInfo = {
         ...perfDetail,
         pagePath: options.pagePath,
         serviceVersion: options.serviceVersion,
         service: options.service,
       };
-      new Report('PERF').sendByFetch(perfInfo);
+      new Report('PERF', options.collector).sendByFetch(perfInfo);
       // clear perf data
       this.clearPerf();
     }, 5000);

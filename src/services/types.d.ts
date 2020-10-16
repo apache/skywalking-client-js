@@ -21,7 +21,7 @@ export interface ErrorInfoFeilds {
   grade: string;
   message: any;
   errorUrl: string;
-  line?: number; 
+  line?: number;
   col?: number;
   errorInfo?: any;
   firstReportedError?: boolean;

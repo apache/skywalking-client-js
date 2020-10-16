@@ -1,4 +1,4 @@
-import Report from "./report";
+import Report from './report';
 
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,12 +17,12 @@ import Report from "./report";
  * limitations under the License.
  */
 export enum ErrorsCategory {
-  AJAX_ERROR = 'ajaxError',
-  RESOURCE_ERROR = 'resourceError',
-  VUE_ERROR = 'vueError',
-  PROMISE_ERROR = 'promiseError',
-  JS_ERROR = 'jsError',
-  UNKNOW_ERROR = 'unknowError',
+  AJAX_ERROR = 'ajax',
+  RESOURCE_ERROR = 'resource',
+  VUE_ERROR = 'vue',
+  PROMISE_ERROR = 'promise',
+  JS_ERROR = 'js',
+  UNKNOWN_ERROR = 'unknown',
 }
 export enum GradeTypeEnum {
   INFO = 'Info',

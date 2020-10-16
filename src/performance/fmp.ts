@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ICalScore, Els } from './type';
+import { ICalScore, ElementList } from './type';
 
 const getStyle = (element: Element | any, attr: any) => {
   if (window.getComputedStyle) {
@@ -42,7 +42,7 @@ const DELAY: number = 500; // fmp retry interval
 
 class FMPTiming {
   public fmpTime: number = 0;
-  private statusCollector: Array<{time: number}> = []; // nodes change time
+  private statusCollector: Array<{ time: number }> = []; // nodes change time
   private flag: boolean = true;
   private observer: MutationObserver = null;
   private callbackCount: number = 0;
@@ -87,9 +87,13 @@ class FMPTiming {
     if (document.readyState === 'complete') {
       this.calculateFinalScore();
     } else {
-      window.addEventListener('load', () => {
-        this.calculateFinalScore();
-      }, false);
+      window.addEventListener(
+        'load',
+        () => {
+          this.calculateFinalScore();
+        },
+        false,
+      );
     }
   }
   private calculateFinalScore() {
@@ -116,31 +120,31 @@ class FMPTiming {
         if (!tp) {
           return false;
         }
-        const resultEls: Els = this.filterResult(tp.els);
+        const resultEls: ElementList = this.filterResult(tp.els);
         const fmpTiming: number = this.getFmpTime(resultEls);
         this.fmpTime = fmpTiming;
-    } else {
-      setTimeout(() => {
-        this.calculateFinalScore();
-      }, DELAY);
-    }
+      } else {
+        setTimeout(() => {
+          this.calculateFinalScore();
+        }, DELAY);
+      }
     }
   }
-  private getFmpTime(resultEls: Els): number {
+  private getFmpTime(resultEls: ElementList): number {
     let rt = 0;
-    resultEls.forEach((item: any) => {
+    for (const item of resultEls) {
       let time: number = 0;
       if (item.weight === 1) {
-        const index: number = parseInt(item.$node.getAttribute('fmp_c'), 10);
+        const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
         time = this.statusCollector[index].time;
       } else if (item.weight === 2) {
-        if (item.$node.tagName === 'IMG') {
-          time = this.entries[(item.$node as HTMLImageElement).src];
-        } else if (item.$node.tagName === 'SVG') {
-          const index: number = parseInt(item.$node.getAttribute('fmp_c'), 10);
+        if (item.ele.tagName === 'IMG') {
+          time = this.entries[(item.ele as HTMLImageElement).src];
+        } else if (item.ele.tagName === 'SVG') {
+          const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
           time = this.statusCollector[index].time;
         } else {
-          const match = getStyle(item.$node, 'background-image').match(/url\(\"(.*?)\"\)/);
+          const match = getStyle(item.ele, 'background-image').match(/url\(\"(.*?)\"\)/);
           let url: string;
           if (match && match[1]) {
             url = match[1];
@@ -151,30 +155,30 @@ class FMPTiming {
           time = this.entries[url];
         }
       } else if (item.weight === 4) {
-        if (item.$node.tagName === 'CANVAS') {
-          const index: number = parseInt(item.$node.getAttribute('fmp_c'), 10);
+        if (item.ele.tagName === 'CANVAS') {
+          const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
           time = this.statusCollector[index] && this.statusCollector[index].time;
-        } else if (item.$node.tagName === 'VIDEO') {
-          time = this.entries[(item.$node as HTMLVideoElement).src];
+        } else if (item.ele.tagName === 'VIDEO') {
+          time = this.entries[(item.ele as HTMLVideoElement).src];
           if (!time) {
-            time = this.entries[(item.$node as HTMLVideoElement).poster];
+            time = this.entries[(item.ele as HTMLVideoElement).poster];
           }
         }
-    }
+      }
       if (typeof time !== 'number') {
         time = 0;
       }
       if (rt < time) {
         rt = time;
       }
-    });
+    }
     return rt;
   }
   /**
    * The nodes with the highest score in the visible area are collected and the average value is taken,
    * and the low score ones are eliminated
    */
-  private filterResult(els: Els): Els {
+  private filterResult(els: ElementList): ElementList {
     if (els.length === 1) {
       return els;
     }
@@ -189,10 +193,9 @@ class FMPTiming {
   }
   private checkNeedCancel(start: number): boolean {
     const time: number = performance.now() - start;
-    const lastCalTime: number = this.statusCollector.length > 0
-      ? this.statusCollector[this.statusCollector.length - 1].time
-      : 0;
-    return time > LIMIT || (time - lastCalTime > 1000);
+    const lastCalTime: number =
+      this.statusCollector.length > 0 ? this.statusCollector[this.statusCollector.length - 1].time : 0;
+    return time > LIMIT || time - lastCalTime > 1000;
   }
   private getTreeScore(node: Element): ICalScore | any {
     if (!node) {
@@ -211,15 +214,10 @@ class FMPTiming {
       }
     }
 
-    return this.calcaulteScore(node, dpss);
+    return this.calcaulteGrades(node, dpss);
   }
-  private calcaulteScore($node: Element, dpss: ICalScore[]): ICalScore {
-    const {
-      width,
-      height,
-      left,
-       top,
-    } = $node.getBoundingClientRect();
+  private calcaulteGrades(ele: Element, dpss: ICalScore[]): ICalScore {
+    const { width, height, left, top } = ele.getBoundingClientRect();
     let isInViewPort: boolean = true;
     if (WH < top || WW < left) {
       isInViewPort = false;
@@ -228,27 +226,29 @@ class FMPTiming {
     dpss.forEach((item: any) => {
       sdp += item.st;
     });
-    let weight: number = Number(ELE_WEIGHT[$node.tagName as any]) || 1;
+    let weight: number = Number(ELE_WEIGHT[ele.tagName as any]) || 1;
     // If there is a common element of the background image, it is calculated according to the picture
-    if (weight === 1
-      && getStyle($node, 'background-image')
-      && getStyle($node, 'background-image') !== 'initial'
-      && getStyle($node, 'background-image') !== 'none') {
+    if (
+      weight === 1 &&
+      getStyle(ele, 'background-image') &&
+      getStyle(ele, 'background-image') !== 'initial' &&
+      getStyle(ele, 'background-image') !== 'none'
+    ) {
       weight = ELE_WEIGHT.IMG;
     }
     // score = the area of element
     let st: number = isInViewPort ? width * height * weight : 0;
-    let els = [{ $node, st, weight }];
-    const root = $node;
+    let els = [{ ele, st, weight }];
+    const root = ele;
     // The percentage of the current element in the viewport
-    const areaPercent = this.calculateAreaParent($node);
+    const areaPercent = this.calculateAreaParent(ele);
     // If the sum of the child's weights is greater than the parent's true weight
     if (sdp > st * areaPercent || areaPercent === 0) {
       st = sdp;
       els = [];
-      dpss.forEach((item: any) => {
+      for (const item of dpss) {
         els = els.concat(item.els);
-      });
+      }
     }
     return {
       dpss,
@@ -257,24 +257,17 @@ class FMPTiming {
       root,
     };
   }
-  private calculateAreaParent($node: Element): number {
-    const {
-      left,
-      right,
-      top,
-      bottom,
-      width,
-      height,
-    } = $node.getBoundingClientRect();
+  private calculateAreaParent(ele: Element): number {
+    const { left, right, top, bottom, width, height } = ele.getBoundingClientRect();
     const winLeft: number = 0;
     const winTop: number = 0;
     const winRight: number = WW;
     const winBottom: number = WH;
-    const overlapX = (right - left) + (winRight - winLeft) - (Math.max(right, winRight) - Math.min(left, winLeft));
-    const overlapY = (bottom - top) + (winBottom - winTop) - (Math.max(bottom, winBottom) - Math.min(top, winTop));
+    const overlapX = right - left + (winRight - winLeft) - (Math.max(right, winRight) - Math.min(left, winLeft));
+    const overlapY = bottom - top + (winBottom - winTop) - (Math.max(bottom, winBottom) - Math.min(top, winTop));
 
     if (overlapX <= 0 || overlapY <= 0) {
-    return 0;
+      return 0;
     }
     return (overlapX * overlapY) / (width * height);
   }
@@ -289,17 +282,12 @@ class FMPTiming {
           const hasSetTag = $child.getAttribute('fmp_c') !== null;
           // If it is not marked, whether the marking condition is met is detected
           if (!hasSetTag) {
-            const {
-              left,
-              top,
-              width,
-              height,
-            } = $child.getBoundingClientRect();
+            const { left, top, width, height } = $child.getBoundingClientRect();
             if (WH < top || WW < left || width === 0 || height === 0) {
               continue;
             }
             $child.setAttribute('fmp_c', `${callbackCount}`);
-        }
+          }
           this.setTag($child, callbackCount);
         }
       }
