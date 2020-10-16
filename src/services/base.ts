@@ -30,7 +30,6 @@ export default class Base {
     errorUrl: '',
     line: 0,
     col: 0,
-    errorInfo: '',
     message: '',
     firstReportedError: false,
     collector: '',
