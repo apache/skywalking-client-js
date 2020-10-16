@@ -38,10 +38,6 @@ class AjaxErrors extends Base {
             grade: GradeTypeEnum.ERROR,
             errorUrl: event.target.responseURL,
             message: event.target.response,
-            errorInfo: {
-              status: event.target.status,
-              statusText: event.target.statusText,
-            },
             collector: options.collector,
           };
           this.traceInfo();

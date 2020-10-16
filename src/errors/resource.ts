@@ -44,7 +44,6 @@ class ResourceErrors extends Base {
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
           errorUrl: target.src || target.href,
-          errorInfo: target,
           message: `load ${target.tagName} resource error`,
           collector: options.collector,
         };

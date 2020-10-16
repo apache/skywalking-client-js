@@ -34,7 +34,6 @@ class VueErrors extends Base {
           category: ErrorsCategory.VUE_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: '',
-          errorInfo: error,
           message: info,
           collector: options.collector,
         };
