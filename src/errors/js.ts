@@ -31,7 +31,6 @@ class JSErrors extends Base {
         errorUrl: url,
         line,
         col,
-        errorInfo: error,
         message,
         collector: options.collector,
       };
