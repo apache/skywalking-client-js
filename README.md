@@ -9,7 +9,7 @@ Apache SkyWalking Client JS
 - Make browser as a start of whole distributed tracing(WIP)
 
 # Usage
-* Install  
+## Install  
 the skywalking-client-js runtime library is available at npm
 ```
 npm install skywalking-client-js --save
@@ -20,17 +20,16 @@ import ClientMonitor from 'skywalking-client-js';
 ```
 ```
 ClientMonitor.register({
-  collector: 'http://localhost:8888',
   service: 'test-ui',
-  pagePath: 'http://localhost:8080/',
+  pagePath: '/current/page/name',
   serviceVersion: 'v1.0.0',
 });
 ```
-* SDK Reference
+## SDK Reference
 
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
-|collector|String|report serve|true|-|
+|collector|String|In default, the collected data would be reported to current domain. If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
 |service|String|project id|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
@@ -39,13 +38,13 @@ ClientMonitor.register({
 |resourceErrors|Boolean|Support resource errors monitoring|false|true|
 |useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
-|autoTracePerf|Boolean|Support automatic sending of performance data|false|true|
+|autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
 |vue|Boolean|Support vue errors monitoring|false|true|
 
-* API Reference
+## API Reference
 
-**register()**  
-After the SDK is initially completed, it calls the register() interface to revise some of the configuration items. For details of the SDK configuration item, see SDK reference.  
+### register()
+After the SDK is initially completed, it calls the `register()` to revise some of the configuration items. For details of the SDK configuration item, see SDK reference.  
 
 register() grammar  
 ```
@@ -57,30 +56,29 @@ register() call parameters
 |----|----|---------|----|----|
 |params|Object|Configuration items and values to be modified|true|-|
 
-**setPerformance()**  
-After the page onLoad, call the setPerformance() interface to report the default performance metrics.  
+### setPerformance
+After the page onLoad, call the `setPerformance` to report metrics.  
 
-How to use setPerformance()  
 1. Set the SDK configuration item autoTracePerf to false to turn off automatic reporting performance metrics and wait for manual triggering of escalation.  
-2. Call ClientMonitor.setPerformance(object) method to report automatically the default performance metrics.  
+2. Call `ClientMonitor.setPerformance(object)` method to report
 
-setPerformance() examples of use  
+- Examples
 ```
 import ClientMonitor from 'skywalking-client-js';
 
 ClientMonitor.setPerformance({
-  collector: 'http://localhost:8888',
-  service: 'skywalking-ui',
-  serviceVersion: 'v8.1.0',
+  service: 'browser-app',
+  serviceVersion: '1.0.0',
   pagePath: location.href,
   useFmp: true
 });
 ```
-* Special scene
+## Special scene
 
-**SPA Page**  
+### SPA Page 
 In spa (single page application) single page application, the page will be refreshed only once. The traditional method only reports PV once after the page loading, but cannot count the PV of each sub-page, and can't make other types of logs aggregate by sub-page.  
-The SDK provides two processing methods for spa pages:  
+The SDK provides two processing methods for spa pages:
+
 1. Enable spa automatic parsing  
 This method is suitable for most single page application scenarios with URL hash as the route.  
 In the initialized configuration item, set enableSPA to true, which will turn on the page's hashchange event listening (trigger re reporting PV), and use URL hash as the page field in other data reporting.  
@@ -90,7 +88,6 @@ The SDK provides a setpage method to manually update the page name when data is 
 ```
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
-    collector: 'http://localhost:8888',
     service: 'skywalking-ui',
     serviceVersion: 'v8.1.0',
     pagePath: location.href,
@@ -113,7 +110,6 @@ npm link path/skywalking-client-js
 import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
 
 ClientMonitor.register({
-  collector: 'http://localhost:8888',
   service: 'test-ui',
   pagePath: 'http://localhost:8080/',
   serviceVersion: 'v1.0.0'
@@ -121,6 +117,7 @@ ClientMonitor.register({
 ```
 * Front end agent
 Refer to [test project](https://github.com/SkyAPMTest/skywalking-client-test)
+
 * Start project
 ```
 npm run start
