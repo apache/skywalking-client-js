@@ -79,8 +79,8 @@ The SDK provides a setpage method to manually update the page name when data is 
 ```
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
-    service: 'skywalking-ui',
-    serviceVersion: 'v8.1.0',
+    service: 'browser-app',
+    serviceVersion: '1.0.0',
     pagePath: location.href,
     useFmp: true
   });
