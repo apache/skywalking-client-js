@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "description": "js monitor",
   "main": "index.js",
-  "dependencies": {
+  "repository": "apache/skywalking-client-js",
+  "homepage": "skywalking.apache.org",
+  "license": "Apache 2.0",
+  "bugs": {
+    "url": "https://github.com/apache/skywalking/issues",
+    "email": "dev@skywalking.apache.org"
+  },
+  "devDependencies": {
     "express": "^4.17.1",
     "husky": "^4.3.0",
     "lint-staged": "^10.3.0",
@@ -18,10 +25,10 @@
   },
   "scripts": {
     "build": "webpack",
-    "rebuild": "rm -rf ./node_modules && rm -rf ./dist && npm install && webpack",
+    "rebuild": "rm -rf ./node_modules && rm -rf ./lib && npm install && webpack",
     "start": "webpack-dev-server",
     "server": "node server.js",
-    "release": "./scripts/create_source_release.sh"
+    "release": "make release-src"
   },
   "husky": {
     "hooks": {
@@ -33,5 +40,22 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "files": [
+    "LICENSE",
+    "NOTICE",
+    "CHANGES.md",
+    "README.md",
+    "index.js",
+    "lib/"
+  ],
+  "keywords": [
+    "skywalking",
+    "observability",
+    "apm",
+    "distributed-tracing",
+    "dapper",
+    "javascript",
+    "web-performance"
+  ]
 }
