@@ -26,8 +26,8 @@
     "webpack-dev-server": "^3.9.0"
   },
   "scripts": {
-    "build": "make build",
-    "rebuild": "make rebuild",
+    "build": "webpack",
+    "rebuild": "rm -rf ./node_modules && rm -rf ./dist && npm install && webpack",
     "start": "webpack-dev-server",
     "server": "node server.js",
     "release": "make release-src"
