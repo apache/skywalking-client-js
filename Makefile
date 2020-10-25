@@ -54,7 +54,8 @@ build:
 	npm run build
 
 .PHONY: rebuild
-rebuild: clean install build
+rebuild:
+	npm run rebuild
 
 .PHONY: publish
 publish: rebuild
