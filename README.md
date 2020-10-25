@@ -9,6 +9,7 @@ Apache SkyWalking Client JS
 - Make browser as a start of whole distributed tracing(WIP)
 
 # Usage
+
 ## Install  
 the skywalking-client-js runtime library is available at npm
 ```
@@ -16,6 +17,9 @@ npm install skywalking-client-js --save
 ```
 
 ## Quick Start
+
+**SkyWalking Client JS requires SkyWalking 8.2+**
+
 User could use `register` method to load and report data automatically.
 
 ```
