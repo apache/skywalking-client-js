@@ -18,6 +18,13 @@ SHELL := /bin/bash -o pipefail
 VERSION ?= latest
 RELEASE_SRC = skywalking-client-js-${VERSION}-src
 
+GPG_UID :=
+
+# set gpg user id
+ifdef GPG_UID
+	GPG_UID_FLAG := -u $(GPG_UID)
+endif
+
 .PHONY: release-src
 release-src:
 	tar -zcvf $(RELEASE_SRC).tgz \
@@ -32,7 +39,7 @@ release-src:
 	--exclude $(RELEASE_SRC).tgz \
 	.
 
-	gpg --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
+	gpg $(GPG_UID_FLAG) --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
 	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512
 
 	mkdir -p release

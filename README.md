@@ -19,7 +19,7 @@ npm install skywalking-client-js --save
 
 ## Quick Start
 
-**SkyWalking Client JS requires SkyWalking 8.2+**
+**`skywalking-client-js` requires SkyWalking 8.2+**
 
 User could use `register` method to load and report data automatically.
 
@@ -95,7 +95,8 @@ app.on('routeChange', function (next) {
 
 # Demo project
 
-See more information, [Click here](https://github.com/SkyAPMTest/skywalking-client-test).
+Demo project provides instrumented web application with necessary environment, you could just simple use it to see the data SkyWalking collected and how SkyWalking visualizes on the UI. 
+See more information, [click here](https://github.com/SkyAPMTest/skywalking-client-test).
 
 # Contact Us
 * Submit an [issue](https://github.com/apache/skywalking/issues)
