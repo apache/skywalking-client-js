@@ -26,6 +26,7 @@ User could use `register` method to load and report data automatically.
 import ClientMonitor from 'skywalking-client-js';
 ```
 ```
+// Report collected data to `http:// + window.location.host + /browser/perfData` in default
 ClientMonitor.register({
   service: 'test-ui',
   pagePath: '/current/page/name',
@@ -38,7 +39,7 @@ The register method supports the following parameters.
 
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
-|collector|String|In default, the collected data would be reported to current domain. If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
+|collector|String|In default, the collected data would be reported to current domain(`/browser/perfData`. Then, typically, we recommend you use a Gateway/proxy to redirect the data to the OAP(`resthost:restport`). If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
 |service|String|project id|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
