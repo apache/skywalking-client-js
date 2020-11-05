@@ -11,14 +11,15 @@ Apache SkyWalking Client JS
 # Usage
 
 ## Install  
-the skywalking-client-js runtime library is available at npm
+The `skywalking-client-js` runtime library is available at [npm](https://www.npmjs.com/package/skywalking-client-js).
+
 ```
 npm install skywalking-client-js --save
 ```
 
 ## Quick Start
 
-**SkyWalking Client JS requires SkyWalking 8.2+**
+**`skywalking-client-js` requires SkyWalking 8.2+**
 
 User could use `register` method to load and report data automatically.
 
@@ -80,7 +81,7 @@ This method is suitable for most single page application scenarios with URL hash
 In the initialized configuration item, set enableSPA to true, which will turn on the page's hashchange event listening (trigger re reporting PV), and use URL hash as the page field in other data reporting.  
 2. Manual reporting  
 This method can be used in all single page application scenarios. This method can be used if the first method is invalid.    
-The SDK provides a setpage method to manually update the page name when data is reported. When this method is called, the page PV will be re reported by default. For details, see setPerformance().  
+The SDK provides a set page method to manually update the page name when data is reported. When this method is called, the page PV will be re reported by default. For details, see setPerformance().  
 ```
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
@@ -92,33 +93,10 @@ app.on('routeChange', function (next) {
 });   
 ```
 
-# Development
-* Install Modules
-```
-npm install
-```
-* Projects that use this project need to do the following  
+# Demo project
 
-```
-npm link path/skywalking-client-js
-```
-```
-import ClientMonitor from '../node_modules/skywalking-client-js/src/index';
-
-ClientMonitor.register({
-  service: 'test-ui',
-  pagePath: 'http://localhost:8080/',
-  serviceVersion: 'v1.0.0'
-});
-```
-
-* Front end agent
-Refer to [test project](https://github.com/SkyAPMTest/skywalking-client-test)
-
-* Start project
-```
-npm run start
-```
+Demo project provides instrumented web application with necessary environment, you could just simple use it to see the data SkyWalking collected and how SkyWalking visualizes on the UI. 
+See more information, [click here](https://github.com/SkyAPMTest/skywalking-client-test).
 
 # Contact Us
 * Submit an [issue](https://github.com/apache/skywalking/issues)
