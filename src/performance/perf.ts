@@ -48,7 +48,7 @@ class PagePerf {
         // Synchronous load resources in the page
         resTime: parseInt(String(timing.loadEventStart - timing.domContentLoadedEventEnd), 10),
         // Only valid for HTTPS
-        sslTime: location.protocol.includes('https') ?
+        sslTime: location.protocol === 'https:' && timing.secureConnectionStart > 0 ?
           parseInt(String(timing.connectEnd - timing.secureConnectionStart), 10) : undefined,
         ttlTime: parseInt(String(timing.domInteractive - timing.fetchStart), 10), // time to interact
         firstPackTime: parseInt(String(timing.responseStart - timing.domainLookupStart), 10), // first pack time
