@@ -15,12 +15,28 @@
  * limitations under the License.
  */
 import Report from './report';
+import TraceSegment from '../trace/index';
 
 class TaskQueue {
   private queues: any[] = [];
 
   public addTask(data: any) {
     this.queues.push({ data });
+    TraceSegment.addSpan(
+      TraceSegment.newSpan(
+        window.location.href,
+        'Local',
+        true,
+        2,
+        [
+          {
+            key: 'errorMessage',
+            value: JSON.stringify(data),
+          },
+        ],
+        [],
+      ),
+    );
   }
 
   public fireTasks() {

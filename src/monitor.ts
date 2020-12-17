@@ -18,6 +18,7 @@
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
+import TraceSegment from './trace/index';
 
 const ClientMonitor = {
   customOptions: {
@@ -39,6 +40,12 @@ const ClientMonitor = {
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
+    if (this.customOptions.axios) {
+      this.traceAxios(this.customOptions, this.customOptions.axios);
+    }
+  },
+  traceAxios(options: CustomOptionsType, axios: any) {
+    TraceSegment.traceAxios(options, axios);
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded

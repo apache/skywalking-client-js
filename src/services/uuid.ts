@@ -16,7 +16,7 @@
  */
 
 export default function uuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx.xxxx.xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
     /* tslint:disable */
     const r = (Math.random() * 16) | 0;
     /* tslint:disable */
