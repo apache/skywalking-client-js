@@ -35,5 +35,4 @@ export enum ReportTypes {
   PERF = '/browser/perfData',
   TRACE = '/v3/segment',
   PROPERTIES = '/v3/management/reportProperties',
-  KEEPALIVE = '/v3/management/keepAlive',
 }

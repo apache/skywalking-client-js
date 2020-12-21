@@ -27,8 +27,6 @@ class Report {
       this.url = collector + ReportTypes.TRACE;
     } else if (type === 'PROPERTIES') {
       this.url = collector + ReportTypes.PROPERTIES;
-    } else if (type === 'KEEPALIVE') {
-      this.url = collector + ReportTypes.KEEPALIVE;
     } else {
       this.url = collector + ReportTypes.PERF;
     }
