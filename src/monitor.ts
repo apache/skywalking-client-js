@@ -39,6 +39,14 @@ const ClientMonitor = {
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
+    // if (this.customOptions.axios) {
+    //   this.customOptions.axios.interceptors.request.use((config: any) => {
+    //     config.headers.common.test = 'test'
+    //     return config
+    //   }, (err: any) => {
+    //       return Promise.reject(err)
+    //   })
+    // }
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded

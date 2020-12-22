@@ -25,10 +25,34 @@ class AjaxErrors extends Base {
     if (!window.XMLHttpRequest) {
       return;
     }
+    const originalXHR = window.XMLHttpRequest;
+    function ajaxEventTrigger(event: any) {
+      const ajaxEvent = new CustomEvent(event, { detail: this });
+      window.dispatchEvent(ajaxEvent);
+    }
+    function customizedXHR() {
+      const liveXHR = new originalXHR();
+
+      liveXHR.addEventListener(
+        'readystatechange',
+        function () {
+          ajaxEventTrigger.call(this, 'xhrReadyStateChange');
+        },
+        false,
+      );
+
+      return liveXHR;
+    }
+    (window as any).XMLHttpRequest = customizedXHR;
+    window.addEventListener('xhrReadyStateChange', (e: any) => {
+      if (e.detail.readyState === 1) {
+        e.detail.setRequestHeader('test', 'test');
+      }
+    });
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {
       try {
-        if (event && event.currentTarget && event.currentTarget.status !== 200) {
+        if (event && event.currentTarget && event.currentTarget.status !== 200 && event.currentTarget.status !== 304) {
           this.logInfo = {
             uniqueId: uuid(),
             service: options.service,
@@ -46,10 +70,10 @@ class AjaxErrors extends Base {
         console.log(error);
       }
     };
+
     XMLHttpRequest.prototype.send = function () {
       if (this.addEventListener) {
         this.addEventListener('error', xhrEvent);
-        this.addEventListener('load', xhrEvent);
         this.addEventListener('abort', xhrEvent);
         this.addEventListener('timeout', xhrEvent);
       } else {

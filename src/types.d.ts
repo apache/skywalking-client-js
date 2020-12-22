@@ -20,11 +20,12 @@ export interface CustomOptionsType {
   service: string;
   pagePath: string;
   serviceVersion: string;
-  jsErrors: boolean;
-  apiErrors: boolean;
-  resourceErrors: boolean;
-  autoTracePerf: boolean;
-  useFmp: boolean;
-  enableSPA: boolean;
-  vue: any;
+  jsErrors?: boolean;
+  apiErrors?: boolean;
+  resourceErrors?: boolean;
+  autoTracePerf?: boolean;
+  useFmp?: boolean;
+  enableSPA?: boolean;
+  vue?: any;
+  axios?: any;
 }
