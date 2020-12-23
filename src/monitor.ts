@@ -18,6 +18,7 @@
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
+import xhrInterceptor from './interceptors/xhr';
 
 const ClientMonitor = {
   customOptions: {
@@ -39,14 +40,8 @@ const ClientMonitor = {
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
-    // if (this.customOptions.axios) {
-    //   this.customOptions.axios.interceptors.request.use((config: any) => {
-    //     config.headers.common.test = 'test'
-    //     return config
-    //   }, (err: any) => {
-    //       return Promise.reject(err)
-    //   })
-    // }
+    // inject interceptor
+    xhrInterceptor();
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded

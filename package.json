@@ -57,8 +57,5 @@
     "dapper",
     "javascript",
     "web-performance"
-  ],
-  "dependencies": {
-    "axios": "^0.21.0"
-  }
+  ]
 }
