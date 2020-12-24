@@ -23,6 +23,8 @@ class Report {
       this.url = collector + ReportTypes.ERROR;
     } else if (type === 'ERRORS') {
       this.url = collector + ReportTypes.ERRORS;
+    } else if (type === 'SEGMENT') {
+      this.url = collector + ReportTypes.SEGMENT;
     } else {
       this.url = collector + ReportTypes.PERF;
     }

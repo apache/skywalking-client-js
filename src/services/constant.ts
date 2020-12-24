@@ -35,3 +35,6 @@ export enum ReportTypes {
   PERF = '/browser/perfData',
   SEGMENT = 'v3/segment',
 }
+
+export const SpanLayer = 'Http';
+export const SpanType = 'Exit';

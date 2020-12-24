@@ -17,9 +17,11 @@
 import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import { Base64 } from '../services/base64';
+import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
+import { SpanLayer, SpanType } from '../services/constant';
 
-export default function traceSegment(options: any) {
+export default async function traceSegment(options: any) {
   const segment = {
     traceId: uuid(),
     service: options.service,
@@ -30,8 +32,8 @@ export default function traceSegment(options: any) {
 
   // inject interceptor
   xhrInterceptor();
-  window.addEventListener('xhrReadyStateChange', (e: CustomEvent) => {
-    const xhrState = e.detail.readyState;
+  window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
+    const xhrState = event.detail.readyState;
     let startTime = new Date().getTime();
 
     if (xhrState === 1) {
@@ -44,7 +46,7 @@ export default function traceSegment(options: any) {
       const index = segment.spans.length;
       const values = `${1}-${traceId}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${url}`;
 
-      e.detail.setRequestHeader('sw8', values);
+      event.detail.setRequestHeader('sw8', values);
     }
     if (xhrState === 4) {
       let endTime = new Date().getTime();
@@ -53,8 +55,8 @@ export default function traceSegment(options: any) {
         startTime,
         endTime,
         spanId: segment.spans.length - 1 || 0,
-        spanLayer: 'Http',
-        spanType: 'Exit',
+        spanLayer: SpanLayer,
+        spanType: SpanType,
         isError: false,
         parentSpanId: segment.spans.length,
         componentId: 10001, // ajax
@@ -63,4 +65,10 @@ export default function traceSegment(options: any) {
       segment.spans.push(exitSpan);
     }
   });
+  // await 6s
+  await new Promise((resolve, reject) => setTimeout(resolve, 6000));
+  // report segment
+  await new Report('SEGMENT', options.collector).sendByFetch(segment);
+
+  segment.spans = [];
 }
