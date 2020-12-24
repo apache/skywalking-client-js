@@ -27,5 +27,4 @@ export interface CustomOptionsType {
   useFmp?: boolean;
   enableSPA?: boolean;
   vue?: any;
-  axios?: any;
 }

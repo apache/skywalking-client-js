@@ -18,7 +18,8 @@
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
-import xhrInterceptor from './interceptors/xhr';
+import traceSegment from './trace/segment';
+import uuid from './services/uuid';
 
 const ClientMonitor = {
   customOptions: {
@@ -35,13 +36,14 @@ const ClientMonitor = {
     this.customOptions = {
       ...this.customOptions,
       ...configs,
+      segmentId: uuid(),
     };
     this.errors(this.customOptions);
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
-    // inject interceptor
-    xhrInterceptor();
+
+    traceSegment(this.customOptions);
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded

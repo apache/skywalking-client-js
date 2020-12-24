@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-import uuid from '../services/uuid';
-
 export default function xhrInterceptor() {
   const originalXHR = window.XMLHttpRequest;
 
@@ -39,9 +37,4 @@ export default function xhrInterceptor() {
     return liveXHR;
   }
   (window as any).XMLHttpRequest = customizedXHR;
-  window.addEventListener('xhrReadyStateChange', (e: any) => {
-    if (e.detail.readyState === 1) {
-      e.detail.setRequestHeader('sw8', 'test');
-    }
-  });
 }
