@@ -57,7 +57,7 @@ export default async function traceSegment(options: any) {
         spanId: segment.spans.length - 1 || 0,
         spanLayer: SpanLayer,
         spanType: SpanType,
-        isError: false,
+        isError: event.detail.status === 200 ? false : true,
         parentSpanId: segment.spans.length,
         componentId: 10001, // ajax
         peer: xhrState.responseURL,
@@ -65,8 +65,8 @@ export default async function traceSegment(options: any) {
       segment.spans.push(exitSpan);
     }
   });
-  // await 6s
-  await new Promise((resolve, reject) => setTimeout(resolve, 6000));
+  // await 8s
+  await new Promise((resolve, reject) => setTimeout(resolve, 8000));
   // report segment
   await new Report('SEGMENT', options.collector).sendByFetch(segment);
 
