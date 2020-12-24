@@ -88,12 +88,12 @@ export const Base64 = {
   },
 
   // private method for UTF-8 encoding
-  utf8_encode(string: string) {
-    string = string.replace(/\r\n/g, '\n');
+  utf8_encode(input: string) {
+    input = input.replace(/\r\n/g, '\n');
     let utftext = '';
 
-    for (let n = 0; n < string.length; n++) {
-      const c = string.charCodeAt(n);
+    for (let n = 0; n < input.length; n++) {
+      const c = input.charCodeAt(n);
 
       if (c < 128) {
         utftext += String.fromCharCode(c);

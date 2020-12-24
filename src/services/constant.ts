@@ -33,4 +33,5 @@ export enum ReportTypes {
   ERROR = '/browser/errorLog',
   ERRORS = '/browser/errorLogs',
   PERF = '/browser/perfData',
+  SEGMENT = 'v3/segment',
 }

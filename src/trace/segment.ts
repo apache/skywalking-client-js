@@ -33,16 +33,16 @@ export default function traceSegment(options: any) {
   window.addEventListener('xhrReadyStateChange', (e: CustomEvent) => {
     const xhrState = e.detail.readyState;
     let startTime = new Date().getTime();
+
     if (xhrState === 1) {
-      const StringTraceId = String(Base64.encode(segment.traceId));
+      const traceId = String(Base64.encode(segment.traceId));
       const segmentId = String(Base64.encode(segment.traceSegmentId));
-      const segmentService = String(Base64.encode(segment.service));
-      const serviceInstance = String(Base64.encode(segment.serviceInstance));
+      const service = String(Base64.encode(segment.service));
+      const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
       const url = String(Base64.encode(location.href));
-      const values = `${1}-${StringTraceId}-${segmentId}-${
-        segment.spans.length
-      }-${segmentService}-${serviceInstance}-${endpoint}-${url}`;
+      const index = segment.spans.length;
+      const values = `${1}-${traceId}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${url}`;
 
       e.detail.setRequestHeader('sw8', values);
     }
