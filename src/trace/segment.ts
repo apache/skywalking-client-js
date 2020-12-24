@@ -17,6 +17,7 @@
 import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import { Base64 } from '../services/base64';
+import { SegmentFeilds, SpanFeilds } from './type';
 
 export default function traceSegment(options: any) {
   const segment = {
@@ -25,7 +26,7 @@ export default function traceSegment(options: any) {
     spans: [],
     serviceInstance: options.serviceVersion,
     traceSegmentId: options.segmentId,
-  } as any;
+  } as SegmentFeilds;
 
   // inject interceptor
   xhrInterceptor();
@@ -47,7 +48,7 @@ export default function traceSegment(options: any) {
     }
     if (xhrState === 4) {
       let endTime = new Date().getTime();
-      const exitSpan: any = {
+      const exitSpan: SpanFeilds = {
         operationName: options.pagePath,
         startTime,
         endTime,
