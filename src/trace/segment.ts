@@ -33,7 +33,7 @@ export default async function traceSegment(options: any) {
   xhrInterceptor();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const xhrState = event.detail.readyState;
-    let startTime = new Date().getTime();
+    const startTime = new Date().getTime();
 
     if (xhrState === 1) {
       const traceId = String(Base64.encode(segment.traceId));
@@ -48,7 +48,7 @@ export default async function traceSegment(options: any) {
       event.detail.setRequestHeader('sw8', values);
     }
     if (xhrState === 4) {
-      let endTime = new Date().getTime();
+      const endTime = new Date().getTime();
       const exitSpan: SpanFeilds = {
         operationName: options.pagePath,
         startTime,
