@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Base64 } from 'js-base64';
 import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
-import { Base64 } from '../services/base64';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
 import { SpanLayer, SpanType } from '../services/constant';
@@ -29,7 +29,6 @@ export default async function traceSegment(options: any) {
     serviceInstance: options.serviceVersion,
     traceSegmentId: options.segmentId,
   } as SegmentFeilds;
-
   // inject interceptor
   xhrInterceptor();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
