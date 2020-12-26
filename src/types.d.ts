@@ -20,6 +20,7 @@ export interface CustomOptionsType {
   service: string;
   pagePath: string;
   serviceVersion: string;
+  segmentId?: string;
   jsErrors?: boolean;
   apiErrors?: boolean;
   resourceErrors?: boolean;

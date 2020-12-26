@@ -18,7 +18,7 @@
 export default function xhrInterceptor() {
   const originalXHR = window.XMLHttpRequest;
 
-  function ajaxEventTrigger(event: any) {
+  function ajaxEventTrigger(event: string) {
     const ajaxEvent = new CustomEvent(event, { detail: this });
 
     window.dispatchEvent(ajaxEvent);

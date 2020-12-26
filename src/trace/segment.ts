@@ -20,8 +20,9 @@ import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
 import { SpanLayer, SpanType } from '../services/constant';
+import { CustomOptionsType } from '../types';
 
-export default async function traceSegment(options: any) {
+export default function traceSegment(options: CustomOptionsType) {
   const segment = {
     traceId: uuid(),
     service: options.service,
@@ -29,45 +30,52 @@ export default async function traceSegment(options: any) {
     serviceInstance: options.serviceVersion,
     traceSegmentId: options.segmentId,
   } as SegmentFeilds;
+  const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const xhrState = event.detail.readyState;
-    const startTime = new Date().getTime();
 
     if (xhrState === 1) {
-      const traceId = String(Base64.encode(segment.traceId));
+      segCollector.push({
+        event: event.detail,
+        startTime: new Date().getTime(),
+      });
+      const traceIdStr = String(Base64.encode(segment.traceId));
       const segmentId = String(Base64.encode(segment.traceSegmentId));
       const service = String(Base64.encode(segment.service));
       const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
       const url = String(Base64.encode(location.href));
       const index = segment.spans.length;
-      const values = `${1}-${traceId}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${url}`;
+      const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${url}`;
 
       event.detail.setRequestHeader('sw8', values);
     }
     if (xhrState === 4) {
       const endTime = new Date().getTime();
-      const exitSpan: SpanFeilds = {
-        operationName: options.pagePath,
-        startTime,
-        endTime,
-        spanId: segment.spans.length - 1 || 0,
-        spanLayer: SpanLayer,
-        spanType: SpanType,
-        isError: event.detail.status === 200 ? false : true,
-        parentSpanId: segment.spans.length,
-        componentId: 10001, // ajax
-        peer: xhrState.responseURL,
-      };
-      segment.spans.push(exitSpan);
+      for (let i = 0; i < segCollector.length; i++) {
+        if (segCollector[i].event.status) {
+          const exitSpan: SpanFeilds = {
+            operationName: options.pagePath,
+            startTime: segCollector[i].startTime,
+            endTime,
+            spanId: segment.spans.length - 1 || 0,
+            spanLayer: SpanLayer,
+            spanType: SpanType,
+            isError: event.detail.status === 200 ? false : true,
+            parentSpanId: segment.spans.length,
+            componentId: 10001, // ajax
+            peer: segCollector[i].event.responseURL,
+          };
+          segment.spans.push(exitSpan);
+          segCollector.splice(i, 1);
+        }
+      }
     }
   });
-  // await 8s
-  await new Promise((resolve, reject) => setTimeout(resolve, 8000));
-  // report segment
-  await new Report('SEGMENT', options.collector).sendByFetch(segment);
-
-  segment.spans = [];
+  window.onbeforeunload = function (e: any) {
+    // todo Navigator.sendBeacon(url, FormData);
+    new Report('SEGMENT', options.collector).sendByFetch(segment);
+  };
 }
