@@ -19,7 +19,7 @@ import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
-import { SpanLayer, SpanType } from '../services/constant';
+import { SpanLayer, SpanType, ReadyStatus } from '../services/constant';
 import { CustomOptionsType } from '../types';
 
 export default function traceSegment(options: CustomOptionsType) {
@@ -36,7 +36,8 @@ export default function traceSegment(options: CustomOptionsType) {
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const xhrState = event.detail.readyState;
 
-    if (xhrState === 1) {
+    // The values of xhtState is from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+    if (xhrState === ReadyStatus.OPENED) {
       segCollector.push({
         event: event.detail,
         startTime: new Date().getTime(),
@@ -52,7 +53,7 @@ export default function traceSegment(options: CustomOptionsType) {
 
       event.detail.setRequestHeader('sw8', values);
     }
-    if (xhrState === 4) {
+    if (xhrState === ReadyStatus.DONE) {
       const endTime = new Date().getTime();
       for (let i = 0; i < segCollector.length; i++) {
         if (segCollector[i].event.status) {

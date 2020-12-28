@@ -38,3 +38,7 @@ export enum ReportTypes {
 
 export const SpanLayer = 'Http';
 export const SpanType = 'Exit';
+export enum ReadyStatus {
+  OPENED = 1,
+  DONE = 4,
+}
