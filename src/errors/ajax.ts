@@ -28,7 +28,7 @@ class AjaxErrors extends Base {
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {
       try {
-        if (event && event.currentTarget && event.currentTarget.status !== 200 && event.currentTarget.status !== 304) {
+        if (event && event.currentTarget && event.currentTarget.status >= 400) {
           this.logInfo = {
             uniqueId: uuid(),
             service: options.service,
