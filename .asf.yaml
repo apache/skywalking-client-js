@@ -26,7 +26,7 @@ github:
     - dapper
     - javascript
     - web-performance
-    enabled_merge_buttons:
+  enabled_merge_buttons:
     squash:  true
     merge:   false
     rebase:  false
