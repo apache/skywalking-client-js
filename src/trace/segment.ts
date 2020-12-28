@@ -36,7 +36,7 @@ export default function traceSegment(options: CustomOptionsType) {
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const xhrState = event.detail.readyState;
 
-    // The values of xhtState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+    // The values of xhrState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
     if (xhrState === ReadyStatus.OPENED) {
       segCollector.push({
         event: event.detail,
@@ -64,7 +64,7 @@ export default function traceSegment(options: CustomOptionsType) {
             spanId: segment.spans.length - 1 || 0,
             spanLayer: SpanLayer,
             spanType: SpanType,
-            isError: event.detail.status >= 400 ? false : true,
+            isError: event.detail.status >= 400 ? true : false,
             parentSpanId: segment.spans.length,
             componentId: 10001, // ajax
             peer: segCollector[i].event.responseURL,
