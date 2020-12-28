@@ -42,3 +42,4 @@ export enum ReadyStatus {
   OPENED = 1,
   DONE = 4,
 }
+export const ComponentId = 10001; // ajax

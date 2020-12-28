@@ -19,7 +19,7 @@ import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
-import { SpanLayer, SpanType, ReadyStatus } from '../services/constant';
+import { SpanLayer, SpanType, ReadyStatus, ComponentId } from '../services/constant';
 import { CustomOptionsType } from '../types';
 
 export default function traceSegment(options: CustomOptionsType) {
@@ -47,9 +47,9 @@ export default function traceSegment(options: CustomOptionsType) {
       const service = String(Base64.encode(segment.service));
       const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
-      const url = String(Base64.encode(location.href));
+      const peer = String(Base64.encode(location.href));
       const index = segment.spans.length;
-      const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${url}`;
+      const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
       event.detail.setRequestHeader('sw8', values);
     }
@@ -66,7 +66,7 @@ export default function traceSegment(options: CustomOptionsType) {
             spanType: SpanType,
             isError: event.detail.status >= 400 ? true : false,
             parentSpanId: segment.spans.length,
-            componentId: 10001, // ajax
+            componentId: ComponentId,
             peer: segCollector[i].event.responseURL,
           };
           segment.spans.push(exitSpan);
