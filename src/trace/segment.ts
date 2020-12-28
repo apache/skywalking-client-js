@@ -36,7 +36,7 @@ export default function traceSegment(options: CustomOptionsType) {
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const xhrState = event.detail.readyState;
 
-    // The values of xhtState is from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+    // The values of xhtState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
     if (xhrState === ReadyStatus.OPENED) {
       segCollector.push({
         event: event.detail,
