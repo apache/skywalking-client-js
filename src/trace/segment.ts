@@ -33,7 +33,7 @@ export default function traceSegment(options: CustomOptionsType) {
       service: options.service,
       spans: [],
       serviceInstance: options.serviceVersion,
-      traceSegmentId: options.segmentId,
+      traceSegmentId: uuid(),
     } as SegmentFeilds;
     const xhrState = event.detail.readyState;
 

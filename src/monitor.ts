@@ -36,7 +36,6 @@ const ClientMonitor = {
     this.customOptions = {
       ...this.customOptions,
       ...configs,
-      segmentId: uuid(),
     };
     this.errors(this.customOptions);
     if (this.customOptions.autoTracePerf) {
