@@ -23,17 +23,18 @@ import { SpanLayer, SpanType, ReadyStatus, ComponentId } from '../services/const
 import { CustomOptionsType } from '../types';
 
 export default function traceSegment(options: CustomOptionsType) {
-  const segment = {
-    traceId: uuid(),
-    service: options.service,
-    spans: [],
-    serviceInstance: options.serviceVersion,
-    traceSegmentId: options.segmentId,
-  } as SegmentFeilds;
+  const segments = [] as any;
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
+    const segment = {
+      traceId: uuid(),
+      service: options.service,
+      spans: [],
+      serviceInstance: options.serviceVersion,
+      traceSegmentId: options.segmentId,
+    } as SegmentFeilds;
     const xhrState = event.detail.readyState;
 
     // The values of xhrState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
@@ -61,7 +62,7 @@ export default function traceSegment(options: CustomOptionsType) {
             operationName: options.pagePath,
             startTime: segCollector[i].startTime,
             endTime,
-            spanId: segment.spans.length - 1 || 0,
+            spanId: segment.spans.length,
             spanLayer: SpanLayer,
             spanType: SpanType,
             isError: event.detail.status >= 400 ? true : false,
@@ -73,10 +74,11 @@ export default function traceSegment(options: CustomOptionsType) {
           segCollector.splice(i, 1);
         }
       }
+      segments.push(segment);
     }
   });
-  window.onbeforeunload = function (e: any) {
+  window.onbeforeunload = function (e: Event) {
     // todo Navigator.sendBeacon(url, FormData);
-    new Report('SEGMENT', options.collector).sendByFetch(segment);
+    new Report('SEGMENTS', options.collector).sendByFetch(segments);
   };
 }
