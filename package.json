@@ -57,5 +57,8 @@
     "dapper",
     "javascript",
     "web-performance"
-  ]
+  ],
+  "dependencies": {
+    "js-base64": "^3.6.0"
+  }
 }

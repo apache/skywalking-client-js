@@ -14,15 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
+
+export interface SegmentFeilds {
+  traceId: string;
+  service: string;
+  spans: SpanFeilds[];
+  serviceInstance: string;
+  traceSegmentId: string;
+}
+
+export interface SpanFeilds {
+  operationName: string;
+  startTime: number;
+  endTime: number;
+  spanId: number;
+  spanLayer: string;
+  spanType: string;
+  isError: boolean;
+  parentSpanId: number;
+  componentId: number;
+  peer: string;
+  tags?: any;
 }

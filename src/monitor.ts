@@ -18,6 +18,8 @@
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
+import traceSegment from './trace/segment';
+import uuid from './services/uuid';
 
 const ClientMonitor = {
   customOptions: {
@@ -39,6 +41,8 @@ const ClientMonitor = {
     if (this.customOptions.autoTracePerf) {
       this.performance();
     }
+
+    traceSegment(this.customOptions);
   },
   performance() {
     // trace and report perf data and pv to serve when page loaded

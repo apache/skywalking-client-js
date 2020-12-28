@@ -14,15 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+
+export default function xhrInterceptor() {
+  const originalXHR = window.XMLHttpRequest;
+
+  function ajaxEventTrigger(event: string) {
+    const ajaxEvent = new CustomEvent(event, { detail: this });
+
+    window.dispatchEvent(ajaxEvent);
   }
+  function customizedXHR() {
+    const liveXHR = new originalXHR();
+
+    liveXHR.addEventListener(
+      'readystatechange',
+      function () {
+        ajaxEventTrigger.call(this, 'xhrReadyStateChange');
+      },
+      false,
+    );
+
+    return liveXHR;
+  }
+  (window as any).XMLHttpRequest = customizedXHR;
 }

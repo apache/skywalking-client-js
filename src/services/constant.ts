@@ -33,4 +33,14 @@ export enum ReportTypes {
   ERROR = '/browser/errorLog',
   ERRORS = '/browser/errorLogs',
   PERF = '/browser/perfData',
+  SEGMENT = '/v3/segment',
+  SEGMENTS = '/v3/segments',
 }
+
+export const SpanLayer = 'Http';
+export const SpanType = 'Exit';
+export enum ReadyStatus {
+  OPENED = 1,
+  DONE = 4,
+}
+export const ComponentId = 10001; // ajax

@@ -28,7 +28,7 @@ class AjaxErrors extends Base {
     const xhrSend = XMLHttpRequest.prototype.send;
     const xhrEvent = (event: any) => {
       try {
-        if (event && event.currentTarget && event.currentTarget.status !== 200) {
+        if (event && event.currentTarget && event.currentTarget.status >= 400) {
           this.logInfo = {
             uniqueId: uuid(),
             service: options.service,
@@ -46,10 +46,10 @@ class AjaxErrors extends Base {
         console.log(error);
       }
     };
+
     XMLHttpRequest.prototype.send = function () {
       if (this.addEventListener) {
         this.addEventListener('error', xhrEvent);
-        this.addEventListener('load', xhrEvent);
         this.addEventListener('abort', xhrEvent);
         this.addEventListener('timeout', xhrEvent);
       } else {
