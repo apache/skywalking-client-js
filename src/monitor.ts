@@ -19,7 +19,6 @@ import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
 import Performance from './performance/index';
 import traceSegment from './trace/segment';
-import uuid from './services/uuid';
 
 const ClientMonitor = {
   customOptions: {
