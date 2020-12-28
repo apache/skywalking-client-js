@@ -6,7 +6,7 @@ Apache SkyWalking Client JS
 [Apache SkyWalking](https://github.com/apache/skywalking) Client-side JavaScript exception and tracing library.
 - Provide metrics and error collection to SkyWalking backend.
 - Lightweight
-- Make browser as a start of whole distributed tracing(WIP)
+- Make browser as a start of whole distributed tracing
 
 # Usage
 
