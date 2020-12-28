@@ -21,12 +21,14 @@ import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
 import { SpanLayer, SpanType, ReadyStatus, ComponentId } from '../services/constant';
 import { CustomOptionsType } from '../types';
+import { fetch } from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
   const segments = [] as any;
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
+  window.fetch = fetch;
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
