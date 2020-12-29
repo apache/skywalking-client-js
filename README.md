@@ -14,7 +14,7 @@ Apache SkyWalking Client JS
 The `skywalking-client-js` runtime library is available at [npm](https://www.npmjs.com/package/skywalking-client-js).
 
 ```
-npm install skywalking-client-js --save
+npm install skywalking-client-js --save-dev
 ```
 
 ## Quick Start
@@ -29,6 +29,7 @@ import ClientMonitor from 'skywalking-client-js';
 ```
 // Report collected data to `http:// + window.location.host + /browser/perfData` in default
 ClientMonitor.register({
+  collector: 'http://127.0.0.1:8080',
   service: 'test-ui',
   pagePath: '/current/page/name',
   serviceVersion: 'v1.0.0',
@@ -63,6 +64,7 @@ Use the `setPerformance` method to report metrics at the moment of page loaded o
 import ClientMonitor from 'skywalking-client-js';
 
 ClientMonitor.setPerformance({
+  collector: 'http://127.0.0.1:8080',
   service: 'browser-app',
   serviceVersion: '1.0.0',
   pagePath: location.href,
@@ -85,6 +87,7 @@ The SDK provides a set page method to manually update the page name when data is
 ```
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
+    collector: 'http://127.0.0.1:8080',
     service: 'browser-app',
     serviceVersion: '1.0.0',
     pagePath: location.href,
@@ -92,6 +95,10 @@ app.on('routeChange', function (next) {
   });
 });   
 ```
+
+## Tracing range of data requests in the broswer
+
+Support tracking these([XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) and [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)) two modes of data requests. At the same time, Support tracking libraries and tools that base on XMLHttpRequest and fetch, such as [Axios](https://github.com/axios/axios), [SuperAgent](https://github.com/visionmedia/superagent), [OpenApi](https://www.openapis.org/) and so on.
 
 # Demo project
 

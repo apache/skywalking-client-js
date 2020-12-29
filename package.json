@@ -59,6 +59,7 @@
     "web-performance"
   ],
   "dependencies": {
-    "js-base64": "^3.6.0"
+    "js-base64": "^3.6.0",
+    "whatwg-fetch": "^3.5.0"
   }
 }

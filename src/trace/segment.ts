@@ -19,18 +19,20 @@ import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
-import { SpanLayer, SpanType, ReadyStatus, ComponentId } from '../services/constant';
+import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag } from '../services/constant';
 import { CustomOptionsType } from '../types';
+import windowFetch from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
   const segments = [] as any;
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
+  windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
-      service: options.service,
+      service: options.service + ServiceTag,
       spans: [],
       serviceInstance: options.serviceVersion,
       traceSegmentId: uuid(),
@@ -45,7 +47,7 @@ export default function traceSegment(options: CustomOptionsType) {
       });
       const traceIdStr = String(Base64.encode(segment.traceId));
       const segmentId = String(Base64.encode(segment.traceSegmentId));
-      const service = String(Base64.encode(segment.service));
+      const service = String(Base64.encode(segment.service + ServiceTag));
       const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
       const peer = String(Base64.encode(location.href));
