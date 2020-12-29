@@ -1,5 +1,9 @@
 # Changes
 
+## 0.3.0
+
+1. Support tracing starting at the browser.
+
 ## 0.2.0
 
 1. Fix: `secureConnectionStart` is zero bug.

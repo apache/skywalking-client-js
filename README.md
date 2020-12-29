@@ -42,7 +42,7 @@ The register method supports the following parameters.
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
 |collector|String|In default, the collected data would be reported to current domain(`/browser/perfData`. Then, typically, we recommend you use a Gateway/proxy to redirect the data to the OAP(`resthost:restport`). If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
-|service|String|project id|true|-|
+|service|String|project id. NOTE, in tracing data requests, the service parameter is `service + '<browser>'`.|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
 |jsErrors|Boolean|Support js errors monitoring|false|true|
@@ -96,7 +96,7 @@ app.on('routeChange', function (next) {
 });   
 ```
 
-## Tracing range of data requests in the broswer
+## Tracing range of data requests in the browser
 
 Support tracking these([XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) and [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)) two modes of data requests. At the same time, Support tracking libraries and tools that base on XMLHttpRequest and fetch, such as [Axios](https://github.com/axios/axios), [SuperAgent](https://github.com/visionmedia/superagent), [OpenApi](https://www.openapis.org/) and so on.
 
