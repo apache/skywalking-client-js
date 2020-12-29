@@ -42,7 +42,7 @@ The register method supports the following parameters.
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
 |collector|String|In default, the collected data would be reported to current domain(`/browser/perfData`. Then, typically, we recommend you use a Gateway/proxy to redirect the data to the OAP(`resthost:restport`). If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
-|service|String|project id|true|-|
+|service|String|project id. NOTE, in tracing data requests, the service parameter is `service + '<browser>'`.|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
 |jsErrors|Boolean|Support js errors monitoring|false|true|
@@ -52,7 +52,6 @@ The register method supports the following parameters.
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
 |vue|Boolean|Support vue errors monitoring|false|true|
-Notice: In tracing data requests, the service parameter is `service + '<browser>'`.
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
