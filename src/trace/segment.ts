@@ -80,13 +80,13 @@ export default function traceSegment(options: CustomOptionsType) {
     }
   });
   window.onbeforeunload = function (e: Event) {
-    if (segments.length) {
+    if (!segments.length) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
   };
   setInterval(() => {
-    if (segments.length) {
+    if (!segments.length) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
