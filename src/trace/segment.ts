@@ -28,7 +28,7 @@ export default function traceSegment(options: CustomOptionsType) {
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
-  // windowFetch();
+  windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
@@ -83,13 +83,13 @@ export default function traceSegment(options: CustomOptionsType) {
     if (segments.length) {
       return;
     }
-    new Report('SEGMENTS', options.collector).sendByFetch(segments);
+    new Report('SEGMENTS', options.collector).sendByXhr(segments);
   };
   setInterval(() => {
     if (segments.length) {
       return;
     }
-    new Report('SEGMENTS', options.collector).sendByFetch(segments);
+    new Report('SEGMENTS', options.collector).sendByXhr(segments);
     segments = [];
   }, 50000);
 }
