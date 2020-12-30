@@ -19,19 +19,24 @@ class Report {
   private url: string = '';
 
   constructor(type: string, collector: string) {
-    if (type === 'ERROR') {
+    if (type === ReportTypes.ERROR) {
       this.url = collector + ReportTypes.ERROR;
-    } else if (type === 'ERRORS') {
+    } else if (type === ReportTypes.ERRORS) {
       this.url = collector + ReportTypes.ERRORS;
-    } else if (type === 'SEGMENT') {
+    } else if (type === ReportTypes.SEGMENT) {
       this.url = collector + ReportTypes.SEGMENT;
-    } else {
+    } else if (type === ReportTypes.SEGMENTS) {
+      this.url = collector + ReportTypes.SEGMENTS;
+    } else if (type === ReportTypes.PERF) {
       this.url = collector + ReportTypes.PERF;
     }
   }
 
   public sendByFetch(data: any) {
     delete data.collector;
+    if (!this.url) {
+      return;
+    }
     const sendRequest = new Request(this.url, { method: 'POST', body: JSON.stringify(data) });
 
     fetch(sendRequest)

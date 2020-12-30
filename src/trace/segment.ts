@@ -28,7 +28,7 @@ export default function traceSegment(options: CustomOptionsType) {
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
-  windowFetch();
+  // windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
