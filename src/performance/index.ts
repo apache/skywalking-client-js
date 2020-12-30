@@ -51,7 +51,7 @@ class TracePerf {
       new Report('PERF', options.collector).sendByFetch(perfInfo);
       // clear perf data
       this.clearPerf();
-    }, 5000);
+    }, 8000);
   }
 
   private clearPerf() {

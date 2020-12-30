@@ -19,15 +19,15 @@ class Report {
   private url: string = '';
 
   constructor(type: string, collector: string) {
-    if (type === ReportTypes.ERROR) {
+    if (type === 'ERROR') {
       this.url = collector + ReportTypes.ERROR;
-    } else if (type === ReportTypes.ERRORS) {
+    } else if (type === 'ERRORS') {
       this.url = collector + ReportTypes.ERRORS;
-    } else if (type === ReportTypes.SEGMENT) {
+    } else if (type === 'SEGMENT') {
       this.url = collector + ReportTypes.SEGMENT;
-    } else if (type === ReportTypes.SEGMENTS) {
+    } else if (type === 'SEGMENTS') {
       this.url = collector + ReportTypes.SEGMENTS;
-    } else if (type === ReportTypes.PERF) {
+    } else if (type === 'PERF') {
       this.url = collector + ReportTypes.PERF;
     }
   }
@@ -41,7 +41,7 @@ class Report {
 
     fetch(sendRequest)
       .then((response) => {
-        if (response.status < 200 || response.status > 300) {
+        if (response.status >= 400) {
           throw new Error('Something went wrong on api server!');
         }
       })
