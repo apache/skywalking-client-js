@@ -14,15 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
+
+export interface ErrorInfoFeilds {
+  uniqueId: string;
+  category: string;
+  grade: string;
+  message: any;
+  errorUrl: string;
+  line?: number;
+  col?: number;
+  errorInfo?: any;
+  firstReportedError?: boolean;
+}
+
+export interface ReportFields {
+  service: string;
+  serviceVersion: string;
+  pagePath: string;
 }

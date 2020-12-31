@@ -1,9 +1,13 @@
 name: Node CI
 
-on: [push, pull_request]
+on:
+  pull_request:
+  push:
+    branches:
+      - master
 
 jobs:
-  build:
+  build-and-test:
 
     runs-on: ubuntu-latest
 
@@ -24,3 +28,11 @@ jobs:
         npm test
       env:
         CI: true
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [build-and-test]
+    steps:
+      - name: Placeholder
+        run: echo "Just to make the GitHub merge button green"

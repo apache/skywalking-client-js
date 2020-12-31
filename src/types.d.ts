@@ -14,15 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
+
+export interface CustomOptionsType {
+  collector: string;
+  service: string;
+  pagePath: string;
+  serviceVersion: string;
+  jsErrors?: boolean;
+  apiErrors?: boolean;
+  resourceErrors?: boolean;
+  autoTracePerf?: boolean;
+  useFmp?: boolean;
+  enableSPA?: boolean;
+  vue?: any;
 }

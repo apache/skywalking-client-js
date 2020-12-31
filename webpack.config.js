@@ -16,7 +16,6 @@
  */
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -27,27 +26,22 @@ module.exports = {
       {
         test: /\.tsx?$/,
         use: 'ts-loader',
-        exclude: /node_modules/
-      }
-    ]
+        exclude: /node_modules/,
+      },
+    ],
   },
   resolve: {
-    extensions: [ '.tsx', '.ts', '.js' ]
+    extensions: ['.tsx', '.ts', '.js'],
+    mainFiles: ['index'],
   },
   output: {
-    filename: 'monitor.js',
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/'
+    filename: 'index.js',
+    path: path.resolve(__dirname, 'lib'),
+    publicPath: '/',
   },
-  plugins: [
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      title: 'Client Monitor'
-    })
-  ],
+  plugins: [new webpack.NamedModulesPlugin(), new webpack.HotModuleReplacementPlugin()],
   devServer: {
-    contentBase: './dist',
-    hot: true
-  }
+    contentBase: './lib',
+    hot: true,
+  },
 };

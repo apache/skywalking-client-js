@@ -15,9 +15,83 @@
  * limitations under the License.
  */
 
-export default class ClientMonitor {
+import { CustomOptionsType } from './types';
+import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
+import Performance from './performance/index';
+import traceSegment from './trace/segment';
 
-  public init() {
-    // console.log('enter');
-  }
-}
+const ClientMonitor = {
+  customOptions: {
+    collector: '', // report serve
+    jsErrors: true, // vue, js and promise errors
+    apiErrors: true,
+    resourceErrors: true,
+    autoTracePerf: true, // trace performance detail
+    useFmp: false, // use first meaningful paint
+    enableSPA: false,
+  } as CustomOptionsType,
+
+  register(configs: CustomOptionsType) {
+    this.customOptions = {
+      ...this.customOptions,
+      ...configs,
+    };
+    this.errors(this.customOptions);
+    if (this.customOptions.autoTracePerf) {
+      this.performance();
+    }
+
+    traceSegment(this.customOptions);
+  },
+  performance() {
+    // trace and report perf data and pv to serve when page loaded
+    if (document.readyState === 'complete') {
+      Performance.recordPerf(this.customOptions);
+    } else {
+      window.addEventListener(
+        'load',
+        () => {
+          Performance.recordPerf(this.customOptions);
+        },
+        false,
+      );
+    }
+    if (this.customOptions.enableSPA) {
+      // hash router
+      window.addEventListener(
+        'hashchange',
+        () => {
+          Performance.recordPerf(this.customOptions);
+        },
+        false,
+      );
+    }
+  },
+  errors(options: CustomOptionsType) {
+    const { service, pagePath, serviceVersion, collector } = options;
+
+    if (options.jsErrors) {
+      JSErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      if (options.vue) {
+        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, options.vue);
+      }
+    }
+    if (options.apiErrors) {
+      AjaxErrors.handleError({ service, pagePath, serviceVersion, collector });
+    }
+    if (options.resourceErrors) {
+      ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+    }
+  },
+  setPerformance(configs: CustomOptionsType) {
+    // history router
+    this.customOptions = {
+      ...this.customOptions,
+      ...configs,
+    };
+    this.performance();
+  },
+};
+
+export default ClientMonitor;

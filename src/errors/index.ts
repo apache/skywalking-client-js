@@ -14,15 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
-}
+
+import JSErrors from './js';
+import PromiseErrors from './promise';
+import AjaxErrors from './ajax';
+import ResourceErrors from './resource';
+import VueErrors from './vue';
+
+export {
+  JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors,
+};

@@ -14,15 +14,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+
+import uuid from '../services/uuid';
+import Base from '../services/base';
+import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+class JSErrors extends Base {
+  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+    window.onerror = (message, url, line, col, error) => {
+      this.logInfo = {
+        uniqueId: uuid(),
+        service: options.service,
+        serviceVersion: options.serviceVersion,
+        pagePath: options.pagePath,
+        category: ErrorsCategory.JS_ERROR,
+        grade: GradeTypeEnum.ERROR,
+        errorUrl: url,
+        line,
+        col,
+        message,
+        collector: options.collector,
+      };
+      this.traceInfo();
+    };
   }
 }
+export default new JSErrors();

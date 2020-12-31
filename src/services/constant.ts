@@ -1,3 +1,5 @@
+import Report from './report';
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -14,15 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
-  }
+export enum ErrorsCategory {
+  AJAX_ERROR = 'ajax',
+  RESOURCE_ERROR = 'resource',
+  VUE_ERROR = 'vue',
+  PROMISE_ERROR = 'promise',
+  JS_ERROR = 'js',
+  UNKNOWN_ERROR = 'unknown',
 }
+export enum GradeTypeEnum {
+  INFO = 'Info',
+  WARNING = 'Warning',
+  ERROR = 'Error',
+}
+export enum ReportTypes {
+  ERROR = '/browser/errorLog',
+  ERRORS = '/browser/errorLogs',
+  PERF = '/browser/perfData',
+  SEGMENT = '/v3/segment',
+  SEGMENTS = '/v3/segments',
+}
+
+export const SpanLayer = 'Http';
+export const SpanType = 'Exit';
+export enum ReadyStatus {
+  OPENED = 1,
+  DONE = 4,
+}
+export const ComponentId = 10001; // ajax
+export const ServiceTag = '<browser>';

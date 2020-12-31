@@ -14,15 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-{
-  "compilerOptions": {
-    "outDir": "./lib/",
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "module": "es6",
-    "target": "es5",
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "node"
+import Report from './report';
+
+class TaskQueue {
+  private queues: any[] = [];
+
+  public addTask(data: any) {
+    this.queues.push({ data });
+  }
+
+  public fireTasks() {
+    if (!this.queues || !this.queues.length) {
+      return;
+    }
+    const item = this.queues[0];
+    new Report('ERROR', item.data.collector).sendByXhr(item.data);
+    this.queues.splice(0, 1);
+    this.fireTasks();
   }
 }
+
+export default new TaskQueue();
