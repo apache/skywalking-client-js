@@ -68,7 +68,7 @@ export default function traceSegment(options: CustomOptionsType) {
             spanLayer: SpanLayer,
             spanType: SpanType,
             isError: event.detail.status >= 400 ? true : false,
-            parentSpanId: segment.spans.length,
+            parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
             peer: segCollector[i].event.responseURL.split('://')[1],
           };
