@@ -24,7 +24,7 @@ import { CustomOptionsType } from '../types';
 import windowFetch from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
-  const segments = [] as any;
+  let segments = [] as any;
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
@@ -50,7 +50,7 @@ export default function traceSegment(options: CustomOptionsType) {
       const service = String(Base64.encode(segment.service + ServiceTag));
       const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
-      const peer = String(Base64.encode(location.href));
+      const peer = String(Base64.encode(location.host));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
@@ -70,7 +70,7 @@ export default function traceSegment(options: CustomOptionsType) {
             isError: event.detail.status >= 400 ? true : false,
             parentSpanId: segment.spans.length,
             componentId: ComponentId,
-            peer: segCollector[i].event.responseURL,
+            peer: segCollector[i].event.responseURL.split('://')[1],
           };
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
@@ -80,7 +80,16 @@ export default function traceSegment(options: CustomOptionsType) {
     }
   });
   window.onbeforeunload = function (e: Event) {
-    // todo Navigator.sendBeacon(url, FormData);
-    new Report('SEGMENTS', options.collector).sendByFetch(segments);
+    if (!segments.length) {
+      return;
+    }
+    new Report('SEGMENTS', options.collector).sendByXhr(segments);
   };
+  setInterval(() => {
+    if (!segments.length) {
+      return;
+    }
+    new Report('SEGMENTS', options.collector).sendByXhr(segments);
+    segments = [];
+  }, 50000);
 }

@@ -25,18 +25,23 @@ class Report {
       this.url = collector + ReportTypes.ERRORS;
     } else if (type === 'SEGMENT') {
       this.url = collector + ReportTypes.SEGMENT;
-    } else {
+    } else if (type === 'SEGMENTS') {
+      this.url = collector + ReportTypes.SEGMENTS;
+    } else if (type === 'PERF') {
       this.url = collector + ReportTypes.PERF;
     }
   }
 
   public sendByFetch(data: any) {
     delete data.collector;
+    if (!this.url) {
+      return;
+    }
     const sendRequest = new Request(this.url, { method: 'POST', body: JSON.stringify(data) });
 
     fetch(sendRequest)
       .then((response) => {
-        if (response.status < 200 || response.status > 300) {
+        if (response.status >= 400) {
           throw new Error('Something went wrong on api server!');
         }
       })
@@ -45,31 +50,21 @@ class Report {
       });
   }
 
-  private reportByImg(data: any) {
-    if (!this.checkUrl(this.url)) {
+  public sendByXhr(data: any) {
+    delete data.collector;
+    if (!this.url) {
       return;
     }
-    try {
-      const imgObj = new Image();
+    const xhr = new XMLHttpRequest();
 
-      imgObj.src = `${this.url}?v=${new Date().getTime()}&${this.formatParams(data)}`;
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  private formatParams(data: any) {
-    return Object.keys(data)
-      .map((name: string) => `${encodeURIComponent(name)}=${encodeURIComponent(data[name])}`)
-      .join('&');
-  }
-
-  private checkUrl(url: string) {
-    if (!url) {
-      return;
-    }
-    const urlRule = /^[hH][tT][tT][pP]([sS]?):\/\//;
-    return urlRule.test(url);
+    xhr.open('post', this.url, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status < 400) {
+        console.log('Report successfully');
+      }
+    };
+    xhr.send(JSON.stringify(data));
   }
 }
 export default Report;

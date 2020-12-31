@@ -28,7 +28,7 @@ class TaskQueue {
       return;
     }
     const item = this.queues[0];
-    new Report('ERROR', item.data.collector).sendByFetch(item.data);
+    new Report('ERROR', item.data.collector).sendByXhr(item.data);
     this.queues.splice(0, 1);
     this.fireTasks();
   }
