@@ -28,7 +28,7 @@ export default function traceSegment(options: CustomOptionsType) {
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
-  windowFetch();
+  // windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
@@ -47,7 +47,7 @@ export default function traceSegment(options: CustomOptionsType) {
       });
       const traceIdStr = String(Base64.encode(segment.traceId));
       const segmentId = String(Base64.encode(segment.traceSegmentId));
-      const service = String(Base64.encode(segment.service + ServiceTag));
+      const service = String(Base64.encode(segment.service));
       const instance = String(Base64.encode(segment.serviceInstance));
       const endpoint = String(Base64.encode(options.pagePath));
       const peer = String(Base64.encode(location.host));
@@ -70,7 +70,7 @@ export default function traceSegment(options: CustomOptionsType) {
             isError: event.detail.status >= 400 ? true : false,
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: segCollector[i].event.responseURL.split('://')[1],
+            peer: segCollector[i].event.responseURL.split(location.host)[1],
           };
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
