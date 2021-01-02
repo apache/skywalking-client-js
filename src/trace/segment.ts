@@ -28,7 +28,7 @@ export default function traceSegment(options: CustomOptionsType) {
   const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
   // inject interceptor
   xhrInterceptor();
-  // windowFetch();
+  windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
     const segment = {
       traceId: uuid(),
@@ -56,10 +56,15 @@ export default function traceSegment(options: CustomOptionsType) {
 
       event.detail.setRequestHeader('sw8', values);
     }
+
     if (xhrState === ReadyStatus.DONE) {
       const endTime = new Date().getTime();
       for (let i = 0; i < segCollector.length; i++) {
-        if (segCollector[i].event.status) {
+        if (segCollector[i].event.readyState === ReadyStatus.DONE) {
+          let url = {} as URL;
+          if (segCollector[i].event.status) {
+            url = new URL(segCollector[i].event.responseURL);
+          }
           const exitSpan: SpanFeilds = {
             operationName: options.pagePath,
             startTime: segCollector[i].startTime,
@@ -67,10 +72,10 @@ export default function traceSegment(options: CustomOptionsType) {
             spanId: segment.spans.length,
             spanLayer: SpanLayer,
             spanType: SpanType,
-            isError: event.detail.status >= 400 ? true : false,
+            isError: event.detail.status === 0 || event.detail.status >= 400 ? true : false, // when requests failed, the status is 0
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: segCollector[i].event.responseURL.split(location.host)[1],
+            peer: url.pathname,
           };
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
