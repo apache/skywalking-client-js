@@ -37,7 +37,7 @@ const ClientMonitor = {
       ...configs,
     };
     this.errors(this.customOptions);
-    if (this.customOptions.autoTracePerf) {
+    if (!this.customOptions.enableSPA) {
       this.performance(this.customOptions);
     }
 
