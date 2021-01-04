@@ -20,7 +20,7 @@ export default function xhrInterceptor() {
   const xhrSend = XMLHttpRequest.prototype.send;
   const xhrOpen = XMLHttpRequest.prototype.open;
 
-  originalXHR.prototype.getRequestConfig = [];
+  originalXHR.getRequestConfig = [];
 
   function ajaxEventTrigger(event: string) {
     const ajaxEvent = new CustomEvent(event, { detail: this });
