@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Base64 } from 'js-base64';
+import { encode } from 'js-base64';
 import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
@@ -29,7 +29,7 @@ export default function traceSegment(options: CustomOptionsType) {
   // inject interceptor
   xhrInterceptor();
   windowFetch();
-  window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
+  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<any>) => {
     const segment = {
       traceId: uuid(),
       service: options.service + ServiceTag,
@@ -45,12 +45,20 @@ export default function traceSegment(options: CustomOptionsType) {
         event: event.detail,
         startTime: new Date().getTime(),
       });
-      const traceIdStr = String(Base64.encode(segment.traceId));
-      const segmentId = String(Base64.encode(segment.traceSegmentId));
-      const service = String(Base64.encode(segment.service));
-      const instance = String(Base64.encode(segment.serviceInstance));
-      const endpoint = String(Base64.encode(options.pagePath));
-      const peer = String(Base64.encode(location.host));
+
+      const config = event.detail.getRequestConfig;
+      let url = {} as URL;
+      if (config[1].includes('http://') || config[1].includes('https://')) {
+        url = new URL(config[1]);
+      } else {
+        url = config[1];
+      }
+      const traceIdStr = String(encode(segment.traceId));
+      const segmentId = String(encode(segment.traceSegmentId));
+      const service = String(encode(segment.service));
+      const instance = String(encode(segment.serviceInstance));
+      const endpoint = String(encode(options.pagePath));
+      const peer = String(encode(url.pathname));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
@@ -90,11 +98,12 @@ export default function traceSegment(options: CustomOptionsType) {
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
   };
+  //report per 5min
   setInterval(() => {
     if (!segments.length) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
     segments = [];
-  }, 50000);
+  }, 300000);
 }
