@@ -17,7 +17,7 @@
 
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
-import Performance from './performance/index';
+import tracePerf from './performance/index';
 import traceSegment from './trace/segment';
 
 const ClientMonitor = {
@@ -38,20 +38,20 @@ const ClientMonitor = {
     };
     this.errors(this.customOptions);
     if (this.customOptions.autoTracePerf) {
-      this.performance();
+      this.performance(this.customOptions);
     }
 
     traceSegment(this.customOptions);
   },
-  performance() {
+  performance(configs: any) {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      Performance.recordPerf(this.customOptions);
+      tracePerf.recordPerf(configs);
     } else {
       window.addEventListener(
         'load',
         () => {
-          Performance.recordPerf(this.customOptions);
+          tracePerf.recordPerf(configs);
         },
         false,
       );
@@ -61,7 +61,7 @@ const ClientMonitor = {
       window.addEventListener(
         'hashchange',
         () => {
-          Performance.recordPerf(this.customOptions);
+          tracePerf.recordPerf(configs);
         },
         false,
       );
@@ -90,7 +90,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    this.performance();
+    this.performance(this.customOptions);
   },
 };
 
