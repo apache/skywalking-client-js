@@ -24,12 +24,12 @@ import { CustomOptionsType } from '../types';
 import windowFetch from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
-  let segments = [] as any;
-  const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
+  let segments = [] as SegmentFeilds[];
+  const segCollector: { event: XMLHttpRequest; startTime: number }[] = [];
   // inject interceptor
   xhrInterceptor();
   windowFetch();
-  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<any>) => {
+  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
     const segment = {
       traceId: uuid(),
       service: options.service + ServiceTag,
