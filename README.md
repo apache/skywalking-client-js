@@ -52,7 +52,7 @@ The register method supports the following parameters.
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
 |vue|Boolean|Support vue errors monitoring|false|true|
-|traceSDKInternal|Boolean|Support tracing SDK internal|false|false|
+|traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
