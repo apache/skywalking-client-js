@@ -58,7 +58,7 @@ export default function traceSegment(options: CustomOptionsType) {
       const service = String(encode(segment.service));
       const instance = String(encode(segment.serviceInstance));
       const endpoint = String(encode(options.pagePath));
-      const peer = String(encode(url.pathname));
+      const peer = String(encode(url.host));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
@@ -83,8 +83,9 @@ export default function traceSegment(options: CustomOptionsType) {
             isError: event.detail.status === 0 || event.detail.status >= 400 ? true : false, // when requests failed, the status is 0
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: url.pathname,
+            peer: url.host,
           };
+
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
         }
@@ -105,5 +106,5 @@ export default function traceSegment(options: CustomOptionsType) {
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
     segments = [];
-  }, 300000);
+  }, 30000);
 }
