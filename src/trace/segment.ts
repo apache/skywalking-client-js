@@ -25,25 +25,30 @@ import windowFetch from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
   let segments = [] as SegmentFeilds[];
-  const segCollector: { event: XMLHttpRequest; startTime: number }[] = [];
+  const segCollector: { event: XMLHttpRequest; startTime: number; traceId: string; traceSegmentId: string }[] = [];
   // inject interceptor
   xhrInterceptor();
   windowFetch();
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
-    const segment = {
-      traceId: uuid(),
+    let segment = {
+      traceId: '',
       service: options.service + ServiceTag,
       spans: [],
       serviceInstance: options.serviceVersion,
-      traceSegmentId: uuid(),
+      traceSegmentId: '',
     } as SegmentFeilds;
     const xhrState = event.detail.readyState;
 
     // The values of xhrState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
     if (xhrState === ReadyStatus.OPENED) {
+      const traceId = uuid();
+      const traceSegmentId = uuid();
+
       segCollector.push({
         event: event.detail,
         startTime: new Date().getTime(),
+        traceId,
+        traceSegmentId,
       });
 
       const config = event.detail.getRequestConfig;
@@ -53,8 +58,8 @@ export default function traceSegment(options: CustomOptionsType) {
       } else {
         url = config[1];
       }
-      const traceIdStr = String(encode(segment.traceId));
-      const segmentId = String(encode(segment.traceSegmentId));
+      const traceIdStr = String(encode(traceId));
+      const segmentId = String(encode(traceSegmentId));
       const service = String(encode(segment.service));
       const instance = String(encode(segment.serviceInstance));
       const endpoint = String(encode(options.pagePath));
@@ -85,7 +90,11 @@ export default function traceSegment(options: CustomOptionsType) {
             componentId: ComponentId,
             peer: url.host,
           };
-
+          segment = {
+            ...segment,
+            traceId: segCollector[i].traceId,
+            traceSegmentId: segCollector[i].traceSegmentId,
+          };
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
         }
