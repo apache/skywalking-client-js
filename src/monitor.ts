@@ -29,6 +29,7 @@ const ClientMonitor = {
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
     enableSPA: false,
+    traceSDKInternal: false,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {

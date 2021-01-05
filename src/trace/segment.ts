@@ -19,7 +19,7 @@ import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
-import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag } from '../services/constant';
+import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag, ReportTypes } from '../services/constant';
 import { CustomOptionsType } from '../types';
 import windowFetch from '../interceptors/fetch';
 
@@ -38,6 +38,19 @@ export default function traceSegment(options: CustomOptionsType) {
       traceSegmentId: '',
     } as SegmentFeilds;
     const xhrState = event.detail.readyState;
+    const config = event.detail.getRequestConfig;
+    let url = {} as URL;
+    if (config[1].includes('http://') || config[1].includes('https://')) {
+      url = new URL(config[1]);
+    } else {
+      url = config[1];
+    }
+    if (
+      ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
+      !options.traceSDKInternal
+    ) {
+      return;
+    }
 
     // The values of xhrState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
     if (xhrState === ReadyStatus.OPENED) {
@@ -51,13 +64,6 @@ export default function traceSegment(options: CustomOptionsType) {
         traceSegmentId,
       });
 
-      const config = event.detail.getRequestConfig;
-      let url = {} as URL;
-      if (config[1].includes('http://') || config[1].includes('https://')) {
-        url = new URL(config[1]);
-      } else {
-        url = config[1];
-      }
       const traceIdStr = String(encode(traceId));
       const segmentId = String(encode(traceSegmentId));
       const service = String(encode(segment.service));

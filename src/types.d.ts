@@ -27,4 +27,5 @@ export interface CustomOptionsType {
   useFmp?: boolean;
   enableSPA?: boolean;
   vue?: any;
+  traceSDKInternal: boolean;
 }
