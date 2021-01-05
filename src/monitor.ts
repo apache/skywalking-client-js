@@ -22,13 +22,14 @@ import traceSegment from './trace/segment';
 
 const ClientMonitor = {
   customOptions: {
-    collector: '', // report serve
+    collector: location.origin, // report serve
     jsErrors: true, // vue, js and promise errors
     apiErrors: true,
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
     enableSPA: false,
+    traceSDKInternal: false,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {

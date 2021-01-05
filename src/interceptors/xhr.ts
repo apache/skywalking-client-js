@@ -16,13 +16,18 @@
  */
 
 export default function xhrInterceptor() {
-  const originalXHR = window.XMLHttpRequest;
+  const originalXHR = window.XMLHttpRequest as any;
+  const xhrSend = XMLHttpRequest.prototype.send;
+  const xhrOpen = XMLHttpRequest.prototype.open;
+
+  originalXHR.getRequestConfig = [];
 
   function ajaxEventTrigger(event: string) {
     const ajaxEvent = new CustomEvent(event, { detail: this });
 
     window.dispatchEvent(ajaxEvent);
   }
+
   function customizedXHR() {
     const liveXHR = new originalXHR();
 
@@ -33,6 +38,15 @@ export default function xhrInterceptor() {
       },
       false,
     );
+
+    liveXHR.open = function (method: string, url: string) {
+      this.getRequestConfig = arguments;
+
+      return xhrOpen.apply(this, arguments);
+    };
+    liveXHR.send = function (body: any) {
+      return xhrSend.apply(this, arguments);
+    };
 
     return liveXHR;
   }
