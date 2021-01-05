@@ -106,5 +106,5 @@ export default function traceSegment(options: CustomOptionsType) {
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
     segments = [];
-  }, 30000);
+  }, 300000);
 }
