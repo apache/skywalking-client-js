@@ -30,6 +30,7 @@ const ClientMonitor = {
     useFmp: false, // use first meaningful paint
     enableSPA: false,
     traceSDKInternal: false,
+    detailMode: true,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {

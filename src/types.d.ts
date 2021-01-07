@@ -16,7 +16,7 @@
  */
 
 export interface CustomOptionsType {
-  collector: string;
+  collector?: string;
   service: string;
   pagePath: string;
   serviceVersion: string;
@@ -27,5 +27,6 @@ export interface CustomOptionsType {
   useFmp?: boolean;
   enableSPA?: boolean;
   vue?: any;
-  traceSDKInternal: boolean;
+  traceSDKInternal?: boolean;
+  detailMode?: boolean;
 }
