@@ -28,4 +28,5 @@ export interface CustomOptionsType {
   enableSPA?: boolean;
   vue?: any;
   traceSDKInternal?: boolean;
+  detailMode?: boolean;
 }

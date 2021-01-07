@@ -53,6 +53,7 @@ The register method supports the following parameters.
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
 |vue|Boolean|Support vue errors monitoring|false|true|
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
+|detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.

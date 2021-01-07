@@ -95,16 +95,18 @@ export default function traceSegment(options: CustomOptionsType) {
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
             peer: url.host,
-            tags: [
-              {
-                key: 'http.method',
-                value: config[0],
-              },
-              {
-                key: 'url',
-                value: segCollector[i].event.responseURL,
-              },
-            ],
+            tags: options.detailMode
+              ? [
+                  {
+                    key: 'http.method',
+                    value: config[0],
+                  },
+                  {
+                    key: 'url',
+                    value: segCollector[i].event.responseURL,
+                  },
+                ]
+              : undefined,
           };
           segment = {
             ...segment,
