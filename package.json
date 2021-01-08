@@ -48,7 +48,7 @@
     "README.md",
     "index.js",
     "lib/",
-    "licenses"
+    "dist/licenses"
   ],
   "keywords": [
     "skywalking",
