@@ -39,6 +39,7 @@ class AjaxErrors extends Base {
             errorUrl: event.target.responseURL,
             message: event.target.response,
             collector: options.collector,
+            stack: event.type + ':' + event.target.response,
           };
           this.traceInfo();
         }

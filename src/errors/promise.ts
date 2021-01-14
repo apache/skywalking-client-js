@@ -37,8 +37,9 @@ class PromiseErrors extends Base {
           pagePath: options.pagePath,
           category: ErrorsCategory.PROMISE_ERROR,
           grade: GradeTypeEnum.ERROR,
-          errorUrl: url,
-          message: event.reason,
+          errorUrl: url || location.href,
+          message: event.reason.message,
+          stack: event.reason.stack,
           collector: options.collector,
         };
         this.traceInfo();

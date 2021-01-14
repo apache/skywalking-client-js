@@ -51,7 +51,7 @@ The register method supports the following parameters.
 |useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
-|vue|Boolean|Support vue errors monitoring|false|undefined|
+|vue|Vue|Support vue errors monitoring|false|undefined|
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 
