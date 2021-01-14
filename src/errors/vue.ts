@@ -36,7 +36,7 @@ class VueErrors extends Base {
           errorUrl: location.href,
           message: info,
           collector: options.collector,
-          stack: error,
+          stack: error.stack,
         };
         this.traceInfo();
       } catch (error) {

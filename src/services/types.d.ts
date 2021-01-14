@@ -23,7 +23,7 @@ export interface ErrorInfoFeilds {
   errorUrl: string;
   line?: number;
   col?: number;
-  stack?: Error | string;
+  stack?: string;
   firstReportedError?: boolean;
 }
 

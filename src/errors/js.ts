@@ -33,7 +33,7 @@ class JSErrors extends Base {
         col,
         message,
         collector: options.collector,
-        stack: error,
+        stack: error.stack,
       };
       this.traceInfo();
     };
