@@ -43,9 +43,10 @@ class ResourceErrors extends Base {
           pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
-          errorUrl: target.src || target.href,
+          errorUrl: target.src || target.href || location.href,
           message: `load ${target.tagName} resource error`,
           collector: options.collector,
+          stack: `load ${target.tagName} resource error`,
         };
         this.traceInfo();
       } catch (error) {
