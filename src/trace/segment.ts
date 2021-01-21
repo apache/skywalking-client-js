@@ -43,10 +43,8 @@ export default function traceSegment(options: CustomOptionsType) {
     if (config[1].startsWith('http://') || config[1].startsWith('https://') || config[1].startsWith('//')) {
       url = new URL(config[1]);
     } else {
-      url = {
-        host: window.location.host,
-        pathname: config[1],
-      }
+      url = new URL(window.location.href);
+      url.pathname = config[1];
     }
     if (
       ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
