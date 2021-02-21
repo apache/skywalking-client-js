@@ -1,5 +1,10 @@
 # Changes
 
+## 0.4.0
+
+1. Update stack and message in logs.
+2. Fix wrong URL when using relative path in xhr.
+
 ## 0.3.0
 
 1. Support tracing starting at the browser.
