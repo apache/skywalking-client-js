@@ -35,23 +35,23 @@ class PagePerf {
 
       return {
         redirectTime,
-        dnsTime: timing.domainLookupEnd - timing.domainLookupStart,
-        ttfbTime: timing.responseStart - timing.requestStart, // Time to First Byte
-        tcpTime: timing.connectEnd - timing.connectStart,
-        transTime: timing.responseEnd - timing.responseStart,
-        domAnalysisTime: timing.domInteractive - timing.responseEnd,
-        fptTime: timing.responseEnd - timing.fetchStart, // First Paint Time or Blank Screen Time
-        domReadyTime: timing.domContentLoadedEventEnd - timing.fetchStart,
-        loadPageTime: timing.loadEventStart - timing.fetchStart, // Page full load time
+        dnsTime: parseInt(String(timing.domainLookupEnd - timing.domainLookupStart), 10),
+        ttfbTime: parseInt(String(timing.responseStart - timing.requestStart), 10), // Time to First Byte
+        tcpTime: parseInt(String(timing.connectEnd - timing.connectStart), 10),
+        transTime: parseInt(String(timing.responseEnd - timing.responseStart), 10),
+        domAnalysisTime: parseInt(String(timing.domInteractive - timing.responseEnd), 10),
+        fptTime: parseInt(String(timing.responseEnd - timing.fetchStart), 10), // First Paint Time or Blank Screen Time
+        domReadyTime: parseInt(String(timing.domContentLoadedEventEnd - timing.fetchStart), 10),
+        loadPageTime: parseInt(String(timing.loadEventStart - timing.fetchStart), 10), // Page full load time
         // Synchronous load resources in the page
-        resTime: timing.loadEventStart - timing.domContentLoadedEventEnd,
+        resTime: parseInt(String(timing.loadEventStart - timing.domContentLoadedEventEnd), 10),
         // Only valid for HTTPS
         sslTime:
           location.protocol === 'https:' && timing.secureConnectionStart > 0
-            ? timing.connectEnd - timing.secureConnectionStart
+            ? parseInt(String(timing.connectEnd - timing.secureConnectionStart), 10)
             : undefined,
-        ttlTime: timing.domInteractive - timing.fetchStart, // time to interact
-        firstPackTime: timing.responseStart - timing.domainLookupStart, // first pack time
+        ttlTime: parseInt(String(timing.domInteractive - timing.fetchStart), 10), // time to interact
+        firstPackTime: parseInt(String(timing.responseStart - timing.domainLookupStart), 10), // first pack time
         fmpTime: 0, // First Meaningful Paint
       };
     } catch (e) {
