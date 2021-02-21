@@ -39,12 +39,18 @@ export default function xhrInterceptor() {
       false,
     );
 
-    liveXHR.open = function (method: string, url: string) {
+    liveXHR.open = function (
+      method: string,
+      url: string,
+      async: boolean,
+      username?: string | null,
+      password?: string | null,
+    ) {
       this.getRequestConfig = arguments;
 
       return xhrOpen.apply(this, arguments);
     };
-    liveXHR.send = function (body: any) {
+    liveXHR.send = function (body?: Document | BodyInit | null) {
       return xhrSend.apply(this, arguments);
     };
 
