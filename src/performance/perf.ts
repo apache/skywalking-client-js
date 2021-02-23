@@ -1,4 +1,3 @@
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -17,7 +16,6 @@
  */
 import { IPerfDetail } from './type';
 class PagePerf {
-
   public getPerfTiming(): IPerfDetail {
     try {
       if (!window.performance || !window.performance.timing) {
@@ -48,8 +46,10 @@ class PagePerf {
         // Synchronous load resources in the page
         resTime: parseInt(String(timing.loadEventStart - timing.domContentLoadedEventEnd), 10),
         // Only valid for HTTPS
-        sslTime: location.protocol === 'https:' && timing.secureConnectionStart > 0 ?
-          parseInt(String(timing.connectEnd - timing.secureConnectionStart), 10) : undefined,
+        sslTime:
+          location.protocol === 'https:' && timing.secureConnectionStart > 0
+            ? parseInt(String(timing.connectEnd - timing.secureConnectionStart), 10)
+            : undefined,
         ttlTime: parseInt(String(timing.domInteractive - timing.fetchStart), 10), // time to interact
         firstPackTime: parseInt(String(timing.responseStart - timing.domainLookupStart), 10), // first pack time
         fmpTime: 0, // First Meaningful Paint

@@ -33,9 +33,10 @@ class VueErrors extends Base {
           pagePath: options.pagePath,
           category: ErrorsCategory.VUE_ERROR,
           grade: GradeTypeEnum.ERROR,
-          errorUrl: '',
+          errorUrl: location.href,
           message: info,
           collector: options.collector,
+          stack: error.stack,
         };
         this.traceInfo();
       } catch (error) {

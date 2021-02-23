@@ -14,52 +14,77 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Base64 } from 'js-base64';
+import { encode } from 'js-base64';
 import xhrInterceptor from '../interceptors/xhr';
 import uuid from '../services/uuid';
 import Report from '../services/report';
 import { SegmentFeilds, SpanFeilds } from './type';
-import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag } from '../services/constant';
+import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag, ReportTypes } from '../services/constant';
 import { CustomOptionsType } from '../types';
 import windowFetch from '../interceptors/fetch';
 
 export default function traceSegment(options: CustomOptionsType) {
-  let segments = [] as any;
-  const segCollector: { event: XMLHttpRequest; startTime: number }[] | any = [];
+  let segments = [] as SegmentFeilds[];
+  const segCollector: { event: XMLHttpRequest; startTime: number; traceId: string; traceSegmentId: string }[] = [];
   // inject interceptor
   xhrInterceptor();
   windowFetch();
-  window.addEventListener('xhrReadyStateChange', (event: CustomEvent) => {
-    const segment = {
-      traceId: uuid(),
+  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
+    let segment = {
+      traceId: '',
       service: options.service + ServiceTag,
       spans: [],
       serviceInstance: options.serviceVersion,
-      traceSegmentId: uuid(),
+      traceSegmentId: '',
     } as SegmentFeilds;
     const xhrState = event.detail.readyState;
+    const config = event.detail.getRequestConfig;
+    let url = {} as URL;
+    if (config[1].startsWith('http://') || config[1].startsWith('https://') || config[1].startsWith('//')) {
+      url = new URL(config[1]);
+    } else {
+      url = new URL(window.location.href);
+      url.pathname = config[1];
+    }
+    if (
+      ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
+      !options.traceSDKInternal
+    ) {
+      return;
+    }
 
     // The values of xhrState are from https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
     if (xhrState === ReadyStatus.OPENED) {
+      const traceId = uuid();
+      const traceSegmentId = uuid();
+
       segCollector.push({
         event: event.detail,
         startTime: new Date().getTime(),
+        traceId,
+        traceSegmentId,
       });
-      const traceIdStr = String(Base64.encode(segment.traceId));
-      const segmentId = String(Base64.encode(segment.traceSegmentId));
-      const service = String(Base64.encode(segment.service + ServiceTag));
-      const instance = String(Base64.encode(segment.serviceInstance));
-      const endpoint = String(Base64.encode(options.pagePath));
-      const peer = String(Base64.encode(location.host));
+
+      const traceIdStr = String(encode(traceId));
+      const segmentId = String(encode(traceSegmentId));
+      const service = String(encode(segment.service));
+      const instance = String(encode(segment.serviceInstance));
+      const endpoint = String(encode(options.pagePath));
+      const peer = String(encode(url.host));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
       event.detail.setRequestHeader('sw8', values);
     }
+
     if (xhrState === ReadyStatus.DONE) {
       const endTime = new Date().getTime();
       for (let i = 0; i < segCollector.length; i++) {
-        if (segCollector[i].event.status) {
+        if (segCollector[i].event.readyState === ReadyStatus.DONE) {
+          let url = {} as URL;
+          if (segCollector[i].event.status) {
+            url = new URL(segCollector[i].event.responseURL);
+          }
           const exitSpan: SpanFeilds = {
             operationName: options.pagePath,
             startTime: segCollector[i].startTime,
@@ -67,10 +92,27 @@ export default function traceSegment(options: CustomOptionsType) {
             spanId: segment.spans.length,
             spanLayer: SpanLayer,
             spanType: SpanType,
-            isError: event.detail.status >= 400 ? true : false,
-            parentSpanId: segment.spans.length,
+            isError: event.detail.status === 0 || event.detail.status >= 400 ? true : false, // when requests failed, the status is 0
+            parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: segCollector[i].event.responseURL.split('://')[1],
+            peer: url.host,
+            tags: options.detailMode
+              ? [
+                  {
+                    key: 'http.method',
+                    value: config[0],
+                  },
+                  {
+                    key: 'url',
+                    value: segCollector[i].event.responseURL,
+                  },
+                ]
+              : undefined,
+          };
+          segment = {
+            ...segment,
+            traceId: segCollector[i].traceId,
+            traceSegmentId: segCollector[i].traceSegmentId,
           };
           segment.spans.push(exitSpan);
           segCollector.splice(i, 1);
@@ -85,11 +127,12 @@ export default function traceSegment(options: CustomOptionsType) {
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
   };
+  //report per 5min
   setInterval(() => {
     if (!segments.length) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
     segments = [];
-  }, 50000);
+  }, 300000);
 }

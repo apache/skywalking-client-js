@@ -41,7 +41,7 @@ class Report {
 
     fetch(sendRequest)
       .then((response) => {
-        if (response.status >= 400) {
+        if (response.status >= 400 || response.status === 0) {
           throw new Error('Something went wrong on api server!');
         }
       })

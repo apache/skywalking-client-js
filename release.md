@@ -1,7 +1,7 @@
 # Release Guide
 All committer should follow these steps to do release for this repo.
 
-1. Update the [CHANGES.md](CHANGES.md) to prepare the official release.
+1. Update the [package version](package.json) and [CHANGES.md](CHANGES.md) to prepare the official release.
 
 2. Package the source release.
 
@@ -144,7 +144,7 @@ SkyWalking Resources:
 
 6. publish package to NPM
 
-Login to NPM, the user name is `apache-skywalking` and the password has been sent to `private@skwalking.apache.org`.
+Login to NPM, the username is `apache-skywalking` and the password has been sent to `private@skwalking.apache.org`.
 
 ```bash
 > npm login

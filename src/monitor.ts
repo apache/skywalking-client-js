@@ -17,18 +17,20 @@
 
 import { CustomOptionsType } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
-import Performance from './performance/index';
+import tracePerf from './performance/index';
 import traceSegment from './trace/segment';
 
 const ClientMonitor = {
   customOptions: {
-    collector: '', // report serve
+    collector: location.origin, // report serve
     jsErrors: true, // vue, js and promise errors
     apiErrors: true,
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
     useFmp: false, // use first meaningful paint
     enableSPA: false,
+    traceSDKInternal: false,
+    detailMode: true,
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
@@ -37,21 +39,21 @@ const ClientMonitor = {
       ...configs,
     };
     this.errors(this.customOptions);
-    if (this.customOptions.autoTracePerf) {
-      this.performance();
+    if (!this.customOptions.enableSPA) {
+      this.performance(this.customOptions);
     }
 
     traceSegment(this.customOptions);
   },
-  performance() {
+  performance(configs: any) {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      Performance.recordPerf(this.customOptions);
+      tracePerf.recordPerf(configs);
     } else {
       window.addEventListener(
         'load',
         () => {
-          Performance.recordPerf(this.customOptions);
+          tracePerf.recordPerf(configs);
         },
         false,
       );
@@ -61,7 +63,7 @@ const ClientMonitor = {
       window.addEventListener(
         'hashchange',
         () => {
-          Performance.recordPerf(this.customOptions);
+          tracePerf.recordPerf(configs);
         },
         false,
       );
@@ -90,7 +92,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    this.performance();
+    this.performance(this.customOptions);
   },
 };
 

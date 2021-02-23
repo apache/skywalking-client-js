@@ -14,7 +14,7 @@ Apache SkyWalking Client JS
 The `skywalking-client-js` runtime library is available at [npm](https://www.npmjs.com/package/skywalking-client-js).
 
 ```
-npm install skywalking-client-js --save-dev
+npm install skywalking-client-js --save
 ```
 
 ## Quick Start
@@ -51,7 +51,9 @@ The register method supports the following parameters.
 |useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
-|vue|Boolean|Support vue errors monitoring|false|true|
+|vue|Vue|Support vue errors monitoring|false|undefined|
+|traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
+|detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
@@ -110,6 +112,9 @@ See more information, [click here](https://github.com/SkyAPMTest/skywalking-clie
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
 * Join `#skywalking` channel at [Apache Slack](https://join.slack.com/t/the-asf/shared_invite/enQtNzc2ODE3MjI1MDk1LTAyZGJmNTg1NWZhNmVmOWZjMjA2MGUyOGY4MjE5ZGUwOTQxY2Q3MDBmNTM5YTllNGU4M2QyMzQ4M2U4ZjQ5YmY). If the linke is not working, find the latest one at [Apache INFRA WIKI](https://cwiki.apache.org/confluence/display/INFRA/Slack+Guest+Invites).
 * QQ Group: 392443393, 901167865
+
+# Release Guide
+All committers should follow [Release Guide](release.md) to publish the official release.
 
 # License
 Apache 2.0
