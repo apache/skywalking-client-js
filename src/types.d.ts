@@ -29,4 +29,5 @@ export interface CustomOptionsType {
   vue?: any;
   traceSDKInternal?: boolean;
   detailMode?: boolean;
+  originAllowlist?: string | RegExp | (string | RegExp)[];
 }

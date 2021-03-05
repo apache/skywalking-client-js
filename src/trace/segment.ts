@@ -46,6 +46,25 @@ export default function traceSegment(options: CustomOptionsType) {
       url = new URL(window.location.href);
       url.pathname = config[1];
     }
+    if (options.originAllowlist) {
+      if (!Array.isArray(options.originAllowlist)) {
+        options.originAllowlist = [options.originAllowlist];
+      }
+
+      const traced = options.originAllowlist.some((rule) => {
+        if (typeof rule === 'string') {
+          if (rule === url.origin) {
+            return true;
+          }
+        } else if (rule instanceof RegExp) {
+          if (rule.test(url.origin)) {
+            return true;
+          }
+        }
+      });
+
+      if (!traced) return;
+    }
     if (
       ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
       !options.traceSDKInternal
