@@ -46,12 +46,12 @@ export default function traceSegment(options: CustomOptionsType) {
       url = new URL(window.location.href);
       url.pathname = config[1];
     }
-    if (options.originWhitelist) {
-      if (!Array.isArray(options.originWhitelist)) {
-        options.originWhitelist = [options.originWhitelist];
+    if (options.originAllowlist) {
+      if (!Array.isArray(options.originAllowlist)) {
+        options.originAllowlist = [options.originAllowlist];
       }
 
-      const traced = options.originWhitelist.some((rule) => {
+      const traced = options.originAllowlist.some((rule) => {
         if (typeof rule === 'string') {
           if (rule === url.origin) {
             return true;
