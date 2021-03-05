@@ -43,7 +43,7 @@ export default function traceSegment(options: CustomOptionsType) {
     if (config[1].startsWith('http://') || config[1].startsWith('https://')) {
       url = new URL(config[1]);
     } else if (config[1].startsWith('//')) {
-      url = new URL(`${location.protocol}${config[1]}`);
+      url = new URL(`${window.location.protocol}${config[1]}`);
     } else {
       url = new URL(window.location.href);
       url.pathname = config[1];
