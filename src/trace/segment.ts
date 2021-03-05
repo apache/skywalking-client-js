@@ -40,8 +40,10 @@ export default function traceSegment(options: CustomOptionsType) {
     const xhrState = event.detail.readyState;
     const config = event.detail.getRequestConfig;
     let url = {} as URL;
-    if (config[1].startsWith('http://') || config[1].startsWith('https://') || config[1].startsWith('//')) {
+    if (config[1].startsWith('http://') || config[1].startsWith('https://')) {
       url = new URL(config[1]);
+    } else if (config[1].startsWith('//')) {
+      url = new URL(`${location.protocol}${config[1]}`);
     } else {
       url = new URL(window.location.href);
       url.pathname = config[1];
