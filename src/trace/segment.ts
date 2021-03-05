@@ -51,17 +51,19 @@ export default function traceSegment(options: CustomOptionsType) {
         options.originWhitelist = [options.originWhitelist];
       }
 
-      for (const rule of options.originWhitelist) {
+      const traced = options.originWhitelist.some((rule) => {
         if (typeof rule === 'string') {
           if (rule === url.origin) {
-            return;
+            return true;
           }
         } else if (rule instanceof RegExp) {
           if (rule.test(url.origin)) {
-            return;
+            return true;
           }
         }
-      }
+      });
+
+      if (!traced) return;
     }
     if (
       ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
