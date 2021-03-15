@@ -54,7 +54,7 @@ The register method supports the following parameters.
 |vue|Vue|Support vue errors monitoring|false|undefined|
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
-|originAllowList|(string \| RegExp)[]|The allow list to determine activating tracing.|false|-|
+|noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|-|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
