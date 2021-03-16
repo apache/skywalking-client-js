@@ -23,10 +23,10 @@ npm install skywalking-client-js --save
 
 User could use `register` method to load and report data automatically.
 
-```
+```js
 import ClientMonitor from 'skywalking-client-js';
 ```
-```
+```js
 // Report collected data to `http:// + window.location.host + /browser/perfData` in default
 ClientMonitor.register({
   collector: 'http://127.0.0.1:8080',
@@ -54,6 +54,7 @@ The register method supports the following parameters.
 |vue|Vue|Support vue errors monitoring|false|undefined|
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
+|noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
@@ -62,7 +63,7 @@ Use the `setPerformance` method to report metrics at the moment of page loaded o
 2. Call `ClientMonitor.setPerformance(object)` method to report
 
 - Examples
-```
+```js
 import ClientMonitor from 'skywalking-client-js';
 
 ClientMonitor.setPerformance({

@@ -31,6 +31,7 @@ const ClientMonitor = {
     enableSPA: false,
     traceSDKInternal: false,
     detailMode: true,
+    noTraceOrigins: [],
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
