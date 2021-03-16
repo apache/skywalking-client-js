@@ -48,21 +48,22 @@ export default function traceSegment(options: CustomOptionsType) {
       url = new URL(window.location.href);
       url.pathname = config[1];
     }
-    if (Array.isArray(options.noTraceOrigins)) {
-      const noTrace = options.noTraceOrigins.some((rule) => {
-        if (typeof rule === 'string') {
-          if (rule === url.origin) {
-            return true;
-          }
-        } else if (rule instanceof RegExp) {
-          if (rule.test(url.origin)) {
-            return true;
-          }
-        }
-      });
 
-      if (noTrace) return;
+    const noTrace = options.noTraceOrigins.some((rule) => {
+      if (typeof rule === 'string') {
+        if (rule === url.origin) {
+          return true;
+        }
+      } else if (rule instanceof RegExp) {
+        if (rule.test(url.origin)) {
+          return true;
+        }
+      }
+    });
+    if (noTrace) {
+      return;
     }
+
     if (
       ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
       !options.traceSDKInternal
