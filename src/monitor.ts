@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { CustomOptionsType } from './types';
-import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors } from './errors/index';
+import { CustomOptionsType, CustomReportOptions } from './types';
+import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
 import traceSegment from './trace/segment';
 
@@ -39,7 +39,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    this.errors(this.customOptions);
+    this.catchErrors(this.customOptions);
     if (!this.customOptions.enableSPA) {
       this.performance(this.customOptions);
     }
@@ -70,7 +70,7 @@ const ClientMonitor = {
       );
     }
   },
-  errors(options: CustomOptionsType) {
+  catchErrors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion, collector } = options;
 
     if (options.jsErrors) {
@@ -94,6 +94,9 @@ const ClientMonitor = {
       ...configs,
     };
     this.performance(this.customOptions);
+  },
+  reportFrameErrors(configs: CustomReportOptions, error: Error) {
+    FrameErrors.handleErrors(configs, error);
   },
 };
 

@@ -15,11 +15,7 @@
  * limitations under the License.
  */
 
-export interface CustomOptionsType {
-  collector?: string;
-  service: string;
-  pagePath: string;
-  serviceVersion: string;
+export interface CustomOptionsType extends CustomReportOptions {
   jsErrors?: boolean;
   apiErrors?: boolean;
   resourceErrors?: boolean;
@@ -30,4 +26,11 @@ export interface CustomOptionsType {
   traceSDKInternal?: boolean;
   detailMode?: boolean;
   noTraceOrigins?: (string | RegExp)[];
+}
+
+export interface CustomReportOptions {
+  collector?: string;
+  service: string;
+  pagePath: string;
+  serviceVersion: string;
 }

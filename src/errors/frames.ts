@@ -15,11 +15,28 @@
  * limitations under the License.
  */
 
-import JSErrors from './js';
-import PromiseErrors from './promise';
-import AjaxErrors from './ajax';
-import ResourceErrors from './resource';
-import VueErrors from './vue';
-import FrameErrors from './frames';
+import uuid from '../services/uuid';
+import Base from '../services/base';
+import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
-export { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors };
+class FrameErrors extends Base {
+  public handleErrors(
+    options: { service: string; serviceVersion: string; pagePath: string; collector?: string },
+    error: Error,
+  ) {
+    this.logInfo = {
+      uniqueId: uuid(),
+      service: options.service,
+      serviceVersion: options.serviceVersion,
+      pagePath: options.pagePath,
+      category: ErrorsCategory.JS_ERROR,
+      grade: GradeTypeEnum.ERROR,
+      errorUrl: error.name || location.href,
+      message: error.message,
+      collector: options.collector || location.origin,
+      stack: error.stack,
+    };
+    this.traceInfo();
+  }
+}
+export default new FrameErrors();
