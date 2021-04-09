@@ -87,7 +87,7 @@ In the initialized configuration item, set enableSPA to true, which will turn on
 2. Manual reporting  
 This method can be used in all single page application scenarios. This method can be used if the first method is invalid.    
 The SDK provides a set page method to manually update the page name when data is reported. When this method is called, the page PV will be re reported by default. For details, see setPerformance().  
-```
+```js
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
     collector: 'http://127.0.0.1:8080',
@@ -102,6 +102,78 @@ app.on('routeChange', function (next) {
 ## Tracing range of data requests in the browser
 
 Support tracking these([XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) and [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)) two modes of data requests. At the same time, Support tracking libraries and tools that base on XMLHttpRequest and fetch, such as [Axios](https://github.com/axios/axios), [SuperAgent](https://github.com/visionmedia/superagent), [OpenApi](https://www.openapis.org/) and so on.
+
+## Catching errors in frames, including React, Angular, Vue.
+
+```js
+// Angular
+import { ErrorHandler } from '@angular/core';
+import ClientMonitor from 'skywalking-client-js';
+export class AppGlobalErrorhandler implements ErrorHandler {
+  handleError(error) {
+    ClientMonitor.reportFrameErrors({
+      collector: 'http://127.0.0.1',
+      service: 'angular-demo',
+      pagePath: '/app',
+      serviceVersion: 'v1.0.0',
+    }, error);
+  }
+}
+@NgModule({
+  ...
+  providers: [{provide: ErrorHandler, useClass: AppGlobalErrorhandler}]
+})
+class AppModule {}
+```
+
+```js
+// React
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error) {
+    // Update state so the next render will show the fallback UI.
+    return { hasError: true };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // You can also log the error to an error reporting service
+    ClientMonitor.reportFrameErrors({
+      collector: 'http://127.0.0.1',
+      service: 'react-demo',
+      pagePath: '/app',
+      serviceVersion: 'v1.0.0',
+    }, error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return <h1>Something went wrong.</h1>;
+    }
+
+    return this.props.children; 
+  }
+}
+<ErrorBoundary>
+  <MyWidget />
+</ErrorBoundary>
+```
+
+```js
+// Vue
+Vue.config.errorHandler = (error) => {
+  ClientMonitor.reportFrameErrors({
+    collector: 'http://127.0.0.1',
+    service: 'vue-demo',
+    pagePath: '/app',
+    serviceVersion: 'v1.0.0',
+  }, error);
+}
+```
 
 # Demo project
 
