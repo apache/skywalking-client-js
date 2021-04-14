@@ -1,0 +1,118 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import { encode } from 'js-base64';
+import uuid from '../../services/uuid';
+import { SegmentFeilds, SpanFeilds } from '../type';
+import { CustomOptionsType } from '../../types';
+import { SpanLayer, SpanType, ComponentId, ServiceTag, ReportTypes } from '../../services/constant';
+
+export default function windowFetch(options: CustomOptionsType, segments: SegmentFeilds[]) {
+  const fetch: any = window.fetch;
+  let segment = {
+    traceId: '',
+    service: options.service + ServiceTag,
+    spans: [],
+    serviceInstance: options.serviceVersion,
+    traceSegmentId: '',
+  } as SegmentFeilds;
+  let url = {} as URL;
+
+  window.fetch = (...args) =>
+    (async (args: any) => {
+      const startTime = new Date().getTime();
+      const traceId = uuid();
+      const traceSegmentId = uuid();
+
+      if (args[0].startsWith('http://') || args[0].startsWith('https://')) {
+        url = new URL(args[0]);
+      } else if (args[0].startsWith('//')) {
+        url = new URL(`${window.location.protocol}${args[0]}`);
+      } else {
+        url = new URL(window.location.href);
+        url.pathname = args[0];
+      }
+
+      const noTrace = options.noTraceOrigins.some((rule: string | RegExp) => {
+        if (typeof rule === 'string') {
+          if (rule === url.origin) {
+            return true;
+          }
+        } else if (rule instanceof RegExp) {
+          if (rule.test(url.origin)) {
+            return true;
+          }
+        }
+      });
+      const hasTrace = !(
+        noTrace ||
+        (([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
+          !options.traceSDKInternal)
+      );
+
+      if (hasTrace) {
+        const traceIdStr = String(encode(traceId));
+        const segmentId = String(encode(traceSegmentId));
+        const service = String(encode(segment.service));
+        const instance = String(encode(segment.serviceInstance));
+        const endpoint = String(encode(options.pagePath));
+        const peer = String(encode(url.host));
+        const index = segment.spans.length;
+        const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
+
+        args[1].headers['sw8'] = values;
+      }
+
+      const result = await fetch(...args);
+
+      if (hasTrace) {
+        const endTime = new Date().getTime();
+        const exitSpan: SpanFeilds = {
+          operationName: options.pagePath,
+          startTime: startTime,
+          endTime,
+          spanId: segment.spans.length,
+          spanLayer: SpanLayer,
+          spanType: SpanType,
+          isError: result.status === 0 || result.status >= 400 ? true : false, // when requests failed, the status is 0
+          parentSpanId: segment.spans.length - 1,
+          componentId: ComponentId,
+          peer: result.url.host,
+          tags: options.detailMode
+            ? [
+                {
+                  key: 'http.method',
+                  value: args[1].method,
+                },
+                {
+                  key: 'url',
+                  value: result.url,
+                },
+              ]
+            : undefined,
+        };
+        segment = {
+          ...segment,
+          traceId: traceId,
+          traceSegmentId: traceSegmentId,
+        };
+        segment.spans.push(exitSpan);
+        segments.push(segment);
+      }
+
+      return result;
+    })(args);
+}
