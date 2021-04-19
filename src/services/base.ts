@@ -49,33 +49,9 @@ export default class Base {
 
   private handleRecordError() {
     try {
-      if (!this.logInfo.message) {
-        return;
-      }
-      const errorInfo = this.handleErrorInfo();
-
-      Task.addTask(errorInfo);
+      Task.addTask(this.logInfo);
     } catch (error) {
       throw error;
     }
-  }
-
-  private handleErrorInfo() {
-    let message = `error category:${this.logInfo.category}\r\n log info:${this.logInfo.message}\r\n
-      error url: ${this.logInfo.errorUrl}\r\n `;
-
-    switch (this.logInfo.category) {
-      case ErrorsCategory.JS_ERROR:
-        message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
-        break;
-      default:
-        message;
-        break;
-    }
-    const recordInfo = {
-      ...this.logInfo,
-      message,
-    };
-    return recordInfo;
   }
 }
