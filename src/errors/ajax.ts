@@ -29,6 +29,8 @@ class AjaxErrors extends Base {
     const xhrEvent = (event: any) => {
       try {
         if (event && event.currentTarget && (event.currentTarget.status >= 400 || event.currentTarget.status === 0)) {
+          const response = 'net::ERR_EMPTY_RESPONSE';
+
           this.logInfo = {
             uniqueId: uuid(),
             service: options.service,
@@ -36,10 +38,10 @@ class AjaxErrors extends Base {
             pagePath: options.pagePath,
             category: ErrorsCategory.AJAX_ERROR,
             grade: GradeTypeEnum.ERROR,
-            errorUrl: event.target.responseURL,
-            message: event.target.response,
+            errorUrl: event.target.getRequestConfig[1],
+            message: event.target.response || response,
             collector: options.collector,
-            stack: event.type + ':' + event.target.response,
+            stack: event.type + ': ' + (event.target.response || response),
           };
           this.traceInfo();
         }
