@@ -17,7 +17,7 @@
 
 import uuid from '../services/uuid';
 import Base from '../services/base';
-import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { GradeTypeEnum, ErrorsCategory, ReportTypes } from '../services/constant';
 
 class AjaxErrors extends Base {
   // get http error info
@@ -31,6 +31,9 @@ class AjaxErrors extends Base {
         if (event && event.currentTarget && (event.currentTarget.status >= 400 || event.currentTarget.status === 0)) {
           const response = 'net::ERR_EMPTY_RESPONSE';
 
+          if (event.target && event.target.getRequestConfig[1] === options.collector + ReportTypes.ERRORS) {
+            return;
+          }
           this.logInfo = {
             uniqueId: uuid(),
             service: options.service,

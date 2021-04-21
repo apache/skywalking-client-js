@@ -30,7 +30,7 @@ class TaskQueue {
     if (!(this.queues && this.queues.length)) {
       return;
     }
-    new Report('ERROR', this.collector).sendByXhr(this.queues);
+    new Report('ERRORS', this.collector).sendByXhr(this.queues);
     this.queues = [];
   }
 }
