@@ -41,17 +41,13 @@ export default class Base {
       jsErrorPv = true;
       this.logInfo.firstReportedError = true;
     }
-    this.handleRecordError();
+    const collector = this.logInfo.collector;
+
+    delete this.logInfo.collector;
+    Task.addTask(this.logInfo, collector);
+
     setTimeout(() => {
       Task.fireTasks();
-    }, 100);
-  }
-
-  private handleRecordError() {
-    try {
-      Task.addTask(this.logInfo);
-    } catch (error) {
-      throw error;
-    }
+    }, 60000);
   }
 }
