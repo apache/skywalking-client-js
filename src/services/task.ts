@@ -14,23 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { ErrorInfoFeilds, ReportFields } from './types';
 import Report from './report';
 
 class TaskQueue {
-  private queues: any[] = [];
+  private queues: ((ErrorInfoFeilds & ReportFields) | undefined)[] = [];
+  private collector: string = '';
 
-  public addTask(data: any) {
-    this.queues.push({ data });
+  public addTask(data: ErrorInfoFeilds & ReportFields, collector: string) {
+    this.queues.push(data);
+    this.collector = collector;
   }
 
   public fireTasks() {
-    if (!this.queues || !this.queues.length) {
+    if (!(this.queues && this.queues.length)) {
       return;
     }
-    const item = this.queues[0];
-    new Report('ERROR', item.data.collector).sendByXhr(item.data);
-    this.queues.splice(0, 1);
-    this.fireTasks();
+    new Report('ERRORS', this.collector).sendByXhr(this.queues);
+    this.queues = [];
   }
 }
 

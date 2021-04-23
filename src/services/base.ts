@@ -41,41 +41,13 @@ export default class Base {
       jsErrorPv = true;
       this.logInfo.firstReportedError = true;
     }
-    this.handleRecordError();
+    const collector = this.logInfo.collector;
+
+    delete this.logInfo.collector;
+    Task.addTask(this.logInfo, collector);
+    // report errors within 1min
     setTimeout(() => {
       Task.fireTasks();
-    }, 100);
-  }
-
-  private handleRecordError() {
-    try {
-      if (!this.logInfo.message) {
-        return;
-      }
-      const errorInfo = this.handleErrorInfo();
-
-      Task.addTask(errorInfo);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  private handleErrorInfo() {
-    let message = `error category:${this.logInfo.category}\r\n log info:${this.logInfo.message}\r\n
-      error url: ${this.logInfo.errorUrl}\r\n `;
-
-    switch (this.logInfo.category) {
-      case ErrorsCategory.JS_ERROR:
-        message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
-        break;
-      default:
-        message;
-        break;
-    }
-    const recordInfo = {
-      ...this.logInfo,
-      message,
-    };
-    return recordInfo;
+    }, 60000);
   }
 }

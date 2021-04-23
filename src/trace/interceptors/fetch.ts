@@ -73,6 +73,10 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         const index = segment.spans.length;
         const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
+        if (!args[1]) {
+          args[1] = {};
+          args[1].headers = {};
+        }
         args[1].headers['sw8'] = values;
       }
 

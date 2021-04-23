@@ -51,7 +51,6 @@ class Report {
   }
 
   public sendByXhr(data: any) {
-    delete data.collector;
     if (!this.url) {
       return;
     }
