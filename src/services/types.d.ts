@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-export interface ErrorInfoFeilds {
+export interface ErrorInfoFields {
   uniqueId: string;
   category: string;
   grade: string;

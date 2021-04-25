@@ -18,11 +18,11 @@
 import xhrInterceptor from './interceptors/xhr';
 import windowFetch from './interceptors/fetch';
 import Report from '../services/report';
-import { SegmentFeilds } from './type';
+import { SegmentFields } from './type';
 import { CustomOptionsType } from '../types';
 
 export default function traceSegment(options: CustomOptionsType) {
-  let segments = [] as SegmentFeilds[];
+  let segments = [] as SegmentFields[];
   // inject interceptor
   xhrInterceptor(options, segments);
   windowFetch(options, segments);

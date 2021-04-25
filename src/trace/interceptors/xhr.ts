@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { SpanLayer, SpanType, ReadyStatus, ComponentId, ServiceTag, ReportTypes } from '../../services/constant';
+import { ComponentId, ReadyStatus, ReportTypes, ServiceTag, SpanLayer, SpanType } from '../../services/constant';
 import uuid from '../../services/uuid';
 import { encode } from 'js-base64';
 import { CustomOptionsType } from '../../types';
-import { SegmentFeilds, SpanFeilds } from '../type';
+import { SegmentFields, SpanFields } from '../type';
 
-export default function xhrInterceptor(options: CustomOptionsType, segments: SegmentFeilds[]) {
+export default function xhrInterceptor(options: CustomOptionsType, segments: SegmentFields[]) {
   const originalXHR = window.XMLHttpRequest as any;
   const xhrSend = XMLHttpRequest.prototype.send;
   const xhrOpen = XMLHttpRequest.prototype.open;
@@ -61,6 +61,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
 
     return liveXHR;
   }
+
   (window as any).XMLHttpRequest = customizedXHR;
 
   const segCollector: { event: XMLHttpRequest; startTime: number; traceId: string; traceSegmentId: string }[] = [];
@@ -72,7 +73,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       spans: [],
       serviceInstance: options.serviceVersion,
       traceSegmentId: '',
-    } as SegmentFeilds;
+    } as SegmentFields;
     const xhrState = event.detail.readyState;
     const config = event.detail.getRequestConfig;
     let url = {} as URL;
@@ -101,7 +102,9 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
     }
 
     if (
-      ([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
+      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
+        url.pathname,
+      ) &&
       !options.traceSDKInternal
     ) {
       return;
@@ -139,14 +142,14 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
           if (segCollector[i].event.status) {
             url = new URL(segCollector[i].event.responseURL);
           }
-          const exitSpan: SpanFeilds = {
+          const exitSpan: SpanFields = {
             operationName: options.pagePath,
             startTime: segCollector[i].startTime,
             endTime,
             spanId: segment.spans.length,
             spanLayer: SpanLayer,
             spanType: SpanType,
-            isError: event.detail.status === 0 || event.detail.status >= 400 ? true : false, // when requests failed, the status is 0
+            isError: event.detail.status === 0 || event.detail.status >= 400, // when requests failed, the status is 0
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
             peer: url.host,
