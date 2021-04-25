@@ -96,7 +96,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
           isError: result.status === 0 || result.status >= 400, // when requests failed, the status is 0
           parentSpanId: segment.spans.length - 1,
           componentId: ComponentId,
-          peer: result.url.host,
+          peer: url.host,
           tags: options.detailMode
             ? [
                 {
