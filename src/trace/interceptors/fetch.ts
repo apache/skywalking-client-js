@@ -16,11 +16,11 @@
  */
 import { encode } from 'js-base64';
 import uuid from '../../services/uuid';
-import { SegmentFeilds, SpanFeilds } from '../type';
+import { SegmentFields, SpanFields } from '../type';
 import { CustomOptionsType } from '../../types';
-import { SpanLayer, SpanType, ComponentId, ServiceTag, ReportTypes } from '../../services/constant';
+import { ComponentId, ReportTypes, ServiceTag, SpanLayer, SpanType } from '../../services/constant';
 
-export default function windowFetch(options: CustomOptionsType, segments: SegmentFeilds[]) {
+export default function windowFetch(options: CustomOptionsType, segments: SegmentFields[]) {
   const fetch: any = window.fetch;
   let segment = {
     traceId: '',
@@ -28,7 +28,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     spans: [],
     serviceInstance: options.serviceVersion,
     traceSegmentId: '',
-  } as SegmentFeilds;
+  } as SegmentFields;
   let url = {} as URL;
 
   window.fetch = (...args) =>
@@ -59,7 +59,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       });
       const hasTrace = !(
         noTrace ||
-        (([ReportTypes.ERROR, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(url.pathname) &&
+        (([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
+          url.pathname,
+        ) &&
           !options.traceSDKInternal)
       );
 
@@ -84,14 +86,14 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
 
       if (hasTrace) {
         const endTime = new Date().getTime();
-        const exitSpan: SpanFeilds = {
+        const exitSpan: SpanFields = {
           operationName: options.pagePath,
           startTime: startTime,
           endTime,
           spanId: segment.spans.length,
           spanLayer: SpanLayer,
           spanType: SpanType,
-          isError: result.status === 0 || result.status >= 400 ? true : false, // when requests failed, the status is 0
+          isError: result.status === 0 || result.status >= 400, // when requests failed, the status is 0
           parentSpanId: segment.spans.length - 1,
           componentId: ComponentId,
           peer: result.url.host,

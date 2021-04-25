@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-export interface SegmentFeilds {
+export interface SegmentFields {
   traceId: string;
   service: string;
-  spans: SpanFeilds[];
+  spans: SpanFields[];
   serviceInstance: string;
   traceSegmentId: string;
 }
 
-export interface SpanFeilds {
+export interface SpanFields {
   operationName: string;
   startTime: number;
   endTime: number;

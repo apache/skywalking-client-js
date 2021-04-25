@@ -16,11 +16,11 @@
  */
 import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
-import { ErrorInfoFeilds, ReportFields } from './types';
+import { ErrorInfoFields, ReportFields } from './types';
 
 let jsErrorPv = false;
 export default class Base {
-  public logInfo: ErrorInfoFeilds & ReportFields & { collector: string } = {
+  public logInfo: ErrorInfoFields & ReportFields & { collector: string } = {
     uniqueId: '',
     service: '',
     serviceVersion: '',

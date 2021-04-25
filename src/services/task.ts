@@ -14,14 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ErrorInfoFeilds, ReportFields } from './types';
+import { ErrorInfoFields, ReportFields } from './types';
 import Report from './report';
 
 class TaskQueue {
-  private queues: ((ErrorInfoFeilds & ReportFields) | undefined)[] = [];
+  private queues: ((ErrorInfoFields & ReportFields) | undefined)[] = [];
   private collector: string = '';
 
-  public addTask(data: ErrorInfoFeilds & ReportFields, collector: string) {
+  public addTask(data: ErrorInfoFields & ReportFields, collector: string) {
     this.queues.push(data);
     this.collector = collector;
   }
