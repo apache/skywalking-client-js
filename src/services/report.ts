@@ -50,13 +50,13 @@ class Report {
       });
   }
 
-  public sendByXhr(data: any) {
+  public sendByXhr(data: any, async: boolean = true) {
     if (!this.url) {
       return;
     }
     const xhr = new XMLHttpRequest();
 
-    xhr.open('post', this.url, true);
+    xhr.open('post', this.url, async);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4 && xhr.status < 400) {
