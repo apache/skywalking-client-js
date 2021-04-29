@@ -21,15 +21,6 @@ class TaskQueue {
   private queues: ((ErrorInfoFields & ReportFields) | undefined)[] = [];
   private collector: string = '';
 
-  public constructor() {
-    window.onbeforeunload = () => {
-      if (!this.queues.length) {
-        return;
-      }
-      new Report('ERRORS', this.collector).sendByXhr(this.queues);
-    };
-  }
-
   public addTask(data: ErrorInfoFields & ReportFields, collector: string) {
     this.queues.push(data);
     this.collector = collector;
@@ -41,6 +32,15 @@ class TaskQueue {
     }
     new Report('ERRORS', this.collector).sendByXhr(this.queues);
     this.queues = [];
+  }
+
+  public finallyFireTasks() {
+    window.onbeforeunload = () => {
+      if (!this.queues.length) {
+        return;
+      }
+      new Report('ERRORS', this.collector).sendByXhr(this.queues);
+    };
   }
 }
 

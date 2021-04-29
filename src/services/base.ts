@@ -45,6 +45,7 @@ export default class Base {
 
     delete this.logInfo.collector;
     Task.addTask(this.logInfo, collector);
+    Task.finallyFireTasks();
     // report errors within 1min
     setTimeout(() => {
       Task.fireTasks();
