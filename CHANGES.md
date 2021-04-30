@@ -1,5 +1,13 @@
 # Changes
 
+## 0.5.0
+
+1. Add `noTraceOrigins` option.
+2. Fix wrong URL when using relative path.
+3. Catch frames errors.
+4. Get response.body as a stream with the fetch API.
+5. Support reporting multiple logs.
+
 ## 0.4.0
 
 1. Update stack and message in logs.
