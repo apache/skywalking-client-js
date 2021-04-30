@@ -33,6 +33,15 @@ class TaskQueue {
     new Report('ERRORS', this.collector).sendByXhr(this.queues);
     this.queues = [];
   }
+
+  public finallyFireTasks() {
+    window.onbeforeunload = () => {
+      if (!this.queues.length) {
+        return;
+      }
+      new Report('ERRORS', this.collector).sendByXhr(this.queues);
+    };
+  }
 }
 
 export default new TaskQueue();
