@@ -16,6 +16,7 @@
  */
 const path = require('path');
 const webpack = require('webpack');
+const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 
 module.exports = {
   entry: './src/index.ts',
@@ -39,7 +40,18 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
     publicPath: '/',
   },
-  plugins: [new webpack.NamedModulesPlugin(), new webpack.HotModuleReplacementPlugin()],
+  plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+    new WebpackConcatPlugin({
+      bundles: [
+        {
+          dest: './lib/src/types.d.ts',
+          src: './src/**/*.d.ts',
+        },
+      ],
+    }),
+  ],
   devServer: {
     contentBase: './lib',
     hot: true,
