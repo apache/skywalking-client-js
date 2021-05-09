@@ -3,6 +3,7 @@
   "version": "0.5.0",
   "description": "Client-side JavaScript exception and tracing library for Apache SkyWalking APM",
   "main": "index.js",
+  "types": "lib/src/index.d.ts",
   "repository": "apache/skywalking-client-js",
   "homepage": "skywalking.apache.org",
   "license": "Apache 2.0",
@@ -20,6 +21,7 @@
     "typescript": "^3.7.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
+    "webpack-concat-files-plugin": "^0.5.2",
     "webpack-dev-middleware": "^3.7.2",
     "webpack-dev-server": "^3.9.0"
   },
