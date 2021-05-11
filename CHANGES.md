@@ -5,8 +5,9 @@
 1. Add `noTraceOrigins` option.
 2. Fix wrong URL when using relative path.
 3. Catch frames errors.
-4. Get response.body as a stream with the fetch API.
+4. Get `response.body` as a stream with the fetch API.
 5. Support reporting multiple logs.
+6. Support typescript project.
 
 ## 0.4.0
 
