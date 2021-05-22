@@ -1,6 +1,6 @@
 # Changes
 
-## 0.5.0
+## 0.5.1
 
 1. Add `noTraceOrigins` option.
 2. Fix wrong URL when using relative path.
