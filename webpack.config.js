@@ -41,7 +41,6 @@ module.exports = {
     publicPath: '/',
   },
   plugins: [
-    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new WebpackConcatPlugin({
       bundles: [
@@ -55,5 +54,8 @@ module.exports = {
   devServer: {
     contentBase: './lib',
     hot: true,
+  },
+  optimization: {
+    moduleIds: 'named',
   },
 };
