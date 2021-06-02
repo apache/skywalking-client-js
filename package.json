@@ -12,6 +12,7 @@
     "email": "dev@skywalking.apache.org"
   },
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "express": "^4.17.1",
     "husky": "^4.3.0",
     "lint-staged": "^10.3.0",
@@ -27,8 +28,8 @@
     "webpack-dev-server": "^3.11.2"
   },
   "scripts": {
-    "build": "webpack",
-    "rebuild": "rm -rf ./node_modules && rm -rf ./lib && npm install && webpack",
+    "build": "cross-env NODE_ENV=production webpack",
+    "rebuild": "rm -rf ./node_modules && rm -rf ./lib && npm install && npm run build",
     "start": "webpack-dev-server",
     "server": "node server.js",
     "release": "make release-src"
