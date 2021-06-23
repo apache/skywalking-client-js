@@ -77,6 +77,8 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
 
         if (!args[1]) {
           args[1] = {};
+        }
+        if (!args[1].headers) {
           args[1].headers = {};
         }
         args[1].headers['sw8'] = values;
