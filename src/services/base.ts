@@ -35,7 +35,8 @@ export default class Base {
     collector: '',
   };
 
-  public traceInfo() {
+  public traceInfo(logInfo?: ErrorInfoFields & ReportFields & { collector: string }) {
+    this.logInfo = logInfo || this.logInfo;
     // mark js error pv
     if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
       jsErrorPv = true;

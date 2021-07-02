@@ -37,6 +37,9 @@ class AjaxErrors extends Base {
         if (detail.getRequestConfig[1] === options.collector + ReportTypes.ERRORS) {
           return;
         }
+        if (detail.status !== 0 && detail.status < 400) {
+          return;
+        }
 
         this.logInfo = {
           uniqueId: uuid(),
@@ -53,7 +56,6 @@ class AjaxErrors extends Base {
         this.traceInfo();
       },
     );
-    // Fetch API
   }
 }
 
