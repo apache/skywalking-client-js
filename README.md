@@ -101,7 +101,7 @@ app.on('routeChange', function (next) {
 
 ## Tracing range of data requests in the browser
 
-Support tracking these([XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) and [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)) two modes of data requests. At the same time, Support tracking libraries and tools that base on XMLHttpRequest and fetch, such as [Axios](https://github.com/axios/axios), [SuperAgent](https://github.com/visionmedia/superagent), [OpenApi](https://www.openapis.org/) and so on.
+Support tracking these([XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest) and [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API)) two modes of data requests. At the same time, Support tracking libraries and tools that base on XMLHttpRequest and fetch, such as [Axios](https://github.com/axios/axios), [SuperAgent](https://github.com/visionmedia/superagent), [OpenApi](https://www.openapis.org/) and so on.
 
 ## Catching errors in frames, including React, Angular, Vue.
 
