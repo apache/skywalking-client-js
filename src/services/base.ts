@@ -37,8 +37,13 @@ export default class Base {
 
   public traceInfo(logInfo?: ErrorInfoFields & ReportFields & { collector: string }) {
     this.logInfo = logInfo || this.logInfo;
+    const ExcludeErrorTypes: string[] = [
+      ErrorsCategory.AJAX_ERROR,
+      ErrorsCategory.RESOURCE_ERROR,
+      ErrorsCategory.UNKNOWN_ERROR,
+    ];
     // mark js error pv
-    if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
+    if (!jsErrorPv && !ExcludeErrorTypes.includes(this.logInfo.category)) {
       jsErrorPv = true;
       this.logInfo.firstReportedError = true;
     }
