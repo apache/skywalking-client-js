@@ -98,19 +98,21 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       .json()
       .then((body: any) => body)
       .catch((err: any) => err);
-    const logInfo = {
-      uniqueId: uuid(),
-      service: options.service,
-      serviceVersion: options.serviceVersion,
-      pagePath: options.pagePath,
-      category: ErrorsCategory.AJAX_ERROR,
-      grade: GradeTypeEnum.ERROR,
-      errorUrl: response.url || location.href,
-      message: `status: ${response.status}; statusText: ${response.statusText};`,
-      collector: options.collector,
-      stack: 'Fetch: ' + response.statusText,
-    };
-    new Base().traceInfo(logInfo);
+    if (response.status === 0 || response.status >= 400) {
+      const logInfo = {
+        uniqueId: uuid(),
+        service: options.service,
+        serviceVersion: options.serviceVersion,
+        pagePath: options.pagePath,
+        category: ErrorsCategory.AJAX_ERROR,
+        grade: GradeTypeEnum.ERROR,
+        errorUrl: response.url || location.href,
+        message: `status: ${response.status}; statusText: ${response.statusText};`,
+        collector: options.collector,
+        stack: 'Fetch: ' + response.statusText,
+      };
+      new Base().traceInfo(logInfo);
+    }
     if (hasTrace) {
       const endTime = new Date().getTime();
       const exitSpan: SpanFields = {
