@@ -1,5 +1,13 @@
 # Changes
 
+## 0.6.0
+
+1. Separate production and development environments when building.
+2. Upgrade packages to fix vulnerabilities.
+3. Fix headers could be null .
+4. Fix catching errors for http requests.
+5. Fix the firstReportedError is calculated with more types of errors.
+
 ## 0.5.1
 
 1. Add `noTraceOrigins` option.
