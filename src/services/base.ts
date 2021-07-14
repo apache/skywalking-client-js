@@ -19,6 +19,7 @@ import { ErrorsCategory, GradeTypeEnum } from './constant';
 import { ErrorInfoFields, ReportFields } from './types';
 
 let jsErrorPv = false;
+let interval: any;
 export default class Base {
   public logInfo: ErrorInfoFields & ReportFields & { collector: string } = {
     uniqueId: '',
@@ -52,8 +53,11 @@ export default class Base {
     delete this.logInfo.collector;
     Task.addTask(this.logInfo, collector);
     Task.finallyFireTasks();
+    if (interval) {
+      return;
+    }
     // report errors within 1min
-    setTimeout(() => {
+    interval = setInterval(() => {
       Task.fireTasks();
     }, 60000);
   }
