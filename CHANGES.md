@@ -2,7 +2,7 @@
 
 ## 0.7.0
 
-1. Provide time interval configuration for segments report.
+1. support setting time interval to report segments.
 
 ## 0.6.0
 

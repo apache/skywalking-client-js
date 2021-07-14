@@ -55,7 +55,7 @@ The register method supports the following parameters.
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
-|traceTimeInterval|Number|Support setting time interval for segments report.|false|60000|
+|traceTimeInterval|Number|support setting time interval to report segments.|false|60000|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
