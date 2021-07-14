@@ -59,6 +59,6 @@ export default class Base {
     // report errors within 1min
     interval = setInterval(() => {
       Task.fireTasks();
-    }, 10000);
+    }, 60000);
   }
 }
