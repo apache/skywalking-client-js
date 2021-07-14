@@ -32,6 +32,7 @@ const ClientMonitor = {
     traceSDKInternal: false,
     detailMode: true,
     noTraceOrigins: [],
+    traceTimeInterval: 60000, // 1min
   } as CustomOptionsType,
 
   register(configs: CustomOptionsType) {

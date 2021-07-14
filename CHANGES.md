@@ -1,5 +1,9 @@
 # Changes
 
+## 0.7.0
+
+1. Provide time interval configuration for segments report.
+
 ## 0.6.0
 
 1. Separate production and development environments when building.
