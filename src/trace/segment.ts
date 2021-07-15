@@ -39,6 +39,6 @@ export default function traceSegment(options: CustomOptionsType) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
-    segments = [];
+    segments.splice(0, segments.length);
   }, options.traceTimeInterval);
 }
