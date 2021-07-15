@@ -3,6 +3,7 @@
 ## 0.7.0
 
 1. Support setting time interval to report segments.
+2. Fix segments report only send once
 
 ## 0.6.0
 
