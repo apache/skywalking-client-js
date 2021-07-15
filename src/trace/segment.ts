@@ -22,7 +22,7 @@ import { SegmentFields } from './type';
 import { CustomOptionsType } from '../types';
 
 export default function traceSegment(options: CustomOptionsType) {
-  let segments = [] as SegmentFields[];
+  const segments = [] as SegmentFields[];
   // inject interceptor
   xhrInterceptor(options, segments);
   windowFetch(options, segments);
@@ -39,6 +39,6 @@ export default function traceSegment(options: CustomOptionsType) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
-    segments = [];
+    segments.splice(0, segments.length);
   }, options.traceTimeInterval);
 }
