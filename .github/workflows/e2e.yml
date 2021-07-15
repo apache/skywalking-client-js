@@ -32,4 +32,4 @@ jobs:
           submodules: true
       - uses: apache/skywalking-infra-e2e@main
         with:
-          e2e-file: e2e.yaml
+          e2e-file: test/e2e.yaml
