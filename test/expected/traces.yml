@@ -20,8 +20,8 @@ traces:
   {{- if eq (index .endpointnames 0) "index.html" }}
   - index.html
   {{- end}}
-  {{- if eq (index .endpointnames 0) "info" }}
-  - info
+  {{- if eq (index .endpointnames 0) "/info" }}
+  - /info
   {{- end}}
   duration: {{ gt .duration 0 }}
   start: "{{ notEmpty .start}}"
