@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-instances:
-  - key: dGVzdC11aQ==.1_djEuMC4w
-    label: v1.0.0
+- id: dGVzdC11aQ==.1_djEuMC4w
+  name: v1.0.0
+  attributes: []
+  language: UNKNOWN
+  instanceuuid: dGVzdC11aQ==.1_djEuMC4w
+
