@@ -43,7 +43,7 @@ services:
     expose:
       - 9091
     environment:
-      SW_AGENT_COLLECTOR_BACKEND_SERVICES: opa:11800
+      SW_AGENT_COLLECTOR_BACKEND_SERVICES: oap:11800
       SW_AGENT_LOGGING_LEVEL: DEBUG
     volumes:
       - ./docker/provider.py:/entrypoint.py
