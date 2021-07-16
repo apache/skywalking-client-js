@@ -40,7 +40,7 @@ verify:
     interval: 10000
   cases:
     - expected: expected/page-path.yml
-      query: swctl --display yaml --base-url=http://127.0.0.1:${ui_8080}/graphql endpoint ls --service-name dGVzdC11aQ==.1
+      query: swctl --display yaml --base-url=http://127.0.0.1:${ui_8080}/graphql endpoint ls --service-id dGVzdC11aQ==.1
     - expected: expected/traces.yml
       query: swctl --display yaml --base-url=http://127.0.0.1:${ui_8080}/graphql trace ls
     - expected: expected/version.yml

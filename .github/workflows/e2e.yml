@@ -30,6 +30,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: apache/skywalking-infra-e2e@main
+      - uses: apache/skywalking-infra-e2e@c5d37eb3c06aeb9f0ce03638dbfaf5644ac29df8
         with:
           e2e-file: test/e2e.yaml
