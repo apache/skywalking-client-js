@@ -13,9 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- id: dGVzdC11aQ==.1_djEuMC4w
+- id: {{ b64enc "test-ui" }}.1_{{ b64enc "v1.0.0" }}
   name: v1.0.0
   attributes: []
   language: UNKNOWN
-  instanceuuid: dGVzdC11aQ==.1_djEuMC4w
-
+  instanceuuid: {{ b64enc "test-ui" }}.1_{{ b64enc "v1.0.0" }}

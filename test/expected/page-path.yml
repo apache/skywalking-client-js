@@ -13,5 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-- id: dGVzdC11aQ==.1_aW5kZXguaHRtbA==
+- id: {{ b64enc "test-ui" }}.1_{{ b64enc "index.html" }}
   name: index.html
