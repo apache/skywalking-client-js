@@ -27,6 +27,6 @@ traces:
   start: "{{ notEmpty .start}}"
   iserror: false
   traceids:
-  - {{ (index .traceids 0) }}
+  - {{ notEmpty (index .traceids 0) }}
 {{- end }}
 total: {{ gt .total 0 }}

@@ -79,6 +79,8 @@ services:
     depends_on:
       testui:
         condition: service_started
+      provider:
+        condition: service_healthy
 
   chrome:
     image: selenium/node-chrome:4.0.0-alpha-7-prerelease-20201009
@@ -91,6 +93,8 @@ services:
         condition: service_started
       testui:
         condition: service_started
+      provider:
+        condition: service_healthy
     environment:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
@@ -108,6 +112,8 @@ services:
         condition: service_started
       chrome:
         condition: service_started
+      provider:
+        condition: service_healthy
       testui:
         condition: service_started
 

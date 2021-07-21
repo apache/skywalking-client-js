@@ -41,7 +41,7 @@ new Vue({
   }
 })
 
-fetch('/info', {
+fetch('http://provider:9091/info', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json'

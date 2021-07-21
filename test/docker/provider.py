@@ -28,10 +28,23 @@ if __name__ == '__main__':
 
     class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
+        def _send_cors_headers(self):
+            """ sets headers required for cors """
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Methods", "*")
+            self.send_header("Access-Control-Allow-Headers", "*")
+
+        def do_OPTIONS(self):
+            time.sleep(0.5)
+            self.send_response(200)
+            self._send_cors_headers()
+            self.end_headers()
+
         def do_POST(self):
             time.sleep(0.5)
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
+            self._send_cors_headers()
             self.end_headers()
             self.wfile.write('{"song": "Despacito", "artist": "Luis Fonsi"}'.encode('ascii'))
 
