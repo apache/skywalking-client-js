@@ -101,9 +101,10 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       return;
     }
 
+    const collectorURL = new URL(options.collector)
     if (
       ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        url.pathname,
+        url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), ''),
       ) &&
       !options.traceSDKInternal
     ) {
@@ -138,10 +139,11 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       const endTime = new Date().getTime();
       for (let i = 0; i < segCollector.length; i++) {
         if (segCollector[i].event.readyState === ReadyStatus.DONE) {
-          let url = {} as URL;
+          let responseURL = {} as URL;
           if (segCollector[i].event.status) {
-            url = new URL(segCollector[i].event.responseURL);
+            responseURL = new URL(segCollector[i].event.responseURL);
           }
+
           const exitSpan: SpanFields = {
             operationName: options.pagePath,
             startTime: segCollector[i].startTime,
@@ -152,7 +154,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
             isError: event.detail.status === 0 || event.detail.status >= 400, // when requests failed, the status is 0
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: url.host,
+            peer: responseURL.host,
             tags: options.detailMode
               ? [
                   {
@@ -161,7 +163,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
                   },
                   {
                     key: 'url',
-                    value: segCollector[i].event.responseURL,
+                    value: segCollector[i].event.responseURL || `${url.protocol}//${url.host}${url.pathname}`,
                   },
                 ]
               : undefined,

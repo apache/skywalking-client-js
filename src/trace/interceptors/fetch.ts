@@ -65,10 +65,12 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
+    
+    const collectorURL = new URL(options.collector)
     const hasTrace = !(
       noTrace ||
       (([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        url.pathname,
+        url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), ''),
       ) &&
         !options.traceSDKInternal)
     );
@@ -92,62 +94,67 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       args[1].headers['sw8'] = values;
     }
 
-    const response = await origFetch(...args);
-    const result = response
-      .clone()
-      .json()
-      .then((body: any) => body)
-      .catch((err: any) => err);
-    if (response.status === 0 || response.status >= 400) {
-      const logInfo = {
-        uniqueId: uuid(),
-        service: options.service,
-        serviceVersion: options.serviceVersion,
-        pagePath: options.pagePath,
-        category: ErrorsCategory.AJAX_ERROR,
-        grade: GradeTypeEnum.ERROR,
-        errorUrl: response.url || location.href,
-        message: `status: ${response.status}; statusText: ${response.statusText};`,
-        collector: options.collector,
-        stack: 'Fetch: ' + response.statusText,
-      };
-      new Base().traceInfo(logInfo);
-    }
-    if (hasTrace) {
-      const endTime = new Date().getTime();
-      const exitSpan: SpanFields = {
-        operationName: options.pagePath,
-        startTime: startTime,
-        endTime,
-        spanId: segment.spans.length,
-        spanLayer: SpanLayer,
-        spanType: SpanType,
-        isError: response.status === 0 || response.status >= 400, // when requests failed, the status is 0
-        parentSpanId: segment.spans.length - 1,
-        componentId: ComponentId,
-        peer: url.host,
-        tags: options.detailMode
-          ? [
+    let response;
+    try {
+      response = await origFetch(...args);
+
+      return response
+        .clone()
+        .json()
+        .then((body: any) => body)
+        .catch((err: any) => err);
+    } catch (e) {
+      throw e;
+    } finally {
+      if (!response || response.status === 0 || response.status >= 400) {
+        const logInfo = {
+          uniqueId: uuid(),
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
+          category: ErrorsCategory.AJAX_ERROR,
+          grade: GradeTypeEnum.ERROR,
+          errorUrl: response?.url || `${url.protocol}//${url.host}${url.pathname}`,
+          message: `status: ${response?.status}; statusText: ${response?.statusText};`,
+          collector: options.collector,
+          stack: 'Fetch: ' + response?.statusText,
+        };
+        new Base().traceInfo(logInfo);
+      }
+      if (hasTrace) {
+        const endTime = new Date().getTime();
+        const exitSpan: SpanFields = {
+          operationName: options.pagePath,
+          startTime: startTime,
+          endTime,
+          spanId: segment.spans.length,
+          spanLayer: SpanLayer,
+          spanType: SpanType,
+          isError: !response || response.status === 0 || response.status >= 400, // when requests failed, the status is 0
+          parentSpanId: segment.spans.length - 1,
+          componentId: ComponentId,
+          peer: url.host,
+          tags: options.detailMode
+            ? [
               {
                 key: 'http.method',
                 value: args[1].method || 'GET',
               },
               {
                 key: 'url',
-                value: response.url,
+                value: response?.url || `${url.protocol}//${url.host}${url.pathname}`,
               },
             ]
-          : undefined,
-      };
-      segment = {
-        ...segment,
-        traceId: traceId,
-        traceSegmentId: traceSegmentId,
-      };
-      segment.spans.push(exitSpan);
-      segments.push(segment);
+            : undefined,
+        };
+        segment = {
+          ...segment,
+          traceId: traceId,
+          traceSegmentId: traceSegmentId,
+        };
+        segment.spans.push(exitSpan);
+        segments.push(segment);
+      }
     }
-
-    return result;
   };
 }
