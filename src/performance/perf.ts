@@ -18,11 +18,14 @@ import { IPerfDetail } from './type';
 class PagePerf {
   public getPerfTiming(): IPerfDetail {
     try {
-      if (!window.performance || !window.performance.timing) {
-        console.log('your browser do not support performance');
-        return;
+      let { timing } = window.performance as PerformanceNavigationTiming | any; // PerformanceTiming
+      if (typeof window.PerformanceNavigationTiming === 'function') {
+        const nt2Timing = performance.getEntriesByType('navigation')[0];
+
+        if (nt2Timing) {
+          timing = nt2Timing;
+        }
       }
-      const { timing } = window.performance;
       let redirectTime = 0;
 
       if (timing.navigationStart !== undefined) {
