@@ -30,7 +30,7 @@ import {
 } from '../../services/constant';
 
 export default function windowFetch(options: CustomOptionsType, segments: SegmentFields[]) {
-  const origFetch: any = window.fetch;
+  const originFetch: any = window.fetch;
 
   window.fetch = async (...args: any) => {
     const startTime = new Date().getTime();
@@ -65,8 +65,8 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
-    
-    const collectorURL = new URL(options.collector)
+
+    const collectorURL = new URL(options.collector);
     const hasTrace = !(
       noTrace ||
       (([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
@@ -96,7 +96,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
 
     let response;
     try {
-      response = await origFetch(...args);
+      response = await originFetch(...args);
 
       return response
         .clone()
@@ -106,7 +106,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     } catch (e) {
       throw e;
     } finally {
-      if (!response || response.status === 0 || response.status >= 400) {
+      if (response && (response.status === 0 || response.status >= 400)) {
         const logInfo = {
           uniqueId: uuid(),
           service: options.service,
@@ -114,10 +114,10 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
           pagePath: options.pagePath,
           category: ErrorsCategory.AJAX_ERROR,
           grade: GradeTypeEnum.ERROR,
-          errorUrl: response?.url || `${url.protocol}//${url.host}${url.pathname}`,
-          message: `status: ${response?.status}; statusText: ${response?.statusText};`,
+          errorUrl: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
+          message: `status: ${response ? response.status : 0}; statusText: ${response && response.statusText};`,
           collector: options.collector,
-          stack: 'Fetch: ' + response?.statusText,
+          stack: 'Fetch: ' + response && response.statusText,
         };
         new Base().traceInfo(logInfo);
       }
@@ -130,21 +130,21 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
           spanId: segment.spans.length,
           spanLayer: SpanLayer,
           spanType: SpanType,
-          isError: !response || response.status === 0 || response.status >= 400, // when requests failed, the status is 0
+          isError: response && (response.status === 0 || response.status >= 400), // when requests failed, the status is 0
           parentSpanId: segment.spans.length - 1,
           componentId: ComponentId,
           peer: url.host,
           tags: options.detailMode
             ? [
-              {
-                key: 'http.method',
-                value: args[1].method || 'GET',
-              },
-              {
-                key: 'url',
-                value: response?.url || `${url.protocol}//${url.host}${url.pathname}`,
-              },
-            ]
+                {
+                  key: 'http.method',
+                  value: args[1].method || 'GET',
+                },
+                {
+                  key: 'url',
+                  value: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
+                },
+              ]
             : undefined,
         };
         segment = {
