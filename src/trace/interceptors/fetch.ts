@@ -98,11 +98,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     try {
       response = await originFetch(...args);
 
-      return response
-        .clone()
-        .json()
-        .then((body: any) => body)
-        .catch((err: any) => err);
+      return response.clone();
     } catch (e) {
       throw e;
     } finally {
