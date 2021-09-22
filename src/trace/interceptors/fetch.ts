@@ -94,14 +94,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       args[1].headers['sw8'] = values;
     }
 
-    let response;
-    try {
-      response = await originFetch(...args);
+    const response = await originFetch(...args);
 
-      return response.clone();
-    } catch (e) {
-      throw e;
-    } finally {
+    try {
       if (response && (response.status === 0 || response.status >= 400)) {
         const logInfo = {
           uniqueId: uuid(),
@@ -151,6 +146,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         segment.spans.push(exitSpan);
         segments.push(segment);
       }
+    } catch (e) {
+      throw e;
     }
+    return response.clone();
   };
 }
