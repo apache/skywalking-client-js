@@ -18,8 +18,8 @@ import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
 import { ErrorInfoFields, ReportFields } from './types';
 
-let jsErrorPv = false;
-let interval: any;
+let pageHasjsError: { [key: string]: boolean } = {};
+let interval: NodeJS.Timeout;
 export default class Base {
   public logInfo: ErrorInfoFields & ReportFields & { collector: string } = {
     uniqueId: '',
@@ -44,8 +44,8 @@ export default class Base {
       ErrorsCategory.UNKNOWN_ERROR,
     ];
     // mark js error pv
-    if (!jsErrorPv && !ExcludeErrorTypes.includes(this.logInfo.category)) {
-      jsErrorPv = true;
+    if (!pageHasjsError[location.href] && !ExcludeErrorTypes.includes(this.logInfo.category)) {
+      pageHasjsError[location.href] = true;
       this.logInfo.firstReportedError = true;
     }
     const collector = this.logInfo.collector;
