@@ -54,7 +54,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       url.pathname = args[0];
     }
 
-    const noTrace = options.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = options.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
         if (rule === url.origin) {
           return true;
@@ -65,15 +65,14 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
-
     const collectorURL = new URL(options.collector);
-    const hasTrace = !(
-      noTrace ||
-      (([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), ''),
-      ) &&
-        !options.traceSDKInternal)
-    );
+    const pathname =
+      collectorURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), '');
+    const noTraceSDKInternal =
+      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
+        pathname,
+      ) && !options.traceSDKInternal;
+    const hasTrace = !(noTraceOrigins || noTraceSDKInternal);
 
     if (hasTrace) {
       const traceIdStr = String(encode(traceId));

@@ -86,7 +86,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       url.pathname = config[1];
     }
 
-    const noTrace = options.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = options.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
         if (rule === url.origin) {
           return true;
@@ -97,17 +97,17 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
         }
       }
     });
-    if (noTrace) {
+    if (noTraceOrigins) {
       return;
     }
 
-    const collectorURL = new URL(options.collector)
-    if (
-      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), ''),
-      ) &&
-      !options.traceSDKInternal
-    ) {
+    const collectorURL = new URL(options.collector);
+    const name =
+      collectorURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), '');
+    const noTraceSDKInternal =
+      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(name) &&
+      !options.traceSDKInternal;
+    if (noTraceSDKInternal) {
       return;
     }
 
