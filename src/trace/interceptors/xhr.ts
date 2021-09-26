@@ -103,8 +103,8 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
 
     const cURL = new URL(options.collector);
     const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
-    const internal = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
-    const isSDKInternal = internal.includes(pathname);
+    const internals = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
+    const isSDKInternal = internals.includes(pathname);
 
     if (isSDKInternal && !options.traceSDKInternal) {
       return;

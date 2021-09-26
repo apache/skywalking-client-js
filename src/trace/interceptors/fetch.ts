@@ -67,8 +67,8 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     });
     const cURL = new URL(options.collector);
     const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
-    const internal = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
-    const isSDKInternal = internal.includes(pathname);
+    const internals = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
+    const isSDKInternal = internals.includes(pathname);
     const hasTrace = !noTraceOrigins || (isSDKInternal && options.traceSDKInternal);
 
     if (hasTrace) {
