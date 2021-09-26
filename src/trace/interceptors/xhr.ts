@@ -101,13 +101,12 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       return;
     }
 
-    const collectorURL = new URL(options.collector);
-    const name =
-      collectorURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), '');
-    const noTraceSDKInternal =
-      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(name) &&
-      !options.traceSDKInternal;
-    if (noTraceSDKInternal) {
+    const cURL = new URL(options.collector);
+    const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
+    const internal = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
+    const isSDKInternal = internal.includes(pathname);
+
+    if (isSDKInternal && !options.traceSDKInternal) {
       return;
     }
 

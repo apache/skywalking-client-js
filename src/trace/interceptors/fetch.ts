@@ -65,14 +65,11 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
-    const collectorURL = new URL(options.collector);
-    const pathname =
-      collectorURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${collectorURL.pathname}`), '');
-    const noTraceSDKInternal =
-      ([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        pathname,
-      ) && !options.traceSDKInternal;
-    const hasTrace = !(noTraceOrigins || noTraceSDKInternal);
+    const cURL = new URL(options.collector);
+    const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
+    const internal = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
+    const isSDKInternal = internal.includes(pathname);
+    const hasTrace = !noTraceOrigins || (isSDKInternal && options.traceSDKInternal);
 
     if (hasTrace) {
       const traceIdStr = String(encode(traceId));
