@@ -45,7 +45,9 @@ export default class Base {
     ];
     // mark js error pv
     if (!pageHasjsError[location.href] && !ExcludeErrorTypes.includes(this.logInfo.category)) {
-      pageHasjsError[location.href] = true;
+      pageHasjsError = {
+        [location.href]: true,
+      };
       this.logInfo.firstReportedError = true;
     }
     const collector = this.logInfo.collector;
