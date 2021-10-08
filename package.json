@@ -1,6 +1,6 @@
 {
   "name": "skywalking-client-js",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Client-side JavaScript exception and tracing library for Apache SkyWalking APM",
   "main": "index.js",
   "types": "lib/src/index.d.ts",

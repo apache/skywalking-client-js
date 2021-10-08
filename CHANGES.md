@@ -3,9 +3,10 @@
 ## 0.7.0
 
 1. Support setting time interval to report segments.
-2. Fix segments report only send once
-3. Fix apache/skywalking#7335
-4. Fix apache/skywalking#7793
+2. Fix segments report only send once.
+3. Fix apache/skywalking#7335.
+4. Fix apache/skywalking#7793.
+5. Fix firstReportedError for SPA.
 
 ## 0.6.0
 
