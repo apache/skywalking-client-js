@@ -41,6 +41,8 @@ services:
     build:
       context: ./
       dockerfile: docker/Dockerfile.provider
+      args:
+        - SW_AGENT_PYTHON_COMMIT=${SW_AGENT_PYTHON_COMMIT}
     command: [ 'python3', '/entrypoint.py' ]
     networks:
       - e2e
@@ -64,6 +66,8 @@ services:
     build:
       context: ../
       dockerfile: test/docker/Dockerfile.test-ui
+      args:
+        - SW_AGENT_CLIENT_JS_TEST_COMMIT=${SW_AGENT_CLIENT_JS_TEST_COMMIT}
     networks:
       - e2e
     ports:

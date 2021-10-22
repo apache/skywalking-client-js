@@ -59,9 +59,9 @@ verify:
   # verify with retry strategy
   retry:
     # max retry count
-    count: 10
+    count: 20
     # the interval between two retries, in millisecond.
-    interval: 10000
+    interval: 3s
   cases:
     # service
     - expected: expected/service.yml

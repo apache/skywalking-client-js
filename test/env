@@ -13,4 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+SW_AGENT_PYTHON_COMMIT=c8479000eb729cc86509222fd48b942edcaaca74
+SW_AGENT_CLIENT_JS_TEST_COMMIT=4f1eb1dcdbde3ec4a38534bf01dded4ab5d2f016
+
 SW_CTL_COMMIT=7dfb10bf79f463f16037e1ac352a8b2f5da6f27e

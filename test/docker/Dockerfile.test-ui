@@ -21,8 +21,8 @@ RUN npm run rebuild \
     && npm link
 
 # download and build skywalking client test
-ARG CLIENT_JS_TEST_COMMIT_HASH=4f1eb1dcdbde3ec4a38534bf01dded4ab5d2f016
-ARG CLIENT_JS_TEST_CODE=${CLIENT_JS_TEST_COMMIT_HASH}.tar.gz
+ARG SW_AGENT_CLIENT_JS_TEST_COMMIT
+ARG CLIENT_JS_TEST_CODE=${SW_AGENT_CLIENT_JS_TEST_COMMIT}.tar.gz
 ARG CLIENT_JS_TEST_CODE_URL=https://github.com/SkyAPMTest/skywalking-client-test/archive/${CLIENT_JS_TEST_CODE}
 
 WORKDIR /skywalking-client-test
