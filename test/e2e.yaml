@@ -26,8 +26,6 @@ setup:
         BASE_DIR=/tmp/skywalking-infra-e2e
         BIN_DIR=/usr/local/bin
 
-        mkdir -p $BASE_DIR && cd $BASE_DIR
-
         if ! command -v yq &> /dev/null; then
           mkdir -p $BASE_DIR/yq && cd $BASE_DIR/yq
           curl -kLo yq.tar.gz https://github.com/mikefarah/yq/archive/v4.11.1.tar.gz
@@ -39,8 +37,6 @@ setup:
         BASE_DIR=/tmp/skywalking-infra-e2e
         BIN_DIR=/usr/local/bin
 
-        mkdir -p $BASE_DIR && cd $BASE_DIR
-
         if ! command -v swctl &> /dev/null; then
           mkdir -p $BASE_DIR/swctl && cd $BASE_DIR/swctl
           curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/${SW_CTL_COMMIT}.tar.gz
@@ -48,7 +44,6 @@ setup:
           utype=$(uname | awk '{print tolower($0)}')
           make $utype && mv bin/swctl-*-$utype-amd64 $BIN_DIR/swctl
         fi
-
 cleanup:
   # always never success failure
   on: always
