@@ -30,7 +30,7 @@ import {
 } from '../../services/constant';
 
 export default function windowFetch(options: CustomOptionsType, segments: SegmentFields[]) {
-  const origFetch: any = window.fetch;
+  const originFetch: any = window.fetch;
 
   window.fetch = async (...args: any) => {
     const startTime = new Date().getTime();
@@ -54,7 +54,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       url.pathname = args[0];
     }
 
-    const noTrace = options.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = options.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
         if (rule === url.origin) {
           return true;
@@ -65,13 +65,11 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
-    const hasTrace = !(
-      noTrace ||
-      (([ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[]).includes(
-        url.pathname,
-      ) &&
-        !options.traceSDKInternal)
-    );
+    const cURL = new URL(options.collector);
+    const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
+    const internals = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
+    const isSDKInternal = internals.includes(pathname);
+    const hasTrace = !noTraceOrigins || (isSDKInternal && options.traceSDKInternal);
 
     if (hasTrace) {
       const traceIdStr = String(encode(traceId));
@@ -92,62 +90,61 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       args[1].headers['sw8'] = values;
     }
 
-    const response = await origFetch(...args);
-    const result = response
-      .clone()
-      .json()
-      .then((body: any) => body)
-      .catch((err: any) => err);
-    if (response.status === 0 || response.status >= 400) {
-      const logInfo = {
-        uniqueId: uuid(),
-        service: options.service,
-        serviceVersion: options.serviceVersion,
-        pagePath: options.pagePath,
-        category: ErrorsCategory.AJAX_ERROR,
-        grade: GradeTypeEnum.ERROR,
-        errorUrl: response.url || location.href,
-        message: `status: ${response.status}; statusText: ${response.statusText};`,
-        collector: options.collector,
-        stack: 'Fetch: ' + response.statusText,
-      };
-      new Base().traceInfo(logInfo);
-    }
-    if (hasTrace) {
-      const endTime = new Date().getTime();
-      const exitSpan: SpanFields = {
-        operationName: options.pagePath,
-        startTime: startTime,
-        endTime,
-        spanId: segment.spans.length,
-        spanLayer: SpanLayer,
-        spanType: SpanType,
-        isError: response.status === 0 || response.status >= 400, // when requests failed, the status is 0
-        parentSpanId: segment.spans.length - 1,
-        componentId: ComponentId,
-        peer: url.host,
-        tags: options.detailMode
-          ? [
-              {
-                key: 'http.method',
-                value: args[1].method || 'GET',
-              },
-              {
-                key: 'url',
-                value: response.url,
-              },
-            ]
-          : undefined,
-      };
-      segment = {
-        ...segment,
-        traceId: traceId,
-        traceSegmentId: traceSegmentId,
-      };
-      segment.spans.push(exitSpan);
-      segments.push(segment);
-    }
+    const response = await originFetch(...args);
 
-    return result;
+    try {
+      if (response && (response.status === 0 || response.status >= 400)) {
+        const logInfo = {
+          uniqueId: uuid(),
+          service: options.service,
+          serviceVersion: options.serviceVersion,
+          pagePath: options.pagePath,
+          category: ErrorsCategory.AJAX_ERROR,
+          grade: GradeTypeEnum.ERROR,
+          errorUrl: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
+          message: `status: ${response ? response.status : 0}; statusText: ${response && response.statusText};`,
+          collector: options.collector,
+          stack: 'Fetch: ' + response && response.statusText,
+        };
+        new Base().traceInfo(logInfo);
+      }
+      if (hasTrace) {
+        const endTime = new Date().getTime();
+        const exitSpan: SpanFields = {
+          operationName: options.pagePath,
+          startTime: startTime,
+          endTime,
+          spanId: segment.spans.length,
+          spanLayer: SpanLayer,
+          spanType: SpanType,
+          isError: response && (response.status === 0 || response.status >= 400), // when requests failed, the status is 0
+          parentSpanId: segment.spans.length - 1,
+          componentId: ComponentId,
+          peer: url.host,
+          tags: options.detailMode
+            ? [
+                {
+                  key: 'http.method',
+                  value: args[1].method || 'GET',
+                },
+                {
+                  key: 'url',
+                  value: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
+                },
+              ]
+            : undefined,
+        };
+        segment = {
+          ...segment,
+          traceId: traceId,
+          traceSegmentId: traceSegmentId,
+        };
+        segment.spans.push(exitSpan);
+        segments.push(segment);
+      }
+    } catch (e) {
+      throw e;
+    }
+    return response.clone();
   };
 }
