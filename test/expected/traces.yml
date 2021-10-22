@@ -14,15 +14,10 @@
 # limitations under the License.
 
 traces:
-{{- range .traces }}
+{{- contains .traces }}
 - segmentid: {{ notEmpty .segmentid }}
   endpointnames:
-  {{- if eq (index .endpointnames 0) "index.html" }}
   - index.html
-  {{- end}}
-  {{- if eq (index .endpointnames 0) "/info" }}
-  - /info
-  {{- end}}
   duration: {{ gt .duration 0 }}
   start: "{{ notEmpty .start}}"
   iserror: false

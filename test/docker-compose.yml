@@ -20,8 +20,12 @@ services:
     extends:
       file: base-compose.yml
       service: oap
+    ports:
+      - 12800
+      - 5005
     environment:
       SW_STORAGE: h2
+      JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 
   ui:
     extends:
@@ -99,7 +103,6 @@ services:
       - SE_EVENT_BUS_HOST=selenium-hub
       - SE_EVENT_BUS_PUBLISH_PORT=4442
       - SE_EVENT_BUS_SUBSCRIBE_PORT=4443
-
   generate-traffic:
     build:
       context: .

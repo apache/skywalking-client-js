@@ -23,7 +23,7 @@ ClientMonitor.register({
   serviceVersion: 'v1.0.0',
   vue: Vue,
   useFmp: true,
-  traceTimeInterval: 5000
+  traceTimeInterval: 2000,
 });
 
 // vue error

@@ -14,13 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 import time
+
+from urllib import request
 
 from skywalking import agent, config
 
 if __name__ == '__main__':
-    config.init(collector='oap:11800', service='provider')
+    config.service_name = 'provider-py'
+    config.logging_level = 'DEBUG'
     agent.start()
 
     import socketserver
@@ -35,7 +37,6 @@ if __name__ == '__main__':
             self.send_header("Access-Control-Allow-Headers", "*")
 
         def do_OPTIONS(self):
-            time.sleep(0.5)
             self.send_response(200)
             self._send_cors_headers()
             self.end_headers()
@@ -46,10 +47,11 @@ if __name__ == '__main__':
             self.send_header('Content-Type', 'application/json')
             self._send_cors_headers()
             self.end_headers()
-            self.wfile.write('{"song": "Despacito", "artist": "Luis Fonsi"}'.encode('ascii'))
+            self.wfile.write('{"name": "whatever"}'.encode('ascii'))
 
     PORT = 9091
     Handler = SimpleHTTPRequestHandler
 
     with socketserver.TCPServer(("", PORT), Handler) as httpd:
+        print("serving at port", PORT)
         httpd.serve_forever()

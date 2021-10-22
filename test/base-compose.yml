@@ -17,7 +17,7 @@ version: '2.1'
 
 services:
   oap:
-    image: apache/skywalking-oap-server:8.6.0-es6
+    image: ghcr.io/apache/skywalking/oap:7a5fec56fed0eef60e36f619a8db09f823200201
     expose:
       - 11800
       - 12800
@@ -40,7 +40,7 @@ services:
       retries: 120
 
   ui:
-    image: apache/skywalking-ui:8.6.0
+    image: ghcr.io/apache/skywalking/ui:7a5fec56fed0eef60e36f619a8db09f823200201
     expose:
       - 8080
     networks:

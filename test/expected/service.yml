@@ -13,13 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.7
-ARG SW_AGENT_PYTHON_COMMIT=c8479000eb729cc86509222fd48b942edcaaca74
-
-WORKDIR /app
-
-RUN git clone https://github.com/apache/skywalking-python.git $(pwd)
-
-RUN git reset --hard ${SW_AGENT_PYTHON_COMMIT} && git submodule update --init
-
-RUN make setup install
+- id: {{ b64enc "test-ui" }}.1
+  name: test-ui
+  group: ""

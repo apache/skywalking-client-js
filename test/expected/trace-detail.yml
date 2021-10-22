@@ -14,15 +14,14 @@
 # limitations under the License.
 
 spans:
-  {{- range .spans }}
-  {{- if eq .endpointname "index.html" }}
+{{- contains .spans }}
   - traceid: {{ notEmpty .traceid }}
     segmentid: {{ notEmpty .segmentid }}
     spanid: 0
     parentspanid: -1
     refs: []
     servicecode: test-ui<browser>
-    serviceinstancename: ""
+    serviceinstancename: "v1.0.0"
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
     endpointname: index.html
@@ -37,19 +36,19 @@ spans:
       - key: url
         value: http://provider:9091/info
     logs: []
-  {{- end }}
-  {{- if eq .endpointname "/info" }}
   - traceid: {{ notEmpty .traceid }}
     segmentid: {{ notEmpty .segmentid }}
     spanid: 0
     parentspanid: -1
     refs:
-      - traceid: {{ notEmpty (index .refs 0).traceid }}
-        parentsegmentid: {{ notEmpty (index .refs 0).parentsegmentid }}
+      {{- contains .refs }}
+      - traceid: {{ notEmpty .traceid }}
+        parentsegmentid: {{ notEmpty .parentsegmentid }}
         parentspanid: 0
         type: CROSS_PROCESS
-    servicecode: provider
-    serviceinstancename: ""
+      {{- end }}
+    servicecode: provider-py
+    serviceinstancename: {{ notEmpty .serviceinstancename }}
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
     endpointname: /info
@@ -61,10 +60,9 @@ spans:
     tags:
       - key: http.method
         value: POST
-      - key: url
+      - key: http.url
         value: http://provider:9091/info
-      - key: status.code
+      - key: http.status.code
         value: "200"
     logs: []
-  {{- end}}
-  {{- end}}
+{{- end }}

@@ -12,14 +12,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-FROM python:3.7
-ARG SW_AGENT_PYTHON_COMMIT=c8479000eb729cc86509222fd48b942edcaaca74
-
-WORKDIR /app
-
-RUN git clone https://github.com/apache/skywalking-python.git $(pwd)
-
-RUN git reset --hard ${SW_AGENT_PYTHON_COMMIT} && git submodule update --init
-
-RUN make setup install
+logs:
+{{- contains .logs }}
+- service: test-ui
+  serviceversion: v1.0.0
+  time: {{ gt .time  0 }}
+  pagepath: index.html
+  category: {{ notEmpty .category }}
+  grade: {{ notEmpty .grade }}
+  message: {{ notEmpty .message }}
+  line: 0
+  col: 0
+  stack: ""
+  errorurl: http://testui/
+  firstreportederror: {{ .firstreportederror }}
+{{- end }}
+total: {{ gt .total 0 }}
