@@ -22,10 +22,8 @@ services:
       service: oap
     ports:
       - 12800
-      - 5005
     environment:
       SW_STORAGE: h2
-      JAVA_OPTS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
 
   ui:
     extends:
