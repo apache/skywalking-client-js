@@ -37,8 +37,24 @@ export enum ReportTypes {
   SEGMENTS = '/v3/segments',
 }
 
-export const SpanLayer = 'Http';
-export const SpanType = 'Exit';
+export enum SpanLayerType {
+  UNKNOWN = 0,
+  DATABASE = 1,
+  RPC_FRAMEWORK = 2,
+  HTTP = 3,
+  MQ = 4,
+  CACHE = 4,
+}
+
+export const SpanLayer = SpanLayerType.HTTP;
+
+export enum SpanTypeEnum {
+  ENTRY = 0,
+  EXIT = 1,
+  LOCAL = 2,
+}
+
+export const SpanType = SpanTypeEnum.EXIT;
 export enum ReadyStatus {
   OPENED = 1,
   DONE = 4,
