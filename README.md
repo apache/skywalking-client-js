@@ -72,7 +72,8 @@ ClientMonitor.setPerformance({
   service: 'browser-app',
   serviceVersion: '1.0.0',
   pagePath: location.href,
-  useFmp: true
+  useFmp: true,
+  autoTracePerf: true,
 });
 ```
 

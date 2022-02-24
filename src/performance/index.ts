@@ -26,16 +26,17 @@ class TracePerf {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
-  public async recordPerf(options: CustomOptionsType) {
-    let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
-    if (options.autoTracePerf) {
-      this.perfConfig.perfDetail = await new pagePerf().getPerfTiming();
-      if (options.useFmp) {
-        fmp = await new FMP();
-      }
-    }
+  public recordPerf(options: CustomOptionsType) {
     // auto report pv and perf data
     setTimeout(() => {
+      let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
+      if (options.autoTracePerf) {
+        this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
+        if (options.useFmp) {
+          fmp = new FMP();
+        }
+      }
+
       const perfDetail = options.autoTracePerf
         ? {
             ...this.perfConfig.perfDetail,
