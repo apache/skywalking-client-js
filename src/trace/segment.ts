@@ -26,13 +26,12 @@ export default function traceSegment(options: CustomOptionsType) {
   // inject interceptor
   xhrInterceptor(options, segments);
   windowFetch(options, segments);
-
-  window.onbeforeunload = function (e: Event) {
+  window.addEventListener('beforeunload', () => {
     if (!segments.length) {
       return;
     }
     new Report('SEGMENTS', options.collector).sendByXhr(segments);
-  };
+  });
   //report per options.traceTimeInterval min
   setInterval(() => {
     if (!segments.length) {
