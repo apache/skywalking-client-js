@@ -145,7 +145,7 @@ class FMPTiming {
           time = this.statusCollector[index].time;
         } else {
           const match = getStyle(item.ele, 'background-image').match(/url\(\"(.*?)\"\)/);
-          let url: string;
+          let url: string = '';
           if (match && match[1]) {
             url = match[1];
           }
