@@ -136,13 +136,13 @@ class FMPTiming {
       let time: number = 0;
       if (item.weight === 1) {
         const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
-        time = this.statusCollector[index].time;
+        time = this.statusCollector[index] && this.statusCollector[index].time;
       } else if (item.weight === 2) {
         if (item.ele.tagName === 'IMG') {
           time = this.entries[(item.ele as HTMLImageElement).src];
         } else if (item.ele.tagName === 'SVG') {
           const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
-          time = this.statusCollector[index].time;
+          time = this.statusCollector[index] && this.statusCollector[index].time;
         } else {
           const match = getStyle(item.ele, 'background-image').match(/url\(\"(.*?)\"\)/);
           let url: string = '';
