@@ -28,8 +28,8 @@ export interface SpanFields {
   startTime: number;
   endTime: number;
   spanId: number;
-  spanLayer: number;
-  spanType: number;
+  spanLayer: string;
+  spanType: string;
   isError: boolean;
   parentSpanId: number;
   componentId: number;
