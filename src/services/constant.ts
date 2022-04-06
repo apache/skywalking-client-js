@@ -60,4 +60,3 @@ export enum ReadyStatus {
   DONE = 4,
 }
 export const ComponentId = 10001; // ajax
-export const ServiceTag = '<browser>';
