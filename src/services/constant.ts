@@ -38,20 +38,20 @@ export enum ReportTypes {
 }
 
 export enum SpanLayerType {
-  UNKNOWN = 0,
-  DATABASE = 1,
-  RPC_FRAMEWORK = 2,
-  HTTP = 3,
-  MQ = 4,
-  CACHE = 4,
+  UNKNOWN = 'UNKNOWN',
+  DATABASE = 'DATABASE',
+  RPC_FRAMEWORK = 'RPC_FRAMEWORK',
+  HTTP = 'HTTP',
+  MQ = 'MQ',
+  CACHE = 'CACHE',
 }
 
 export const SpanLayer = SpanLayerType.HTTP;
 
 export enum SpanTypeEnum {
-  ENTRY = 0,
-  EXIT = 1,
-  LOCAL = 2,
+  ENTRY = 'ENTRY',
+  EXIT = 'EXIT',
+  LOCAL = 'LOCAL',
 }
 
 export const SpanType = SpanTypeEnum.EXIT;
