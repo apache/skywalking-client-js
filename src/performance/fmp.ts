@@ -86,7 +86,7 @@ class FMPTiming {
     this.calculateFinalScore();
   }
   private calculateFinalScore() {
-    if (MutationObserver && this.flag) {
+    if (MutationEvent && this.flag) {
       if (this.checkNeedCancel(START_TIME)) {
         // cancel observer for dom change
         this.observer.disconnect();
