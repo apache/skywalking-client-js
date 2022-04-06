@@ -1,5 +1,10 @@
 # Changes
 
+## 0.8.0
+
+1. Fix fmp metric.
+
+
 ## 0.7.0
 
 1. Support setting time interval to report segments.
