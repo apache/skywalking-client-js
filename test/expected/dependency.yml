@@ -19,18 +19,18 @@ nodes:
   name: provider-py
   type: Python
   isreal: true
-- id: {{ b64enc "test-ui<browser>"}}.1
-  name: test-ui<browser>
+- id: {{ b64enc "test-ui"}}.1
+  name: test-ui
   type: null
   isreal: true
 {{- end }}
 calls:
 {{- contains .calls }}
-- source: {{ b64enc "test-ui<browser>"}}.1
+- source: {{ b64enc "test-ui"}}.1
   sourcecomponents: []
   target: {{ b64enc "provider-py"}}.1
   targetcomponents: []
-  id: {{ b64enc "test-ui<browser>"}}.1-{{ b64enc "provider-py"}}.1
+  id: {{ b64enc "test-ui"}}.1-{{ b64enc "provider-py"}}.1
   detectpoints:
     - CLIENT
     - SERVER
