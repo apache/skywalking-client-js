@@ -22,7 +22,6 @@ import Base from '../../services/base';
 import {
   ComponentId,
   ReportTypes,
-  ServiceTag,
   SpanLayer,
   SpanType,
   ErrorsCategory,
@@ -38,7 +37,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     const traceSegmentId = uuid();
     let segment = {
       traceId: '',
-      service: options.service + ServiceTag,
+      service: options.service,
       spans: [],
       serviceInstance: options.serviceVersion,
       traceSegmentId: '',
