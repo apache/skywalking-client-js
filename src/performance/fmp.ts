@@ -83,21 +83,10 @@ class FMPTiming {
       childList: true,
       subtree: true,
     });
-    // calculate score when page loaded
-    if (document.readyState === 'complete') {
-      this.calculateFinalScore();
-    } else {
-      window.addEventListener(
-        'load',
-        () => {
-          this.calculateFinalScore();
-        },
-        false,
-      );
-    }
+    this.calculateFinalScore();
   }
   private calculateFinalScore() {
-    if (MutationEvent && this.flag) {
+    if (MutationObserver && this.flag) {
       if (this.checkNeedCancel(START_TIME)) {
         // cancel observer for dom change
         this.observer.disconnect();
