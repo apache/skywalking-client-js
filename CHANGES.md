@@ -5,8 +5,7 @@
 1. Fix fmp metric.
 2. Add e2e tese based on skywaling-infra-e2e.
 3. Update metric and events.
-4. Add span layers and types.
-5. Remove ServiceTag by following SkyWalking v9 new layer model.
+4. Remove ServiceTag by following SkyWalking v9 new layer model.
 
 ## 0.7.0
 
