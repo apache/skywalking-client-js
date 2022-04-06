@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ComponentId, ReadyStatus, ReportTypes, ServiceTag, SpanLayer, SpanType } from '../../services/constant';
+import { ComponentId, ReadyStatus, ReportTypes, SpanLayer, SpanType } from '../../services/constant';
 import uuid from '../../services/uuid';
 import { encode } from 'js-base64';
 import { CustomOptionsType } from '../../types';
@@ -69,7 +69,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
     let segment = {
       traceId: '',
-      service: options.service + ServiceTag,
+      service: options.service,
       spans: [],
       serviceInstance: options.serviceVersion,
       traceSegmentId: '',
