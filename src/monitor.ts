@@ -50,27 +50,18 @@ const ClientMonitor = {
   performance(configs: any) {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      tracePerf.recordPerf(configs);
+      tracePerf.getPerf(configs);
     } else {
       window.addEventListener(
         'load',
         () => {
-          tracePerf.recordPerf(configs);
-        },
-        false,
-      );
-    }
-    if (this.customOptions.enableSPA) {
-      // hash router
-      window.addEventListener(
-        'hashchange',
-        () => {
-          tracePerf.recordPerf(configs);
+          tracePerf.getPerf(configs);
         },
         false,
       );
     }
   },
+
   catchErrors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion, collector } = options;
 

@@ -38,7 +38,7 @@ const IGNORE_TAG_SET: string[] = ['SCRIPT', 'STYLE', 'META', 'HEAD', 'LINK'];
 const LIMIT: number = 3000;
 const WW: number = window.innerWidth;
 const WH: number = window.innerHeight;
-const DELAY: number = 500; // fmp retry interval
+const DELAY: number = 2000; // fmp retry interval
 
 class FMPTiming {
   public fmpTime: number = 0;
@@ -86,37 +86,41 @@ class FMPTiming {
     this.calculateFinalScore();
   }
   private calculateFinalScore() {
-    if (MutationEvent && this.flag) {
-      if (this.checkNeedCancel(START_TIME)) {
-        // cancel observer for dom change
-        this.observer.disconnect();
-        this.flag = false;
-        const res = this.getTreeScore(document.body);
-        let tp: ICalScore = null;
-        for (const item of res.dpss) {
-          if (tp && tp.st) {
-            if (tp.st < item.st) {
-              tp = item;
-            }
-          } else {
+    if (!this.flag) {
+      return;
+    }
+    if (!MutationObserver) {
+      return;
+    }
+    if (this.checkNeedCancel(START_TIME)) {
+      // cancel observer for dom change
+      this.observer.disconnect();
+      this.flag = false;
+      const res = this.getTreeScore(document.body);
+      let tp: ICalScore = null;
+      for (const item of res.dpss) {
+        if (tp && tp.st) {
+          if (tp.st < item.st) {
             tp = item;
           }
+        } else {
+          tp = item;
         }
-        // Get all of soures load time
-        performance.getEntries().forEach((item: PerformanceResourceTiming) => {
-          this.entries[item.name] = item.responseEnd;
-        });
-        if (!tp) {
-          return false;
-        }
-        const resultEls: ElementList = this.filterResult(tp.els);
-        const fmpTiming: number = this.getFmpTime(resultEls);
-        this.fmpTime = fmpTiming;
-      } else {
-        setTimeout(() => {
-          this.calculateFinalScore();
-        }, DELAY);
       }
+      // Get all of soures load time
+      performance.getEntries().forEach((item: PerformanceResourceTiming) => {
+        this.entries[item.name] = item.responseEnd;
+      });
+      if (!tp) {
+        return false;
+      }
+      const resultEls: ElementList = this.filterResult(tp.els);
+      const fmpTiming: number = this.getFmpTime(resultEls);
+      this.fmpTime = fmpTiming;
+    } else {
+      setTimeout(() => {
+        this.calculateFinalScore();
+      }, DELAY);
     }
   }
   private getFmpTime(resultEls: ElementList): number {

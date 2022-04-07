@@ -26,6 +26,20 @@ class TracePerf {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
+  public getPerf(options: CustomOptionsType) {
+    this.recordPerf(options);
+    if (options.enableSPA) {
+      // hash router
+      window.addEventListener(
+        'hashchange',
+        () => {
+          this.recordPerf(options);
+        },
+        false,
+      );
+    }
+  }
+
   public async recordPerf(options: CustomOptionsType) {
     let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
     if (options.autoTracePerf && options.useFmp) {
