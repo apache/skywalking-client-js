@@ -19,17 +19,11 @@ import uuid from '../../services/uuid';
 import { SegmentFields, SpanFields } from '../type';
 import { CustomOptionsType } from '../../types';
 import Base from '../../services/base';
-import {
-  ComponentId,
-  ReportTypes,
-  SpanLayer,
-  SpanType,
-  ErrorsCategory,
-  GradeTypeEnum,
-} from '../../services/constant';
-
+import { ComponentId, ReportTypes, SpanLayer, SpanType, ErrorsCategory, GradeTypeEnum } from '../../services/constant';
+let customConfig: any = {};
 export default function windowFetch(options: CustomOptionsType, segments: SegmentFields[]) {
   const originFetch: any = window.fetch;
+  setFetchOptions(options);
 
   window.fetch = async (...args: any) => {
     const startTime = new Date().getTime();
@@ -37,9 +31,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     const traceSegmentId = uuid();
     let segment = {
       traceId: '',
-      service: options.service,
+      service: customConfig.service,
       spans: [],
-      serviceInstance: options.serviceVersion,
+      serviceInstance: customConfig.serviceVersion,
       traceSegmentId: '',
     } as SegmentFields;
     let url = {} as URL;
@@ -53,7 +47,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       url.pathname = args[0];
     }
 
-    const noTraceOrigins = options.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = customConfig.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
         if (rule === url.origin) {
           return true;
@@ -64,18 +58,18 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         }
       }
     });
-    const cURL = new URL(options.collector);
+    const cURL = new URL(customConfig.collector);
     const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
     const internals = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
     const isSDKInternal = internals.includes(pathname);
-    const hasTrace = !noTraceOrigins || (isSDKInternal && options.traceSDKInternal);
+    const hasTrace = !noTraceOrigins || (isSDKInternal && customConfig.traceSDKInternal);
 
     if (hasTrace) {
       const traceIdStr = String(encode(traceId));
       const segmentId = String(encode(traceSegmentId));
       const service = String(encode(segment.service));
       const instance = String(encode(segment.serviceInstance));
-      const endpoint = String(encode(options.pagePath));
+      const endpoint = String(encode(customConfig.pagePath));
       const peer = String(encode(url.host));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
@@ -95,14 +89,14 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       if (response && (response.status === 0 || response.status >= 400)) {
         const logInfo = {
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
+          service: customConfig.service,
+          serviceVersion: customConfig.serviceVersion,
+          pagePath: customConfig.pagePath,
           category: ErrorsCategory.AJAX_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
           message: `status: ${response ? response.status : 0}; statusText: ${response && response.statusText};`,
-          collector: options.collector,
+          collector: customConfig.collector,
           stack: 'Fetch: ' + response && response.statusText,
         };
         new Base().traceInfo(logInfo);
@@ -110,7 +104,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       if (hasTrace) {
         const endTime = new Date().getTime();
         const exitSpan: SpanFields = {
-          operationName: options.pagePath,
+          operationName: customConfig.pagePath,
           startTime: startTime,
           endTime,
           spanId: segment.spans.length,
@@ -120,7 +114,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
           parentSpanId: segment.spans.length - 1,
           componentId: ComponentId,
           peer: url.host,
-          tags: options.detailMode
+          tags: customConfig.detailMode
             ? [
                 {
                   key: 'http.method',
@@ -146,4 +140,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     }
     return response.clone();
   };
+}
+export function setFetchOptions(opt: CustomOptionsType) {
+  customConfig = { ...customConfig, ...opt };
 }

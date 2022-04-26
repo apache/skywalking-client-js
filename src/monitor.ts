@@ -18,7 +18,7 @@
 import { CustomOptionsType, CustomReportOptions } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
-import traceSegment from './trace/segment';
+import traceSegment, { setConfig } from './trace/segment';
 
 const ClientMonitor = {
   customOptions: {
@@ -101,6 +101,7 @@ const ClientMonitor = {
     if (this.customOptions.resourceErrors) {
       ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector });
     }
+    setConfig(this.customOptions);
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);
