@@ -27,6 +27,9 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
   const xhrSend = XMLHttpRequest.prototype.send;
   const xhrOpen = XMLHttpRequest.prototype.open;
 
+  if (!(xhrSend && xhrOpen)) {
+    console.error('Tracing is not supported');
+  }
   originalXHR.getRequestConfig = [];
 
   function ajaxEventTrigger(event: string) {
