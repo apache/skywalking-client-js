@@ -29,6 +29,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
 
   if (!(xhrSend && xhrOpen)) {
     console.error('Tracing is not supported');
+    return;
   }
   originalXHR.getRequestConfig = [];
 
