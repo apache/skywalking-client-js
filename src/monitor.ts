@@ -101,7 +101,6 @@ const ClientMonitor = {
     if (this.customOptions.resourceErrors) {
       ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector });
     }
-    FrameErrors.setOptions({ service, pagePath, serviceVersion, collector });
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);

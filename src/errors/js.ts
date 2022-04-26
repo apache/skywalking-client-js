@@ -26,6 +26,7 @@ class JSErrors extends Base {
     serviceVersion: '',
   };
   public handleErrors(options: CustomReportOptions) {
+    this.infoOpt = options;
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {
         ...this.infoOpt,

@@ -27,11 +27,12 @@ class AjaxErrors extends Base {
     serviceVersion: '',
   };
   // get http error info
-  public handleError(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  public handleError(options: CustomReportOptions) {
     // XMLHttpRequest Object
     if (!window.XMLHttpRequest) {
       return;
     }
+    this.infoOpt = options;
     window.addEventListener(
       'xhrReadyStateChange',
       (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {

@@ -27,6 +27,7 @@ class FrameErrors extends Base {
     serviceVersion: '',
   };
   public handleErrors(options: CustomReportOptions, error: Error) {
+    this.infoOpt = options;
     this.logInfo = {
       ...this.infoOpt,
       uniqueId: uuid(),
@@ -38,9 +39,6 @@ class FrameErrors extends Base {
       stack: error.stack,
     };
     this.traceInfo();
-  }
-  setOptions(opt: CustomReportOptions) {
-    this.infoOpt = opt;
   }
 }
 export default new FrameErrors();
