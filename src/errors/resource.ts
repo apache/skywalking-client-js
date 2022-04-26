@@ -18,9 +18,16 @@
 import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { CustomReportOptions } from '../types';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: { service: string; pagePath: string; serviceVersion: string; collector: string }) {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
+  public handleErrors(options: CustomReportOptions) {
+    this.infoOpt = options;
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
@@ -37,10 +44,8 @@ class ResourceErrors extends Base {
           return;
         }
         this.logInfo = {
+          ...this.infoOpt,
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
           errorUrl: target.src || target.href || location.href,
@@ -53,6 +58,9 @@ class ResourceErrors extends Base {
         throw error;
       }
     });
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 export default new ResourceErrors();

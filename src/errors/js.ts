@@ -18,14 +18,18 @@
 import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { CustomReportOptions } from '../types';
 class JSErrors extends Base {
-  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
+  public handleErrors(options: CustomReportOptions) {
     window.onerror = (message, url, line, col, error) => {
       this.logInfo = {
+        ...this.infoOpt,
         uniqueId: uuid(),
-        service: options.service,
-        serviceVersion: options.serviceVersion,
-        pagePath: options.pagePath,
         category: ErrorsCategory.JS_ERROR,
         grade: GradeTypeEnum.ERROR,
         errorUrl: url,
@@ -37,6 +41,9 @@ class JSErrors extends Base {
       };
       this.traceInfo();
     };
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 export default new JSErrors();

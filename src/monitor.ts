@@ -79,13 +79,29 @@ const ClientMonitor = {
       ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
     }
   },
-  setPerformance(configs: CustomOptionsType) {
+  setPerformance(configs: CustomReportOptions) {
     // history router
     this.customOptions = {
       ...this.customOptions,
       ...configs,
+      useFmp: false,
     };
     this.performance(this.customOptions);
+    const { service, pagePath, serviceVersion, collector } = this.customOptions;
+    if (this.customOptions.jsErrors) {
+      JSErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      PromiseErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      if (this.customOptions.vue) {
+        VueErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      }
+    }
+    if (this.customOptions.apiErrors) {
+      AjaxErrors.setOptions({ service, pagePath, serviceVersion, collector });
+    }
+    if (this.customOptions.resourceErrors) {
+      ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector });
+    }
+    FrameErrors.setOptions({ service, pagePath, serviceVersion, collector });
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);

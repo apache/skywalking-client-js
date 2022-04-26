@@ -18,8 +18,14 @@
 import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory, ReportTypes } from '../services/constant';
+import { CustomReportOptions } from '../types';
 
 class AjaxErrors extends Base {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
   // get http error info
   public handleError(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
     // XMLHttpRequest Object
@@ -42,10 +48,8 @@ class AjaxErrors extends Base {
         }
 
         this.logInfo = {
+          ...this.infoOpt,
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.AJAX_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: detail.getRequestConfig[1],
@@ -56,6 +60,9 @@ class AjaxErrors extends Base {
         this.traceInfo();
       },
     );
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 
