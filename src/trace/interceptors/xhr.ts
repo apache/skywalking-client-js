@@ -20,11 +20,17 @@ import { encode } from 'js-base64';
 import { CustomOptionsType } from '../../types';
 import { SegmentFields, SpanFields } from '../type';
 
+let customConfig: CustomOptionsType | any = {};
 export default function xhrInterceptor(options: CustomOptionsType, segments: SegmentFields[]) {
+  setOptions(options);
   const originalXHR = window.XMLHttpRequest as any;
   const xhrSend = XMLHttpRequest.prototype.send;
   const xhrOpen = XMLHttpRequest.prototype.open;
 
+  if (!(xhrSend && xhrOpen)) {
+    console.error('Tracing is not supported');
+    return;
+  }
   originalXHR.getRequestConfig = [];
 
   function ajaxEventTrigger(event: string) {
@@ -69,9 +75,9 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
   window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
     let segment = {
       traceId: '',
-      service: options.service,
+      service: customConfig.service,
       spans: [],
-      serviceInstance: options.serviceVersion,
+      serviceInstance: customConfig.serviceVersion,
       traceSegmentId: '',
     } as SegmentFields;
     const xhrState = event.detail.readyState;
@@ -86,7 +92,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       url.pathname = config[1];
     }
 
-    const noTraceOrigins = options.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = customConfig.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
         if (rule === url.origin) {
           return true;
@@ -101,12 +107,12 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       return;
     }
 
-    const cURL = new URL(options.collector);
+    const cURL = new URL(customConfig.collector);
     const pathname = cURL.pathname === '/' ? url.pathname : url.pathname.replace(new RegExp(`^${cURL.pathname}`), '');
     const internals = [ReportTypes.ERROR, ReportTypes.ERRORS, ReportTypes.PERF, ReportTypes.SEGMENTS] as string[];
     const isSDKInternal = internals.includes(pathname);
 
-    if (isSDKInternal && !options.traceSDKInternal) {
+    if (isSDKInternal && !customConfig.traceSDKInternal) {
       return;
     }
 
@@ -126,7 +132,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       const segmentId = String(encode(traceSegmentId));
       const service = String(encode(segment.service));
       const instance = String(encode(segment.serviceInstance));
-      const endpoint = String(encode(options.pagePath));
+      const endpoint = String(encode(customConfig.pagePath));
       const peer = String(encode(url.host));
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
@@ -144,7 +150,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
           }
 
           const exitSpan: SpanFields = {
-            operationName: options.pagePath,
+            operationName: customConfig.pagePath,
             startTime: segCollector[i].startTime,
             endTime,
             spanId: segment.spans.length,
@@ -154,7 +160,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
             peer: responseURL.host,
-            tags: options.detailMode
+            tags: customConfig.detailMode
               ? [
                   {
                     key: 'http.method',
@@ -179,4 +185,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       segments.push(segment);
     }
   });
+}
+export function setOptions(opt: CustomOptionsType) {
+  customConfig = { ...customConfig, ...opt };
 }
