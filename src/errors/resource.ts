@@ -33,7 +33,7 @@ class ResourceErrors extends Base {
         if (!event) {
           return;
         }
-        const target: any = event.target || event.srcElement;
+        const target: any = event.target;
         const isElementTarget =
           target instanceof HTMLScriptElement ||
           target instanceof HTMLLinkElement ||
@@ -48,7 +48,7 @@ class ResourceErrors extends Base {
           uniqueId: uuid(),
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
-          errorUrl: target.src || target.href || location.href,
+          errorUrl: (target as HTMLScriptElement).src || (target as HTMLLinkElement).href || location.href,
           message: `load ${target.tagName} resource error`,
           collector: options.collector,
           stack: `load ${target.tagName} resource error`,
