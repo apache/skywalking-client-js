@@ -16,7 +16,6 @@
  */
 {
   "compilerOptions": {
-    "declaration": true,
     "outDir": "./lib/",
     "noImplicitAny": true,
     "sourceMap": true,

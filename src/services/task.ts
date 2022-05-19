@@ -36,12 +36,12 @@ class TaskQueue {
   }
 
   public finallyFireTasks() {
-    window.onbeforeunload = () => {
+    window.addEventListener('beforeunload', () => {
       if (!this.queues.length) {
         return;
       }
       new Report('ERRORS', this.collector).sendByBeacon(this.queues);
-    };
+    });
   }
 }
 

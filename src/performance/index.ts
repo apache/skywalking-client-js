@@ -26,16 +26,30 @@ class TracePerf {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
+  public getPerf(options: CustomOptionsType) {
+    this.recordPerf(options);
+    if (options.enableSPA) {
+      // hash router
+      window.addEventListener(
+        'hashchange',
+        () => {
+          this.recordPerf(options);
+        },
+        false,
+      );
+    }
+  }
+
   public async recordPerf(options: CustomOptionsType) {
     let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
-    if (options.autoTracePerf) {
-      this.perfConfig.perfDetail = await new pagePerf().getPerfTiming();
-      if (options.useFmp) {
-        fmp = await new FMP();
-      }
+    if (options.autoTracePerf && options.useFmp) {
+      fmp = await new FMP();
     }
     // auto report pv and perf data
     setTimeout(() => {
+      if (options.autoTracePerf) {
+        this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
+      }
       const perfDetail = options.autoTracePerf
         ? {
             ...this.perfConfig.perfDetail,

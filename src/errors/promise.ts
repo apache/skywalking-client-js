@@ -18,9 +18,16 @@
 import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { CustomReportOptions } from '../types';
 
 class PromiseErrors extends Base {
-  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
+  public handleErrors(options: CustomReportOptions) {
+    this.infoOpt = options;
     window.addEventListener('unhandledrejection', (event) => {
       try {
         let url = '';
@@ -31,10 +38,8 @@ class PromiseErrors extends Base {
           url = event.reason.config.url;
         }
         this.logInfo = {
+          ...this.infoOpt,
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.PROMISE_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: url || location.href,
@@ -48,6 +53,9 @@ class PromiseErrors extends Base {
         console.log(error);
       }
     });
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 export default new PromiseErrors();

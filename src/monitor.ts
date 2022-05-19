@@ -18,7 +18,7 @@
 import { CustomOptionsType, CustomReportOptions } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
-import traceSegment from './trace/segment';
+import traceSegment, { setConfig } from './trace/segment';
 
 const ClientMonitor = {
   customOptions: {
@@ -50,27 +50,18 @@ const ClientMonitor = {
   performance(configs: any) {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      tracePerf.recordPerf(configs);
+      tracePerf.getPerf(configs);
     } else {
       window.addEventListener(
         'load',
         () => {
-          tracePerf.recordPerf(configs);
-        },
-        false,
-      );
-    }
-    if (this.customOptions.enableSPA) {
-      // hash router
-      window.addEventListener(
-        'hashchange',
-        () => {
-          tracePerf.recordPerf(configs);
+          tracePerf.getPerf(configs);
         },
         false,
       );
     }
   },
+
   catchErrors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion, collector } = options;
 
@@ -88,13 +79,29 @@ const ClientMonitor = {
       ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
     }
   },
-  setPerformance(configs: CustomOptionsType) {
+  setPerformance(configs: CustomReportOptions) {
     // history router
     this.customOptions = {
       ...this.customOptions,
       ...configs,
+      useFmp: false,
     };
     this.performance(this.customOptions);
+    const { service, pagePath, serviceVersion, collector } = this.customOptions;
+    if (this.customOptions.jsErrors) {
+      JSErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      PromiseErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      if (this.customOptions.vue) {
+        VueErrors.setOptions({ service, pagePath, serviceVersion, collector });
+      }
+    }
+    if (this.customOptions.apiErrors) {
+      AjaxErrors.setOptions({ service, pagePath, serviceVersion, collector });
+    }
+    if (this.customOptions.resourceErrors) {
+      ResourceErrors.setOptions({ service, pagePath, serviceVersion, collector });
+    }
+    setConfig(this.customOptions);
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);
