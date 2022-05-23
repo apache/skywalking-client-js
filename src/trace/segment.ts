@@ -30,7 +30,7 @@ export default function traceSegment(options: CustomOptionsType) {
     if (!segments.length) {
       return;
     }
-    new Report('SEGMENTS', options.collector).sendByXhr(segments);
+    new Report('SEGMENTS', options.collector).sendByBeacon(segments);
   });
   //report per options.traceTimeInterval min
   setInterval(() => {

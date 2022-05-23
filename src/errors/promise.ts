@@ -47,6 +47,7 @@ class PromiseErrors extends Base {
           stack: event.reason.stack,
           collector: options.collector,
         };
+
         this.traceInfo();
       } catch (error) {
         console.log(error);

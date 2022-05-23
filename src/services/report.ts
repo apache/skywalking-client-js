@@ -65,5 +65,17 @@ class Report {
     };
     xhr.send(JSON.stringify(data));
   }
+
+  public sendByBeacon(data: any) {
+    if (!this.url) {
+      return;
+    }
+    if (typeof navigator.sendBeacon === 'function') {
+      navigator.sendBeacon(this.url, JSON.stringify(data));
+      return;
+    }
+
+    this.sendByXhr(data);
+  }
 }
 export default Report;
