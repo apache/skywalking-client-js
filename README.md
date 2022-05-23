@@ -30,7 +30,10 @@ import ClientMonitor from 'skywalking-client-js';
 ```js
 // Report collected data to `http:// + window.location.host + /browser/perfData` in default
 ClientMonitor.register({
-  collector: 'http://127.0.0.1:8080',
+  # Use core/default/restPort in the OAP server.
+  # If External Communication Channels are activated, `receiver-sharing-server/default/restPort`,
+  # ref to https://skywalking.apache.org/docs/main/latest/en/setup/backend/backend-expose/
+  collector: 'http://127.0.0.1:12800', 
   service: 'test-ui',
   pagePath: '/current/page/name',
   serviceVersion: 'v1.0.0',
@@ -43,7 +46,7 @@ The register method supports the following parameters.
 |Parameter|Type|Description|Required|Default Value|
 |----|----|----|----|----|
 |collector|String|In default, the collected data would be reported to current domain(`/browser/perfData`. Then, typically, we recommend you use a Gateway/proxy to redirect the data to the OAP(`resthost:restport`). If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
-|service|String|project id. NOTE, in tracing data requests, the service parameter is `service + '<browser>'`.|true|-|
+|service|String|project ID.|true|-|
 |serviceVersion|String|project verison|true|-|
 |pagePath|String|project path|true|-|
 |jsErrors|Boolean|Support js errors monitoring|false|true|
@@ -69,7 +72,7 @@ Use the `setPerformance` method to report metrics at the moment of page loaded o
 import ClientMonitor from 'skywalking-client-js';
 
 ClientMonitor.setPerformance({
-  collector: 'http://127.0.0.1:8080',
+  collector: 'http://127.0.0.1:12800',
   service: 'browser-app',
   serviceVersion: '1.0.0',
   pagePath: location.href,
@@ -92,7 +95,7 @@ The SDK provides a set page method to manually update the page name when data is
 ```js
 app.on('routeChange', function (next) {
   ClientMonitor.setPerformance({
-    collector: 'http://127.0.0.1:8080',
+    collector: 'http://127.0.0.1:12800',
     service: 'browser-app',
     serviceVersion: '1.0.0',
     pagePath: location.href,
@@ -114,7 +117,7 @@ import ClientMonitor from 'skywalking-client-js';
 export class AppGlobalErrorhandler implements ErrorHandler {
   handleError(error) {
     ClientMonitor.reportFrameErrors({
-      collector: 'http://127.0.0.1',
+      collector: 'http://127.0.0.1:12800',
       service: 'angular-demo',
       pagePath: '/app',
       serviceVersion: 'v1.0.0',
@@ -144,7 +147,7 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     // You can also log the error to an error reporting service
     ClientMonitor.reportFrameErrors({
-      collector: 'http://127.0.0.1',
+      collector: 'http://127.0.0.1:12800',
       service: 'react-demo',
       pagePath: '/app',
       serviceVersion: 'v1.0.0',
@@ -169,7 +172,7 @@ class ErrorBoundary extends React.Component {
 // Vue
 Vue.config.errorHandler = (error) => {
   ClientMonitor.reportFrameErrors({
-    collector: 'http://127.0.0.1',
+    collector: 'http://127.0.0.1:12800',
     service: 'vue-demo',
     pagePath: '/app',
     serviceVersion: 'v1.0.0',
