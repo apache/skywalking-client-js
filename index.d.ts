@@ -1,5 +1,3 @@
-export as namespace ClientMonitor;
-
 export interface ClientMonitorConfig {
     collector?: string;
     service: string;
