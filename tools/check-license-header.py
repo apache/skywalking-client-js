@@ -45,7 +45,7 @@ license_header = ' '.join(
 
 comment_leading_chars = ('#', '::', '/*', '*', ' ')
 exclude_dirs = ('.git', 'lib', 'node_modules', 'release', '.idea', 'license')
-exclude_files = ('.md', '.DS_Store', 'NOTICE', 'LICENSE', '.gitignore', 'package.json', 'package-lock.json', '.prettierrc')
+exclude_files = ('.md', '.DS_Store', 'NOTICE', 'LICENSE', '.gitignore', 'package.json', 'package-lock.json', '.prettierrc', 'index.d.ts')
 
 def walk_through_dir(d) -> bool:
     checked = True
