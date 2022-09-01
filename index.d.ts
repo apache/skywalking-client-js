@@ -11,7 +11,7 @@ export interface ClientMonitorConfig {
     useFmp?: boolean;
     enableSPA?: boolean;
     autoTracePerf?: boolean;
-    vue?: Vue;
+    vue?: any;
     traceSDKInternal?: boolean;
     detailMode?: boolean;
     noTraceOrigins?: (string | RegExp)[];
