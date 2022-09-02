@@ -34,11 +34,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name: npm install and build
+    - name: yarn install and build
       run: |
         yarn install
-        npx webpack
-        npm run build --if-present
+        yarn webpack
+        yarn run build --if-present
 
   build:
     runs-on: ubuntu-latest
