@@ -37,10 +37,9 @@ jobs:
     - name: yarn install and build
       run: |
         yarn install
-        yarn webpack
         yarn run build --if-present
-#       env:
-#         CI: true
+      env:
+        CI: true
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 90
