@@ -14,7 +14,7 @@ NOTICE,  SkyWalking Client JS 0.8.0 and later versions require SkyWalking v9.
 ## Install  
 The `skywalking-client-js` runtime library is available at [yarn](https://classic.yarnpkg.com/en/package/skywalking-client-js).
 
-The yarn Version is 1.22.11 Or Higher. [Yarn Version](https://github.com/yarnpkg/yarn/releases)
+The yarn Version is V1.22.11 Or Higher. [Yarn Version](https://github.com/yarnpkg/yarn/releases)
 ```
 yarn install skywalking-client-js --save
 ```
