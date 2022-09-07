@@ -142,17 +142,17 @@ SkyWalking Resources:
 - Apache SkyWalking Team
 ```
 
-6. publish package to YARN
+6. publish package to NPM
 
-Login to YARN, the username is `apache-skywalking` and the password has been sent to `private@skwalking.apache.org`.
+Login to NPM, the username is `apache-skywalking` and the password has been sent to `private@skwalking.apache.org`.
 
 ```bash
-> yarn login
+> npm login
 > Username: apache-skywalking
 > Password:
 ```
 
-Then publish the package to YARN.
+Then publish the package to NPM.
 
 ```
 > make publish
