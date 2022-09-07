@@ -16,7 +16,8 @@ The `skywalking-client-js` runtime library is available at [yarn](https://classi
 
 The yarn Version is V1.22.11 Or Higher. [Yarn Version](https://github.com/yarnpkg/yarn/releases)
 ```
-yarn add skywalking-client-js --save
+yarn add skywalking-client-js
+npm install skywalking-client-js --save
 ```
 
 ## Quick Start
