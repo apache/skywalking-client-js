@@ -17,8 +17,8 @@ FROM node:10.23 AS builder
 
 ADD . /skywalking-client-js
 WORKDIR /skywalking-client-js
-RUN npm run rebuild \
-    && npm link
+RUN yarn run rebuild \
+    && yarn link
 
 # download and build skywalking client test
 ARG SW_AGENT_CLIENT_JS_TEST_COMMIT
@@ -32,10 +32,10 @@ RUN tar -xf ${CLIENT_JS_TEST_CODE} --strip 1 \
     && rm src/index.js
 COPY test/docker/index.js src/index.js
 
-RUN npm install \
+RUN yarn install \
     && rm -rf node_modules/skywalking-client-js \
-    && npm link skywalking-client-js \
-    && npm run build
+    && yarn link skywalking-client-js \
+    && yarn run build
 
 FROM nginx:1.19
 
