@@ -48,7 +48,7 @@ The register method supports the following parameters.
 |collector|String|In default, the collected data would be reported to current domain(`/browser/perfData`. Then, typically, we recommend you use a Gateway/proxy to redirect the data to the OAP(`resthost:restport`). If you set this, the data could be reported to another domain, NOTE [the Cross-Origin Resource Sharing (CORS) issuse and solution](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS). |false|-|
 |service|String|project ID.|true|-|
 |serviceVersion|String|project verison|true|-|
-|pagePath|String|Project path. Should not be empty, since the UI cannot display traces with empty pagePath. (See [issue](https://github.com/apache/skywalking/issues/9734))|true|-|
+|pagePath|String|Project path. Should not be an empty string, since the UI cannot display traces with empty pagePath. (See [issue](https://github.com/apache/skywalking/issues/9734))|true|-|
 |jsErrors|Boolean|Support js errors monitoring|false|true|
 |apiErrors|Boolean|Support API errors monitoring|false|true|
 |resourceErrors|Boolean|Support resource errors monitoring|false|true|
