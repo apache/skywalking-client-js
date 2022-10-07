@@ -195,7 +195,7 @@ For both cases, all of these data are reported from un-secured environment, user
 1. Set up authentification(such as TOKEN based) for client-js reporting.
 1. Verify all fields in the HTTP headers and telemetry data mentioned above in case of malicious data. Attacker could embed executable Javascript in those fields, which could cause XSS or Remote Code Execution (RCE) issues.
 
-Please consult your security team before bringing this into your product env. Don't expose those OAP server IP/port(s) and URI without security audit.
+Please consult your security team before introducing this feature in your production environment. Don't expose the OAP server's IP/port(s) and URI without a security audit.
 
 # Demo project
 
