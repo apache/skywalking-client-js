@@ -193,7 +193,7 @@ Because all of this data is reported from an unsecured environment, users should
 1. Not expose OAP server to the internet directly.
 1. Set up TLS/HTTPs between browser and OAP server.
 1. Set up authentification(such as TOKEN based) for client-js reporting.
-1. Verify all fields in the HTTP headers and telemetry data mentioned above in case of malicious data. Attacker could embed executable Javascript in those fields, which could cause XSS or Remote Code Execution (RCE) issues.
+1. Validate all fields in the body of the HTTP headers and telemetry data mentioned above to detect and reject malicious data. Without such protections, an attacker could embed executable Javascript code in those fields, causing XSS or even Remote Code Execution (RCE) issues.
 
 Please consult your security team before introducing this feature in your production environment. Don't expose the OAP server's IP/port(s) and URI without a security audit.
 
