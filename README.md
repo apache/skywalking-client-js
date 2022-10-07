@@ -190,7 +190,7 @@ according to [Cross Process Propagation Headers Protocol v3](https://skywalking.
 [Browser Protocol](https://skywalking.apache.org/docs/main/next/en/protocols/browser-protocol/).
 
 Because all of this data is reported from an unsecured environment, users should make sure to:
-1. Don't expose OAP server to the internet directly.
+1. Not expose OAP server to the internet directly.
 1. Set up TLS/HTTPs between browser and OAP server.
 1. Set up authentification(such as TOKEN based) for client-js reporting.
 1. Verify all fields in the HTTP headers and telemetry data mentioned above in case of malicious data. Attacker could embed executable Javascript in those fields, which could cause XSS or Remote Code Execution (RCE) issues.
