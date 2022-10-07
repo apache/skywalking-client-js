@@ -181,7 +181,7 @@ Vue.config.errorHandler = (error) => {
 ```
 
 # Security Notice
-SkyWalking client-js agent would be deployed and running out of your datacenter. So, end users should notice the security issues.
+The SkyWalking client-js agent would be deployed and running outside of your datacenter. This means when you introduce this component you should be aware of the security impliciations.
 There are various kinds of telemetry relative data would be reported to backend separately or through your original HTTP requests.
 
 For HTTP requests, in order to implement **distributed tracing from the browser**, `sw8` HTTP header is going to be added 
