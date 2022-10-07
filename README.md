@@ -184,9 +184,9 @@ Vue.config.errorHandler = (error) => {
 The SkyWalking client-js agent would be deployed and running outside of your datacenter. This means when you introduce this component you should be aware of the security impliciations.
 There are various kinds of telemetry relative data would be reported to backend separately or through your original HTTP requests.
 
-For HTTP requests, in order to implement **distributed tracing from the browser**, `sw8` HTTP header is going to be added 
+In order to implement **distributed tracing from the browser**, an HTTP header with the name `sw8` will be added to HTTP requests
 according to [Cross Process Propagation Headers Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/skywalking-cross-process-propagation-headers-protocol-v3/). 
-Meanwhile, client-js would report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/trace-data-protocol-v3/) and 
+`client-js` will also report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/trace-data-protocol-v3/) and 
 [Browser Protocol](https://skywalking.apache.org/docs/main/next/en/protocols/browser-protocol/).
 
 For both cases, all of these data are reported from un-secured environment, users should at least
