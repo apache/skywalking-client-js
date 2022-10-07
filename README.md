@@ -189,7 +189,7 @@ according to [Cross Process Propagation Headers Protocol v3](https://skywalking.
 `client-js` will also report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/trace-data-protocol-v3/) and 
 [Browser Protocol](https://skywalking.apache.org/docs/main/next/en/protocols/browser-protocol/).
 
-For both cases, all of these data are reported from un-secured environment, users should at least
+Because all of this data is reported from an unsecured environment, users should make sure to:
 1. Don't expose OAP server to the internet directly.
 1. Set up TLS/HTTPs between browser and OAP server.
 1. Set up authentification(such as TOKEN based) for client-js reporting.
