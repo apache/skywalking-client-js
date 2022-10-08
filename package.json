@@ -48,7 +48,6 @@
     "CHANGES.md",
     "README.md",
     "index.js",
-    "index.d.ts",
     "lib/",
     "dist/licenses"
   ],
