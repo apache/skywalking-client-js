@@ -180,6 +180,23 @@ Vue.config.errorHandler = (error) => {
 }
 ```
 
+# Security Notice
+The SkyWalking client-js agent would be deployed and running outside of your datacenter. This means when you introduce this component you should be aware of the security impliciations.
+There are various kinds of telemetry relative data would be reported to backend separately or through your original HTTP requests.
+
+In order to implement **distributed tracing from the browser**, an HTTP header with the name `sw8` will be added to HTTP requests
+according to [Cross Process Propagation Headers Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/skywalking-cross-process-propagation-headers-protocol-v3/). 
+`client-js` will also report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/trace-data-protocol-v3/) and 
+[Browser Protocol](https://skywalking.apache.org/docs/main/next/en/protocols/browser-protocol/).
+
+Because all of this data is reported from an unsecured environment, users should make sure to:
+1. Not expose OAP server to the internet directly.
+1. Set up TLS/HTTPs between browser and OAP server.
+1. Set up authentification(such as TOKEN based) for client-js reporting.
+1. Validate all fields in the body of the HTTP headers and telemetry data mentioned above to detect and reject malicious data. Without such protections, an attacker could embed executable Javascript code in those fields, causing XSS or even Remote Code Execution (RCE) issues.
+
+Please consult your security team before introducing this feature in your production environment. Don't expose the OAP server's IP/port(s) and URI without a security audit.
+
 # Demo project
 
 Demo project provides instrumented web application with necessary environment, you could just simple use it to see the data SkyWalking collected and how SkyWalking visualizes on the UI. 
