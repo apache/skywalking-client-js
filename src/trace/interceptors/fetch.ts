@@ -102,6 +102,16 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         new Base().traceInfo(logInfo);
       }
       if (hasTrace) {
+        const tags = [
+          {
+            key: 'http.method',
+            value: args[1].method || 'GET',
+          },
+          {
+            key: 'url',
+            value: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
+          },
+        ];
         const endTime = new Date().getTime();
         const exitSpan: SpanFields = {
           operationName: customConfig.pagePath,
@@ -115,16 +125,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
           componentId: ComponentId,
           peer: url.host,
           tags: customConfig.detailMode
-            ? [
-                {
-                  key: 'http.method',
-                  value: args[1].method || 'GET',
-                },
-                {
-                  key: 'url',
-                  value: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
-                },
-              ]
+            ? customConfig.customTags
+              ? [...tags, ...customConfig.customTags]
+              : tags
             : undefined,
         };
         segment = {

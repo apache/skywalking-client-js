@@ -148,7 +148,16 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
           if (segCollector[i].event.status) {
             responseURL = new URL(segCollector[i].event.responseURL);
           }
-
+          const tags = [
+            {
+              key: 'http.method',
+              value: config[0],
+            },
+            {
+              key: 'url',
+              value: segCollector[i].event.responseURL || `${url.protocol}//${url.host}${url.pathname}`,
+            },
+          ];
           const exitSpan: SpanFields = {
             operationName: customConfig.pagePath,
             startTime: segCollector[i].startTime,
@@ -161,16 +170,9 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
             componentId: ComponentId,
             peer: responseURL.host,
             tags: customConfig.detailMode
-              ? [
-                  {
-                    key: 'http.method',
-                    value: config[0],
-                  },
-                  {
-                    key: 'url',
-                    value: segCollector[i].event.responseURL || `${url.protocol}//${url.host}${url.pathname}`,
-                  },
-                ]
+              ? customConfig.customTags
+                ? [...tags, ...customConfig.customTags]
+                : tags
               : undefined,
           };
           segment = {

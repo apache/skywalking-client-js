@@ -40,6 +40,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
+    this.validation();
     this.catchErrors(this.customOptions);
     if (!this.customOptions.enableSPA) {
       this.performance(this.customOptions);
@@ -105,6 +106,26 @@ const ClientMonitor = {
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);
+  },
+  validation() {
+    const { customTags } = this.customOptions;
+    if (!customTags) {
+      return;
+    }
+    if (!Array.isArray(customTags)) {
+      this.customOptions.customTags = undefined;
+      return console.error('customTags error');
+    }
+    let isTags = true;
+    for (const ele of this.customOptions.customTags) {
+      if (!(ele && ele.key && ele.value)) {
+        isTags = false;
+      }
+    }
+    if (!isTags) {
+      this.customOptions.customTags = undefined;
+      return console.error('customTags error');
+    }
   },
 };
 
