@@ -37,7 +37,7 @@ export interface CustomReportOptions {
   serviceVersion: string;
 }
 
-type TagOption = {
+export type TagOption = {
   key: string;
   value: string;
 };
