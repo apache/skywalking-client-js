@@ -28,6 +28,9 @@ class VueErrors extends Base {
   };
   public handleErrors(options: CustomReportOptions, Vue: any) {
     this.infoOpt = options;
+    if (!(Vue && Vue.config)) {
+      return;
+    }
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
         this.logInfo = {
