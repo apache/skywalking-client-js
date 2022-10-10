@@ -60,6 +60,7 @@ The register method supports the following parameters.
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
 |traceTimeInterval|Number|Support setting time interval to report segments.|false|60000|
+|customTags|Array|Custom Tags|false|-|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
@@ -178,6 +179,17 @@ Vue.config.errorHandler = (error) => {
     serviceVersion: 'v1.0.0',
   }, error);
 }
+```
+
+## According to different pages or modules, add custom tags to spans.
+
+```js
+app.on('routeChange', function () {
+  ClientMonitor.setCustomTags([
+    { key: 'key1', value: 'value1' },
+    { key: 'key2', value: 'value2' },
+  ]);
+});
 ```
 
 # Security Notice

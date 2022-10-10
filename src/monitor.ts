@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { CustomOptionsType, CustomReportOptions } from './types';
+import { CustomOptionsType, CustomReportOptions, TagOption } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
 import traceSegment, { setConfig } from './trace/segment';
@@ -40,6 +40,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
+    this.validation();
     this.catchErrors(this.customOptions);
     if (!this.customOptions.enableSPA) {
       this.performance(this.customOptions);
@@ -105,6 +106,35 @@ const ClientMonitor = {
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);
+  },
+  validation(customTags: TagOption[]) {
+    // const { customTags } = this.customOptions;
+    if (!customTags) {
+      return false;
+    }
+    if (!Array.isArray(customTags)) {
+      this.customOptions.customTags = undefined;
+      console.error('customTags error');
+      return false;
+    }
+    let isTags = true;
+    for (const ele of this.customOptions.customTags) {
+      if (!(ele && ele.key && ele.value)) {
+        isTags = false;
+      }
+    }
+    if (!isTags) {
+      this.customOptions.customTags = undefined;
+      console.error('customTags error');
+      return false;
+    }
+    return true;
+  },
+  setCustomTags(tags: TagOption[]) {
+    const opt = { ...this.customOptions, customTags: tags };
+    if (this.validation(tags)) {
+      setConfig(opt);
+    }
   },
 };
 
