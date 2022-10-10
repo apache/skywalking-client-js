@@ -1,5 +1,14 @@
 # Changes
 
+## 0.9.0
+
+1. Fix custom configurations when the page router changed for SPA.
+2. Fix reporting data by navigator.sendbeacon when pages is closed.
+3. Bump dependencies.
+4. Add Security Notice.
+5. Support adding custom tags to spans.
+6. Validate custom parameters for register.
+
 ## 0.8.0
 
 1. Fix fmp metric.
