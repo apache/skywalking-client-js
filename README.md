@@ -181,6 +181,17 @@ Vue.config.errorHandler = (error) => {
 }
 ```
 
+### According to different pages or modules, add custom tags to spans.
+
+```js
+app.on('routeChange', function () {
+  ClientMonitor.setCustomTags([
+    { key: 'key1', value: 'value1' },
+    { key: 'key2', value: 'value2' },
+  ]);
+});
+```
+
 # Security Notice
 The SkyWalking client-js agent would be deployed and running outside of your datacenter. This means when you introduce this component you should be aware of the security impliciations.
 There are various kinds of telemetry relative data would be reported to backend separately or through your original HTTP requests.
