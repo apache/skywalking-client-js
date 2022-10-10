@@ -181,7 +181,7 @@ Vue.config.errorHandler = (error) => {
 }
 ```
 
-### According to different pages or modules, add custom tags to spans.
+## According to different pages or modules, add custom tags to spans.
 
 ```js
 app.on('routeChange', function () {
