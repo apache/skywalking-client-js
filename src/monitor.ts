@@ -40,7 +40,7 @@ const ClientMonitor = {
       ...this.customOptions,
       ...configs,
     };
-    this.validation();
+    this.validateOptions();
     this.catchErrors(this.customOptions);
     if (!this.customOptions.enableSPA) {
       this.performance(this.customOptions);
@@ -87,6 +87,7 @@ const ClientMonitor = {
       ...configs,
       useFmp: false,
     };
+    this.validateOptions();
     this.performance(this.customOptions);
     const { service, pagePath, serviceVersion, collector } = this.customOptions;
     if (this.customOptions.jsErrors) {
@@ -107,8 +108,7 @@ const ClientMonitor = {
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
     FrameErrors.handleErrors(configs, error);
   },
-  validation(customTags: TagOption[]) {
-    // const { customTags } = this.customOptions;
+  validateTags(customTags?: TagOption[]) {
     if (!customTags) {
       return false;
     }
@@ -118,7 +118,7 @@ const ClientMonitor = {
       return false;
     }
     let isTags = true;
-    for (const ele of this.customOptions.customTags) {
+    for (const ele of customTags) {
       if (!(ele && ele.key && ele.value)) {
         isTags = false;
       }
@@ -130,9 +130,78 @@ const ClientMonitor = {
     }
     return true;
   },
+  validateOptions() {
+    const {
+      collector,
+      service,
+      pagePath,
+      serviceVersion,
+      jsErrors,
+      apiErrors,
+      resourceErrors,
+      autoTracePerf,
+      useFmp,
+      enableSPA,
+      traceSDKInternal,
+      detailMode,
+      noTraceOrigins,
+      traceTimeInterval,
+      customTags,
+      vue,
+    } = this.customOptions;
+    this.validateTags(customTags);
+    if (typeof collector !== 'string') {
+      this.customOptions.collector = location.origin;
+    }
+    if (typeof service !== 'string') {
+      this.customOptions.service = '';
+    }
+    if (typeof pagePath !== 'string') {
+      this.customOptions.pagePath = '';
+    }
+    if (typeof serviceVersion !== 'string') {
+      this.customOptions.serviceVersion = '';
+    }
+    if (typeof jsErrors !== 'boolean') {
+      this.customOptions.jsErrors = true;
+    }
+    if (typeof apiErrors !== 'boolean') {
+      this.customOptions.apiErrors = true;
+    }
+    if (typeof resourceErrors !== 'boolean') {
+      this.customOptions.resourceErrors = true;
+    }
+    if (typeof autoTracePerf !== 'boolean') {
+      this.customOptions.autoTracePerf = true;
+    }
+    if (typeof useFmp !== 'boolean') {
+      this.customOptions.useFmp = false;
+    }
+    if (typeof enableSPA !== 'boolean') {
+      this.customOptions.enableSPA = false;
+    }
+    if (typeof traceSDKInternal !== 'boolean') {
+      this.customOptions.traceSDKInternal = false;
+    }
+    if (typeof detailMode !== 'boolean') {
+      this.customOptions.detailMode = true;
+    }
+    if (typeof detailMode !== 'boolean') {
+      this.customOptions.detailMode = true;
+    }
+    if (!Array.isArray(noTraceOrigins)) {
+      this.customOptions.noTraceOrigins = [];
+    }
+    if (typeof traceTimeInterval !== 'number') {
+      this.customOptions.traceTimeInterval = 60000;
+    }
+    if (typeof vue !== 'function') {
+      this.customOptions.vue = undefined;
+    }
+  },
   setCustomTags(tags: TagOption[]) {
     const opt = { ...this.customOptions, customTags: tags };
-    if (this.validation(tags)) {
+    if (this.validateTags(tags)) {
       setConfig(opt);
     }
   },
