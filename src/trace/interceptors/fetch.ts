@@ -37,15 +37,20 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       traceSegmentId: '',
     } as SegmentFields;
     let url = {} as URL;
-
-    if (args[0].startsWith('http://') || args[0].startsWith('https://')) {
-      url = new URL(args[0]);
-    } else if (args[0].startsWith('//')) {
-      url = new URL(`${window.location.protocol}${args[0]}`);
+    // for args[0] is Request object see: https://developer.mozilla.org/zh-CN/docs/Web/API/fetch
+    if (Object.prototype.toString.call(args[0]) === '[object Request]') {
+      url = new URL(args[0].url);
     } else {
-      url = new URL(window.location.href);
-      url.pathname = args[0];
-    }
+      if (args[0].startsWith('http://') || args[0].startsWith('https://')) {
+        url = new URL(args[0]);
+      } else if (args[0].startsWith('//')) {
+        url = new URL(`${window.location.protocol}${args[0]}`);
+      } else {
+        url = new URL(window.location.href);
+        url.pathname = args[0];
+      }
+    }  
+
 
     const noTraceOrigins = customConfig.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
