@@ -42,9 +42,7 @@ const ClientMonitor = {
     };
     this.validateOptions();
     this.catchErrors(this.customOptions);
-    if (!this.customOptions.enableSPA) {
-      this.performance(this.customOptions);
-    }
+    this.performance(this.customOptions);
 
     traceSegment(this.customOptions);
   },

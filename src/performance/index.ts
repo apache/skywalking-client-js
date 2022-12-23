@@ -37,6 +37,12 @@ class TracePerf {
         },
         false,
       );
+      // monkey patch history api, to trace perf when route changed
+      const pushState = window.history.pushState;
+      window.history.pushState = function () {
+        pushState.apply(window.history, arguments);
+        this.recordPerf(options);
+      };
     }
   }
 
