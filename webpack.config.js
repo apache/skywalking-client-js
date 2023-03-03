@@ -50,10 +50,6 @@ const config = {
       ],
     }),
   ],
-  devServer: {
-    contentBase: './lib',
-    hot: true,
-  },
   optimization: {
     moduleIds: 'named',
   },
