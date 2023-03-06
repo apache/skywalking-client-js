@@ -53,9 +53,9 @@ The register method supports the following parameters.
 |apiErrors|Boolean|Support API errors monitoring|false|true|
 |resourceErrors|Boolean|Support resource errors monitoring|false|true|
 |useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen|false|false|
-|enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for single page application scenarios|false|false|
+|enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for [single page application scenarios](https://github.com/apache/skywalking-client-js#spa-page). |false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
-|vue|Vue|Support vue2 errors monitoring. Deprecated: This is no longer recommended. Please use the [Catching errors in frames](https://github.com/apache/skywalking-client-js#catching-errors-in-frames-including-react-angular-vue) scenario instead.)|false|undefined|
+|vue|Vue|Support vue2 errors monitoring. Deprecated: This is no longer recommended. Please use the [Catching errors in frames](https://github.com/apache/skywalking-client-js#catching-errors-in-frames-including-react-angular-vue) scenario instead. |false|undefined|
 |traceSDKInternal|Boolean|Support tracing SDK internal RPC.|false|false|
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
