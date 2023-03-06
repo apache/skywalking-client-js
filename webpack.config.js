@@ -54,9 +54,9 @@ const config = {
     moduleIds: 'named',
   },
 };
+console.log(config.plugins);
 if (isDev) {
   config.mode = 'development';
-  config.plugins.unshift(new webpack.HotModuleReplacementPlugin());
 } else {
   config.mode = 'production';
 }
