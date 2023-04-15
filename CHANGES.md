@@ -2,7 +2,7 @@
 
 ## 0.10.0
 
-1. Fix the ability of fetch constructure.
+1. Fix the ability of Fetch constructure.
 2. Update README.
 3. Bump dependencies.
 
