@@ -2,6 +2,12 @@
 
 ## 0.9.0
 
+1. Fix the ability of fetch constructure.
+2. Update README.
+3. Bump dependencies.
+
+## 0.9.0
+
 1. Fix custom configurations when the page router changed for SPA.
 2. Fix reporting data by navigator.sendbeacon when pages is closed.
 3. Bump dependencies.
