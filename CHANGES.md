@@ -1,5 +1,11 @@
 # Changes
 
+## 0.10.0
+
+1. Fix the ability of Fetch constructure.
+2. Update README.
+3. Bump dependencies.
+
 ## 0.9.0
 
 1. Fix custom configurations when the page router changed for SPA.
