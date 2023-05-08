@@ -71,7 +71,12 @@ class Report {
       return;
     }
     if (typeof navigator.sendBeacon === 'function') {
-      navigator.sendBeacon(this.url, JSON.stringify(data));
+      navigator.sendBeacon(
+        this.url,
+        new Blob([JSON.stringify(data)], {
+          type: 'application/json'
+        })
+      );
       return;
     }
 
