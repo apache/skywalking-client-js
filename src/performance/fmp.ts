@@ -137,13 +137,13 @@ class FMPTiming {
           const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
           time = this.statusCollector[index] && this.statusCollector[index].time;
         } else {
-          const match = getStyle(item.ele, 'background-image').match(/url\(\"(.*?)\"\)/);
+          const match = getStyle(item.ele, 'background-image').match(/url\((['"]?)(.*?)\1\)/);
           let url: string = '';
-          if (match && match[1]) {
-            url = match[1];
-          }
-          if (!url.includes('http')) {
-            url = location.protocol + match[1];
+          if (match && match[2]) {
+            url = match[2];
+            if (!url.includes('http')) {
+              url = location.protocol + match[2];
+            }
           }
           time = this.entries[url];
         }
