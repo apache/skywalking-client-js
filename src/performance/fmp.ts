@@ -141,9 +141,9 @@ class FMPTiming {
           let url: string = '';
           if (match && match[1]) {
             url = match[1];
-          }
-          if (!url.includes('http')) {
-            url = location.protocol + match[1];
+            if (!url.includes('http')) {
+              url = location.protocol + match[1];
+            }
           }
           time = this.entries[url];
         }
