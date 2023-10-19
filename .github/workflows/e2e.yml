@@ -24,7 +24,7 @@ on:
 
 jobs:
   JavaScriptClient:
-    name: Java Script Client
+    name: JavaScript Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
