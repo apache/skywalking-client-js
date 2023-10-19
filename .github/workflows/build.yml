@@ -23,11 +23,19 @@ on:
       - master
 
 jobs:
+  check-license:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Check License
+        uses: apache/skywalking-eyes@9bd5feb86b5817aa6072b008f9866a2c3bbc8587
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 16.x]
+        node-version: [16.x, 18.x]
     steps:
     - uses: actions/checkout@v1
     - name: Use Node.js ${{ matrix.node-version }}
@@ -44,15 +52,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [build-and-test]
+    needs: [check-license, build-and-test]
     steps:
       - name: Placeholder
         run: echo "Just to make the GitHub merge button green"
-
-  license:
-    runs-on: ubuntu-18.04
-    timeout-minutes: 90
-    steps:
-      - uses: actions/checkout@v1
-      - name: Check License Headers
-        run: python3 tools/check-license-header.py .
