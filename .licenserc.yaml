@@ -25,6 +25,7 @@ header:
     - 'lib'
     - 'dist'
     - 'LICENSE'
+    - 'NOTICE'
     - '.gitignore'
     - '.prettierrc'
     - '.browserslistrc'
