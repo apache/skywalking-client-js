@@ -1,5 +1,13 @@
 # Changes
 
+## 0.11.0
+
+1. Fixed the bug that navigator.sendBeacon sent json to backend report "No suitable request converter found for a @RequestObject 'List'".
+2. Fix reading property from null.
+3. Pin selenium version and update license CI.
+4. Bump dependencies.
+5. Update README.
+
 ## 0.10.0
 
 1. Fix the ability of Fetch constructure.
