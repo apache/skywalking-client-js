@@ -49,8 +49,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         url = new URL(window.location.href);
         url.pathname = args[0];
       }
-    }  
-
+    }
 
     const noTraceOrigins = customConfig.noTraceOrigins.some((rule: string | RegExp) => {
       if (typeof rule === 'string') {
@@ -79,16 +78,20 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       const index = segment.spans.length;
       const values = `${1}-${traceIdStr}-${segmentId}-${index}-${service}-${instance}-${endpoint}-${peer}`;
 
-      if (!args[1]) {
-        args[1] = {};
-      }
-      if (!args[1].headers) {
-        args[1].headers = new Headers();
-      }
-      if (args[1].headers instanceof Headers) {
-        args[1].headers.append('sw8', values);
+      if (args[0] instanceof Request) {
+        args[0].headers.append('sw8', values);
       } else {
-        args[1].headers['sw8'] = values;
+        if (!args[1]) {
+          args[1] = {};
+        }
+        if (!args[1].headers) {
+          args[1].headers = new Headers();
+        }
+        if (args[1].headers instanceof Headers) {
+          args[1].headers.append('sw8', values);
+        } else {
+          args[1].headers['sw8'] = values;
+        }
       }
     }
 
