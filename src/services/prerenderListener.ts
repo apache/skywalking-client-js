@@ -17,7 +17,7 @@
 export function watchPrerendering(callback: () => void) {
   if ((document as any).prerendering) {
     addEventListener('prerenderingchange', callback, true);
-  } else {
-    callback();
+    return;
   }
+  callback();
 }
