@@ -83,9 +83,13 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         args[1] = {};
       }
       if (!args[1].headers) {
-        args[1].headers = {};
+        args[1].headers = new Headers();
       }
-      args[1].headers['sw8'] = values;
+      if (args[1].headers instanceof Headers) {
+        args[1].headers.append('sw8', values);
+      } else {
+        args[1].headers['sw8'] = values;
+      }
     }
 
     const response = await originFetch(...args);
