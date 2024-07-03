@@ -1,5 +1,8 @@
 # Changes
 
+## 1.0.0
+1.Fix breaks native fetch implementation when using Request object with headers
+
 ## 0.11.0
 
 1. Fixed the bug that navigator.sendBeacon sent json to backend report "No suitable request converter found for a @RequestObject List".
