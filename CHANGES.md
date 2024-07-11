@@ -1,7 +1,9 @@
 # Changes
 
-## 1.0.0
-1.Fix breaks native fetch implementation when using Request object with headers
+## 0.12.0
+1. Fix native fetch implementation when using Request object.
+2. Fix fetch implementation when using the Header object in http queries.
+3. Bump dependencies.
 
 ## 0.11.0
 
