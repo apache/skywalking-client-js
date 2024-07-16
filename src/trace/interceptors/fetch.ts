@@ -117,7 +117,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
         const tags = [
           {
             key: 'http.method',
-            value: args[1].method || 'GET',
+            value: args[0] instanceof Request ? args[0].method : args[1]?.method || 'GET',
           },
           {
             key: 'url',
