@@ -34,6 +34,6 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: '1.16'
-      - uses: apache/skywalking-infra-e2e@0bab0f6e3ea7fe7e220bec32fa17df328d06ea26
+      - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e.yaml
