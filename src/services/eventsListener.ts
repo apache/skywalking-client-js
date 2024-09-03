@@ -14,21 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export interface ErrorInfoFields {
-  uniqueId: string;
-  category: string;
-  grade: string;
-  message: any;
-  errorUrl: string;
-  line?: number;
-  col?: number;
-  stack?: string;
-  firstReportedError?: boolean;
-}
-
-export interface ReportFields {
-  service: string;
-  serviceVersion: string;
-  pagePath: string;
+export function prerenderChangeListener(callback: () => void) {
+  if ((document as any).prerendering) {
+    addEventListener('prerenderingchange', callback, true);
+    return;
+  }
+  callback();
 }

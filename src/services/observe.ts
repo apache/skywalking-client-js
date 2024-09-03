@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import {LargestContentfulPaint} from "./types";
 interface PerformanceEntryObj {
-  'largest-contentful-paint': any[];
+  'largest-contentful-paint': LargestContentfulPaint[];
 }
 
 export function observe <K extends keyof PerformanceEntryObj>(

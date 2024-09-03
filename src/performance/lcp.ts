@@ -14,15 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-class LCPTiming {
-  constructor() {
-    if (!performance || !performance.getEntries) {
-      console.log('your browser do not support performance.getEntries');
-      return;
-    }
-    this.initObserver();
-  }
-  initObserver() {
-    
-  }
+
+import {observe} from "../services/observe";
+import {prerenderChangeListener} from "../services/eventsListener";
+import {ReportOpts} from "../types"
+import {LCPMetric} from "./type";
+import {getVisibilityObserver} from '../services/getVisibilityObserver';
+import {getActivationStart} from '../services/getNavigationEntry';
+
+function LCPTiming(options: ReportOpts) {
+  prerenderChangeListener(() => {
+    const metric: any = {name: "LCP"};
+    const visibilityObserver = getVisibilityObserver();
+    const processEntries = (entries: LCPMetric['entries']) => {
+      if (!options!.reportAllChanges) {
+        entries = entries.slice(-1);
+      }
+
+      entries.forEach((entry) => {
+        if (entry.startTime < visibilityObserver.firstHiddenTime) {
+          metric.value = Math.max(entry.startTime - getActivationStart(), 0);
+          metric.entries = [entry];
+        }
+      });
+    };
+
+    const params = observe('largest-contentful-paint', processEntries);
+  })
 }

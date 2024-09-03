@@ -14,10 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export function watchPrerendering(callback: () => void) {
-  if ((document as any).prerendering) {
-    addEventListener('prerenderingchange', callback, true);
-    return;
-  }
-  callback();
+
+interface onBFCacheRestoreCallback {
+  (event: PageTransitionEvent): void;
 }
+
+let bfcacheRestoreTime = -1;
+
+export const getBFCacheRestoreTime = () => bfcacheRestoreTime;
+
+export const onBFCacheRestore = (cb: onBFCacheRestoreCallback) => {
+  addEventListener(
+    'pageshow',
+    (event) => {
+      if (event.persisted) {
+        bfcacheRestoreTime = event.timeStamp;
+        cb(event);
+      }
+    },
+    true,
+  );
+};
