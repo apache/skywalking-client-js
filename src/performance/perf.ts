@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 import { IPerfDetail } from './type';
+import {getNavigationEntry} from '../services/getNavigationEntry';
 class PagePerf {
   public getPerfTiming(): IPerfDetail {
     try {
       let { timing } = window.performance as PerformanceNavigationTiming | any; // PerformanceTiming
       if (typeof window.PerformanceNavigationTiming === 'function') {
-        const nt2Timing = performance.getEntriesByType('navigation')[0];
+        const nt2Timing = getNavigationEntry();
 
         if (nt2Timing) {
           timing = nt2Timing;
