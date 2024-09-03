@@ -23,7 +23,7 @@ let bfcacheRestoreTime = -1;
 
 export const getBFCacheRestoreTime = () => bfcacheRestoreTime;
 
-export const onBFCacheRestore = (cb: onBFCacheRestoreCallback) => {
+export function onBFCacheRestore(cb: onBFCacheRestoreCallback) {
   addEventListener(
     'pageshow',
     (event) => {

@@ -19,30 +19,30 @@ import {onBFCacheRestore} from './bfcache';
 
 let firstHiddenTime = -1;
 
-const initHiddenTime = () => {
+function initHiddenTime () {
   return document.visibilityState === 'hidden' && !(document as any).prerendering
     ? 0
     : Infinity;
 };
 
-const onVisibilityUpdate = (event: Event) => {
+function onVisibilityUpdate(event: Event) {
   if (document.visibilityState === 'hidden' && firstHiddenTime > -1) {
     firstHiddenTime = event.type === 'visibilitychange' ? event.timeStamp : 0;
     removeChangeListeners();
   }
 };
 
-const addChangeListeners = () => {
+function addChangeListeners() {
   addEventListener('visibilitychange', onVisibilityUpdate, true);
   addEventListener('prerenderingchange', onVisibilityUpdate, true);
 };
 
-const removeChangeListeners = () => {
+function removeChangeListeners() {
   removeEventListener('visibilitychange', onVisibilityUpdate, true);
   removeEventListener('prerenderingchange', onVisibilityUpdate, true);
 };
 
-export const getVisibilityObserver = () => {
+export function getVisibilityObserver() {
   if (firstHiddenTime < 0) {
     firstHiddenTime = initHiddenTime();
     addChangeListeners();

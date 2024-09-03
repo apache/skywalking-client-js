@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-export const getNavigationEntry = (): PerformanceNavigationTiming | void => {
-  const navigationEntry: any =
+export function getNavigationEntry() {
+  const navigationEntry: PerformanceEntry | any =
     self.performance &&
     performance.getEntriesByType &&
     performance.getEntriesByType('navigation')[0];
@@ -30,7 +30,7 @@ export const getNavigationEntry = (): PerformanceNavigationTiming | void => {
   }
 };
 
-export const getActivationStart = (): number => {
-  const navEntry: any = getNavigationEntry();
-  return (navEntry && navEntry.activationStart) || 0;
+export function getActivationStart() {
+  const entry = getNavigationEntry();
+  return (entry && entry.activationStart) || 0;
 };
