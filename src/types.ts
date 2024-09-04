@@ -28,6 +28,8 @@ export interface CustomOptionsType extends CustomReportOptions {
   noTraceOrigins?: (string | RegExp)[];
   traceTimeInterval?: number;
   customTags?: TagOption[];
+  useWebVitals?: boolean;
+  reportAllChanges?: boolean;
 }
 
 export interface CustomReportOptions {

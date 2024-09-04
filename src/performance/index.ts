@@ -19,6 +19,7 @@ import { CustomOptionsType } from '../types';
 import Report from '../services/report';
 import pagePerf from './perf';
 import FMP from './fmp';
+import LCP from './lcp';
 import { IPerfDetail } from './type';
 
 class TracePerf {
@@ -44,6 +45,12 @@ class TracePerf {
     let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
     if (options.autoTracePerf && options.useFmp) {
       fmp = await new FMP();
+    }
+    if (options) {
+      const lcpTiming = await LCP({
+        reportAllChanges: options.reportAllChanges,
+        // durationThreshold: options.durationThreshold
+      });
     }
     // auto report pv and perf data
     setTimeout(() => {

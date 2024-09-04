@@ -22,9 +22,9 @@ import {LCPMetric} from "./type";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
 
-function LCPTiming(options: ReportOpts) {
+export default function LCP(options: ReportOpts) {
   prerenderChangeListener(() => {
-    const metric: any = {name: "LCP"};
+    const metric: any = {name: "lcpTime"};
     const visibilityObserver = getVisibilityObserver();
     const processEntries = (entries: LCPMetric['entries']) => {
       if (!options!.reportAllChanges) {
@@ -40,5 +40,7 @@ function LCPTiming(options: ReportOpts) {
     };
 
     const params = observe('largest-contentful-paint', processEntries);
+
+    return params;
   })
 }
