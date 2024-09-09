@@ -20,7 +20,7 @@ import {observe} from "../services/observe";
 
 export default function onCLS(options: ReportOpts) {
   options = options || {};
-  const metric: any = {name: "lcpTime"};
+  const metric: any = {name: "clsTime"};
 
   let partValue = 0;
   let entryList: LayoutShift[] = [];

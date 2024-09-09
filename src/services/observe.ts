@@ -17,6 +17,7 @@ import {LargestContentfulPaint, LayoutShift} from "./types";
 interface PerformanceEntryObj {
   'layout-shift': LayoutShift[];
   'largest-contentful-paint': LargestContentfulPaint[];
+  'first-input': PerformanceEventTiming[];
 }
 
 export function observe <K extends keyof PerformanceEntryObj>(
