@@ -49,12 +49,11 @@ const ClientMonitor = {
     traceSegment(this.customOptions);
   },
   performance(configs: any) {
-    // trace and report perf data and pv to serve when page loaded
-    if (document.readyState === 'complete') {
-      tracePerf.getPerf(configs);
-    } else {
+    tracePerf.getPerf(configs);
+    if (configs.enableSPA) {
+      // hash router
       window.addEventListener(
-        'load',
+        'hashchange',
         () => {
           tracePerf.getPerf(configs);
         },

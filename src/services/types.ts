@@ -40,3 +40,15 @@ export interface LargestContentfulPaint extends PerformanceEntry {
   readonly url: string;
   readonly element: Element | null;
 }
+
+
+interface LayoutShiftAttribution {
+  node?: Node;
+  previousRect: DOMRectReadOnly;
+  currentRect: DOMRectReadOnly;
+}
+export interface LayoutShift extends PerformanceEntry {
+  value: number;
+  sources: LayoutShiftAttribution[];
+  hadRecentInput: boolean;
+}

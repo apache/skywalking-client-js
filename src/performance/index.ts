@@ -27,12 +27,23 @@ class TracePerf {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
-  public getPerf(options: CustomOptionsType) {
-    this.recordPerf(options);
-    if (options.enableSPA) {
-      // hash router
+  public async getPerf(options: CustomOptionsType) {
+    let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
+    if (options.autoTracePerf && options.useFmp) {
+      fmp = await new FMP();
+    }
+    if (options.useWebVitals) {
+      const lcpTiming = await LCP({
+        reportAllChanges: options.reportAllChanges,
+        // durationThreshold: options.durationThreshold
+      });
+    }
+    // trace and report perf data and pv to serve when page loaded
+    if (document.readyState === 'complete') {
+      this.recordPerf(options);
+    } else {
       window.addEventListener(
-        'hashchange',
+        'load',
         () => {
           this.recordPerf(options);
         },
@@ -41,34 +52,24 @@ class TracePerf {
     }
   }
 
-  public async recordPerf(options: CustomOptionsType) {
-    let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
-    if (options.autoTracePerf && options.useFmp) {
-      fmp = await new FMP();
-    }
-    if (options) {
-      const lcpTiming = await LCP({
-        reportAllChanges: options.reportAllChanges,
-        // durationThreshold: options.durationThreshold
-      });
-    }
+  public recordPerf(options: CustomOptionsType) {
     // auto report pv and perf data
+    if (options.autoTracePerf) {
+      this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
+    }
+    const perfDetail = options.autoTracePerf
+      ? {
+          ...this.perfConfig.perfDetail,
+          // fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
+        }
+      : undefined;
+    const perfInfo = {
+      ...perfDetail,
+      pagePath: options.pagePath,
+      serviceVersion: options.serviceVersion,
+      service: options.service,
+    };
     setTimeout(() => {
-      if (options.autoTracePerf) {
-        this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
-      }
-      const perfDetail = options.autoTracePerf
-        ? {
-            ...this.perfConfig.perfDetail,
-            fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
-          }
-        : undefined;
-      const perfInfo = {
-        ...perfDetail,
-        pagePath: options.pagePath,
-        serviceVersion: options.serviceVersion,
-        service: options.service,
-      };
       new Report('PERF', options.collector).sendByXhr(perfInfo);
       // clear perf data
       this.clearPerf();

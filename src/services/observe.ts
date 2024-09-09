@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {LargestContentfulPaint} from "./types";
+import {LargestContentfulPaint, LayoutShift} from "./types";
 interface PerformanceEntryObj {
+  'layout-shift': LayoutShift[];
   'largest-contentful-paint': LargestContentfulPaint[];
 }
 
