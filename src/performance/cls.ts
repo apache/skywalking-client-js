@@ -18,8 +18,7 @@ import {ReportOpts} from "../types";
 import {LayoutShift} from "../services/types";
 import {observe} from "../services/observe";
 
-export default function onCLS(options: ReportOpts) {
-  options = options || {};
+export default function onCLS() {
   const metric: any = {name: "clsTime"};
 
   let partValue = 0;

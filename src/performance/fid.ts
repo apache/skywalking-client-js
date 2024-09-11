@@ -21,7 +21,7 @@ import {ReportOpts} from "../types";
 import {FIDMetric} from "./type";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 
-export default function FID(options: ReportOpts) {
+export default function FID() {
   prerenderChangeListener(() => {
     const metric: any = {name: "fidTime"};
     const visibilityWatcher = getVisibilityObserver();

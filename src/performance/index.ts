@@ -20,6 +20,8 @@ import Report from '../services/report';
 import pagePerf from './perf';
 import FMP from './fmp';
 import LCP from './lcp';
+import CLS from './cls';
+import FID from './fid';
 import { IPerfDetail } from './type';
 
 class TracePerf {
@@ -32,11 +34,16 @@ class TracePerf {
     if (options.autoTracePerf && options.useFmp) {
       fmp = await new FMP();
     }
+    let webVitals = {};
     if (options.useWebVitals) {
       const lcpTiming = await LCP({
         reportAllChanges: options.reportAllChanges,
-        // durationThreshold: options.durationThreshold
       });
+      const clsTiming = await CLS();
+      const fidTiming = await FID();
+      webVitals = {
+        lcpTiming: lcpTiming,
+      }
     }
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {

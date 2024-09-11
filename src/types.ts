@@ -45,5 +45,4 @@ export type TagOption = {
 };
 export interface ReportOpts {
   reportAllChanges?: boolean;
-  durationThreshold?: number;
 }
