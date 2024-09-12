@@ -15,72 +15,163 @@
  * limitations under the License.
  */
 
-import { CustomOptionsType } from '../types';
+import {CustomOptionsType} from '../types';
 import Report from '../services/report';
+import {prerenderChangeListener} from "../services/eventsListener";
 import pagePerf from './perf';
 import FMP from './fmp';
-import LCP from './lcp';
-import CLS from './cls';
-import FID from './fid';
+import {observe} from "../services/observe";
+import {LCPMetric, FIDMetric} from "./type";
+import {LayoutShift} from "../services/types";
+import {getVisibilityObserver} from '../services/getVisibilityObserver';
+import {getActivationStart} from '../services/getNavigationEntry';
 import { IPerfDetail } from './type';
 
 class TracePerf {
+  private options: CustomOptionsType = {
+    pagePath: '',
+    serviceVersion: '',
+    service: '',
+    collector: ''
+  };
+  private perfInfo = {};
   private perfConfig = {
     perfDetail: {},
   } as { perfDetail: IPerfDetail };
 
-  public async getPerf(options: CustomOptionsType) {
-    let fmp: { fmpTime: number | undefined } = { fmpTime: undefined };
-    if (options.autoTracePerf && options.useFmp) {
-      fmp = await new FMP();
-    }
-    let webVitals = {};
-    if (options.useWebVitals) {
-      const lcpTiming = await LCP({
-        reportAllChanges: options.reportAllChanges,
-      });
-      const clsTiming = await CLS();
-      const fidTiming = await FID();
-      webVitals = {
-        lcpTiming: lcpTiming,
-      }
+  public getPerf(options: CustomOptionsType) {
+    this.options = options;
+    this.perfInfo = {
+      pagePath: options.pagePath,
+      serviceVersion: options.serviceVersion,
+      service: options.service,
     }
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      this.recordPerf(options);
+      this.getBasicPerf(options);
     } else {
       window.addEventListener(
         'load',
         () => {
-          this.recordPerf(options);
+          this.getBasicPerf(options);
         },
         false,
       );
     }
+    this.getCorePerf()
   }
 
-  public recordPerf(options: CustomOptionsType) {
+  private async getCorePerf() {
+    if (this.options.useFmp) {
+      await new FMP();
+    }
+    if (this.options.useWebVitals) {
+      this.LCP();
+      this.FID();
+      this.CLS();
+    }
+  }
+  private CLS() {
+    let clsTime = 0;
+    let partValue = 0;
+    let entryList: LayoutShift[] = [];
+
+    const handleEntries = (entries: LayoutShift[]) => {
+      entries.forEach((entry) => {
+        // Count layout shifts without recent user input only
+        if (!entry.hadRecentInput) {
+          const firstEntry = entryList[0];
+          const lastEntry = entryList[entryList.length - 1];
+          if (
+            partValue &&
+            entry.startTime - lastEntry.startTime < 1000 &&
+            entry.startTime - firstEntry.startTime < 5000
+          ) {
+            partValue += entry.value;
+            entryList.push(entry);
+          } else {
+            partValue = entry.value;
+            entryList = [entry];
+          }
+        }
+      });
+      if (partValue > clsTime) {
+        clsTime = partValue;
+        const perfInfo = {
+          clsTime,
+          ...this.perfInfo,
+        };
+        this.reportPerf(perfInfo);
+      }
+    };
+
+    observe('layout-shift', handleEntries);
+  }
+  private LCP() {
+    prerenderChangeListener(() => {
+      const visibilityObserver = getVisibilityObserver();
+      const processEntries = (entries: LCPMetric['entries']) => {
+        entries = entries.slice(-1);
+        for (const entry of entries) {
+          if (entry.startTime < visibilityObserver.firstHiddenTime) {
+            const lcpTime = Math.max(entry.startTime - getActivationStart(), 0);
+            const perfInfo = {
+              lcpTime,
+              ...this.perfInfo,
+            };
+            this.reportPerf(perfInfo);
+          }
+        }
+      };
+  
+     observe('largest-contentful-paint', processEntries);
+    })
+  }
+  private FID() {
+    prerenderChangeListener(() => {
+      const visibilityWatcher = getVisibilityObserver();
+      const processEntry = (entry: PerformanceEventTiming) => {
+        // Only report if the page wasn't hidden prior to the first input.
+        if (entry.startTime < visibilityWatcher.firstHiddenTime) {
+          const fidTime = entry.processingStart - entry.startTime;
+          const perfInfo = {
+            fidTime,
+            ...this.perfInfo,
+          };
+          this.reportPerf(perfInfo);
+        }
+      };
+  
+      const processEntries = (entries: FIDMetric['entries']) => {
+        entries.forEach(processEntry);
+      };
+  
+      observe('first-input', processEntries);
+    })
+  }
+  private getBasicPerf(options: CustomOptionsType) {
     // auto report pv and perf data
     if (options.autoTracePerf) {
       this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
     }
-    const perfDetail = options.autoTracePerf
-      ? {
-          ...this.perfConfig.perfDetail,
-          // fmpTime: options.useFmp ? parseInt(String(fmp.fmpTime), 10) : undefined,
-        }
-      : undefined;
+    const perfDetail = options.autoTracePerf ? this.perfConfig.perfDetail : undefined;
     const perfInfo = {
       ...perfDetail,
-      pagePath: options.pagePath,
-      serviceVersion: options.serviceVersion,
-      service: options.service,
+      ...this.perfInfo,
     };
-    setTimeout(() => {
-      new Report('PERF', options.collector).sendByXhr(perfInfo);
-      // clear perf data
-      this.clearPerf();
-    }, 6000);
+    this.reportPerf(perfInfo);
+  }
+
+  private reportPerf(data: {[key: string]: number | string}) {
+    const perfInfo = {
+      ...data,
+      pagePath: this.options.pagePath,
+      serviceVersion: this.options.serviceVersion,
+      service: this.options.service,
+    };
+    new Report('PERF', this.options.collector).sendByXhr(perfInfo);
+    // clear perf data
+    this.clearPerf();
   }
 
   private clearPerf() {

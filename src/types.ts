@@ -29,7 +29,6 @@ export interface CustomOptionsType extends CustomReportOptions {
   traceTimeInterval?: number;
   customTags?: TagOption[];
   useWebVitals?: boolean;
-  reportAllChanges?: boolean;
 }
 
 export interface CustomReportOptions {
@@ -43,6 +42,3 @@ export type TagOption = {
   key: string;
   value: string;
 };
-export interface ReportOpts {
-  reportAllChanges?: boolean;
-}
