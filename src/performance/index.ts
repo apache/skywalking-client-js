@@ -35,9 +35,6 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
-  private perfConfig = {
-    perfDetail: {},
-  } as { perfDetail: IPerfDetail };
 
   public getPerf(options: CustomOptionsType) {
     this.options = options;
@@ -48,12 +45,12 @@ class TracePerf {
     }
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
-      this.getBasicPerf(options);
+      this.getBasicPerf();
     } else {
       window.addEventListener(
         'load',
         () => {
-          this.getBasicPerf(options);
+          this.getBasicPerf();
         },
         false,
       );
@@ -149,12 +146,9 @@ class TracePerf {
       observe('first-input', processEntries);
     })
   }
-  private getBasicPerf(options: CustomOptionsType) {
+  private getBasicPerf() {
     // auto report pv and perf data
-    if (options.autoTracePerf) {
-      this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
-    }
-    const perfDetail = options.autoTracePerf ? this.perfConfig.perfDetail : undefined;
+    const perfDetail = this.options.autoTracePerf ? new pagePerf().getPerfTiming() : {};
     const perfInfo = {
       ...perfDetail,
       ...this.perfInfo,
@@ -163,13 +157,11 @@ class TracePerf {
   }
 
   private reportPerf(data: {[key: string]: number | string}) {
-    const perfInfo = {
+    const perf = {
       ...data,
-      pagePath: this.options.pagePath,
-      serviceVersion: this.options.serviceVersion,
-      service: this.options.service,
+      ...this.perfInfo
     };
-    new Report('PERF', this.options.collector).sendByXhr(perfInfo);
+    new Report('PERF', this.options.collector).sendByXhr(perf);
     // clear perf data
     this.clearPerf();
   }
@@ -179,9 +171,6 @@ class TracePerf {
       return;
     }
     window.performance.clearResourceTimings();
-    this.perfConfig = {
-      perfDetail: {},
-    } as { perfDetail: IPerfDetail };
   }
 }
 
