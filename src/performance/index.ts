@@ -34,8 +34,10 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
+  private coreWebMetrics: {[key: string]: number} = {};
   public getPerf(options: CustomOptionsType) {
     this.options = options;
+    this.coreWebMetrics = new Proxy({}, handler);
     this.perfInfo = {
       pagePath: options.pagePath,
       serviceVersion: options.serviceVersion,
@@ -55,6 +57,7 @@ class TracePerf {
     }
     this.getCorePerf();
   }
+
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();
@@ -63,11 +66,7 @@ class TracePerf {
     }
     if (this.options.useFmp) {
       const {fmpTime} = await new FMP();
-      const perfInfo = {
-        fmpTime,
-        ...this.perfInfo,
-      };
-      this.reportPerf(perfInfo);
+      this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
     }
   }
   private CLS() {
@@ -95,12 +94,7 @@ class TracePerf {
         }
       });
       if (partValue > clsTime) {
-        clsTime = partValue;
-        const perfInfo = {
-          clsTime,
-          ...this.perfInfo,
-        };
-        this.reportPerf(perfInfo);
+        this.coreWebMetrics.clsTime = Math.floor(partValue);
       }
     };
 
@@ -113,12 +107,7 @@ class TracePerf {
         entries = entries.slice(-1);
         for (const entry of entries) {
           if (entry.startTime < visibilityObserver.firstHiddenTime) {
-            const lcpTime = Math.max(entry.startTime - getActivationStart(), 0);
-            const perfInfo = {
-              lcpTime,
-              ...this.perfInfo,
-            };
-            this.reportPerf(perfInfo);
+            this.coreWebMetrics.lcpTime = Math.floor(Math.max(entry.startTime - getActivationStart(), 0));
           }
         }
       };
@@ -132,12 +121,7 @@ class TracePerf {
       const processEntry = (entry: PerformanceEventTiming) => {
         // Only report if the page wasn't hidden prior to the first input.
         if (entry.startTime < visibilityWatcher.firstHiddenTime) {
-          const fidTime = entry.processingStart - entry.startTime;
-          const perfInfo = {
-            fidTime,
-            ...this.perfInfo,
-          };
-          this.reportPerf(perfInfo);
+          this.coreWebMetrics.fidTime = Math.floor(entry.processingStart - entry.startTime);
         }
       };
   
@@ -158,7 +142,7 @@ class TracePerf {
     this.reportPerf(perfInfo);
   }
 
-  private reportPerf(data: {[key: string]: number | string}) {
+  public reportPerf(data: {[key: string]: number | string}) {
     const perf = {
       ...data,
       ...this.perfInfo
@@ -177,3 +161,13 @@ class TracePerf {
 }
 
 export default new TracePerf();
+
+const handler = {
+  set(target: {[key: string]: number}, prop: string, value: number) {
+    target[prop] = value;
+    if (!isNaN(target.fmpTime) && !isNaN(target.lcpTime)) {
+      new TracePerf().reportPerf(target);
+    }
+    return true;
+  }
+};
