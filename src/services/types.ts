@@ -41,7 +41,6 @@ export interface LargestContentfulPaint extends PerformanceEntry {
   readonly element: Element | null;
 }
 
-
 interface LayoutShiftAttribution {
   node?: Node;
   previousRect: DOMRectReadOnly;

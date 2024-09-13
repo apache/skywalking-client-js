@@ -25,7 +25,6 @@ import {LCPMetric, FIDMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
-import { IPerfDetail } from './type';
 
 class TracePerf {
   private options: CustomOptionsType = {
@@ -35,7 +34,6 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
-
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -55,17 +53,21 @@ class TracePerf {
         false,
       );
     }
-    this.getCorePerf()
+    this.getCorePerf();
   }
-
   private async getCorePerf() {
-    if (this.options.useFmp) {
-      await new FMP();
-    }
     if (this.options.useWebVitals) {
       this.LCP();
       this.FID();
       this.CLS();
+    }
+    if (this.options.useFmp) {
+      const {fmpTime} = await new FMP();
+      const perfInfo = {
+        fmpTime,
+        ...this.perfInfo,
+      };
+      this.reportPerf(perfInfo);
     }
   }
   private CLS() {
