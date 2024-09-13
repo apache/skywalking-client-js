@@ -121,7 +121,12 @@ class TracePerf {
       const processEntry = (entry: PerformanceEventTiming) => {
         // Only report if the page wasn't hidden prior to the first input.
         if (entry.startTime < visibilityWatcher.firstHiddenTime) {
-          this.coreWebMetrics.fidTime = Math.floor(entry.processingStart - entry.startTime);
+          const fidTime = Math.floor(entry.processingStart - entry.startTime);
+          const perfInfo = {
+            fidTime,
+            ...this.perfInfo,
+          };
+          this.reportPerf(perfInfo);
         }
       };
   
