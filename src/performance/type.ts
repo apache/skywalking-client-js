@@ -43,33 +43,12 @@ export type IPerfDetail = {
   fmpTime: number | undefined; // First Meaningful Paint
 };
 
-export interface Metric {
-  name: 'CLS' | 'FID' | 'LCP';
-  value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
-
-  /**
-   * The delta between the current value and the last-reported value.
-   * On the first report, `delta` and `value` will always be the same.
-   */
-  delta: number;
-  id: string;
-  entries: PerformanceEntry[];
-  navigationType:
-    | 'navigate'
-    | 'reload'
-    | 'back-forward'
-    | 'back-forward-cache'
-    | 'prerender'
-    | 'restore';
-}
-
-export interface LCPMetric extends Metric {
+export interface LCPMetric {
   name: 'LCP';
   entries: LargestContentfulPaint[];
 }
 
-export interface FIDMetric extends Metric {
+export interface FIDMetric {
   name: 'FID';
   entries: PerformanceEventTiming[];
 }
