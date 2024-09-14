@@ -144,10 +144,10 @@ class TracePerf {
       ...perfDetail,
       ...this.perfInfo,
     };
-    this.reportPerf(perfInfo);
+    this.reportPerf({...perfInfo, isPV: true});
   }
 
-  public reportPerf(data: {[key: string]: number | string}, collector?: string) {
+  public reportPerf(data: {[key: string]: number | string | boolean}, collector?: string) {
     const perf = {
       ...data,
       ...this.perfInfo
