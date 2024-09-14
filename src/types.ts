@@ -14,32 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export enum ErrorsCategory {
-  AJAX_ERROR = 'ajax',
-  RESOURCE_ERROR = 'resource',
-  VUE_ERROR = 'vue',
-  PROMISE_ERROR = 'promise',
-  JS_ERROR = 'js',
-  UNKNOWN_ERROR = 'unknown',
-}
-export enum GradeTypeEnum {
-  INFO = 'Info',
-  WARNING = 'Warning',
-  ERROR = 'Error',
-}
-export enum ReportTypes {
-  ERROR = '/browser/errorLog',
-  ERRORS = '/browser/errorLogs',
-  PERF = '/browser/perfData',
-  SEGMENT = '/v3/segment',
-  SEGMENTS = '/v3/segments',
+
+export interface CustomOptionsType extends CustomReportOptions {
+  jsErrors?: boolean;
+  apiErrors?: boolean;
+  resourceErrors?: boolean;
+  autoTracePerf?: boolean;
+  useFmp?: boolean;
+  enableSPA?: boolean;
+  vue?: any;
+  traceSDKInternal?: boolean;
+  detailMode?: boolean;
+  noTraceOrigins?: (string | RegExp)[];
+  traceTimeInterval?: number;
+  customTags?: TagOption[];
+  useWebVitals?: boolean;
 }
 
-export const SpanLayer = 'Http';
-export const SpanType = 'Exit';
-
-export enum ReadyStatus {
-  OPENED = 1,
-  DONE = 4,
+export interface CustomReportOptions {
+  collector?: string;
+  service: string;
+  pagePath: string;
+  serviceVersion: string;
 }
-export const ComponentId = 10001; // ajax
+
+export type TagOption = {
+  key: string;
+  value: string;
+};

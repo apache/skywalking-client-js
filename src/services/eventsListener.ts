@@ -14,30 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-export interface CustomOptionsType extends CustomReportOptions {
-  jsErrors?: boolean;
-  apiErrors?: boolean;
-  resourceErrors?: boolean;
-  autoTracePerf?: boolean;
-  useFmp?: boolean;
-  enableSPA?: boolean;
-  vue?: any;
-  traceSDKInternal?: boolean;
-  detailMode?: boolean;
-  noTraceOrigins?: (string | RegExp)[];
-  traceTimeInterval?: number;
-  customTags?: TagOption[];
+export function prerenderChangeListener(callback: () => void) {
+  if ((document as any).prerendering) {
+    addEventListener('prerenderingchange', callback, true);
+    return;
+  }
+  callback();
 }
 
-export interface CustomReportOptions {
-  collector?: string;
-  service: string;
-  pagePath: string;
-  serviceVersion: string;
-}
-
-export type TagOption = {
-  key: string;
-  value: string;
+export function onHidden (cb: () => void) {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      cb();
+    }
+  });
 };

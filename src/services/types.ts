@@ -32,3 +32,22 @@ export interface ReportFields {
   serviceVersion: string;
   pagePath: string;
 }
+export interface LargestContentfulPaint extends PerformanceEntry {
+  readonly renderTime: DOMHighResTimeStamp;
+  readonly loadTime: DOMHighResTimeStamp;
+  readonly size: number;
+  readonly id: string;
+  readonly url: string;
+  readonly element: Element | null;
+}
+
+interface LayoutShiftAttribution {
+  node?: Node;
+  previousRect: DOMRectReadOnly;
+  currentRect: DOMRectReadOnly;
+}
+export interface LayoutShift extends PerformanceEntry {
+  value: number;
+  sources: LayoutShiftAttribution[];
+  hadRecentInput: boolean;
+}

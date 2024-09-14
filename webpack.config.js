@@ -44,8 +44,8 @@ const config = {
     new WebpackConcatPlugin({
       bundles: [
         {
-          dest: './lib/src/types.d.ts',
-          src: './src/**/*.d.ts',
+          dest: './lib/src/types.ts',
+          src: './src/**/*.ts',
         },
       ],
     }),
