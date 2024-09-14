@@ -34,15 +34,15 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
-  private coreWebMetrics: {[key: string]: number} = {};
+  private coreWebMetrics: {[key: string]: string | number | undefined} = {};
   public getPerf(options: CustomOptionsType) {
     this.options = options;
-    this.coreWebMetrics = new Proxy({}, handler);
     this.perfInfo = {
       pagePath: options.pagePath,
       serviceVersion: options.serviceVersion,
       service: options.service,
     }
+    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector}, handler);
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
@@ -147,12 +147,12 @@ class TracePerf {
     this.reportPerf(perfInfo);
   }
 
-  public reportPerf(data: {[key: string]: number | string}) {
+  public reportPerf(data: {[key: string]: number | string}, collector?: string) {
     const perf = {
       ...data,
       ...this.perfInfo
     };
-    new Report('PERF', this.options.collector).sendByXhr(perf);
+    new Report('PERF', collector || this.options.collector).sendByXhr(perf);
     // clear perf data
     this.clearPerf();
   }
@@ -168,10 +168,14 @@ class TracePerf {
 export default new TracePerf();
 
 const handler = {
-  set(target: {[key: string]: number}, prop: string, value: number) {
+  set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
     target[prop] = value;
-    if (!isNaN(target.fmpTime) && !isNaN(target.lcpTime)) {
-      new TracePerf().reportPerf(target);
+    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
+      const source: {[key: string]: number | string | undefined} = {
+        ...target,
+        collector: undefined,
+      };
+      new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
   }

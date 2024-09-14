@@ -56,7 +56,6 @@ class PagePerf {
             : undefined,
         ttlTime: Math.floor(timing.domInteractive - timing.fetchStart), // time to interact
         firstPackTime: Math.floor(timing.responseStart - timing.domainLookupStart), // first pack time
-        fmpTime: 0, // First Meaningful Paint
       };
     } catch (e) {
       throw e;

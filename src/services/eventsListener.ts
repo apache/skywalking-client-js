@@ -21,3 +21,11 @@ export function prerenderChangeListener(callback: () => void) {
   }
   callback();
 }
+
+export function onHidden (cb: () => void) {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      cb();
+    }
+  });
+};
