@@ -17,12 +17,12 @@
 
 import {CustomOptionsType} from '../types';
 import Report from '../services/report';
-import {prerenderChangeListener, onHidden, runOnce} from "../services/eventsListener";
-import {onBFCacheRestore} from "../services/bfcache";
+import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../services/eventsListener";
+// import {onBFCacheRestore} from "../services/bfcache";
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
-import {LCPMetric, FIDMetric} from "./type";
+import {LCPMetric, FIDMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
@@ -40,7 +40,7 @@ const handler = {
     return true;
   }
 };
-
+const reportedMetricNames: Record<string, boolean> = {};
 class TracePerf {
   private options: CustomOptionsType = {
     pagePath: '',
@@ -113,7 +113,15 @@ class TracePerf {
       }
     };
 
-    observe('layout-shift', handleEntries);
+    const obs = observe('layout-shift', handleEntries);
+
+    if (!obs) {
+      return;
+    }
+    onHidden(() => {
+      handleEntries(obs.takeRecords() as CLSMetric['entries']);
+      obs!.disconnect();
+    });
   }
   private LCP() {
     prerenderChangeListener(() => {
@@ -127,7 +135,21 @@ class TracePerf {
         }
       };
   
-     observe('largest-contentful-paint', processEntries);
+      const obs = observe('largest-contentful-paint', processEntries);
+      if (!obs) {
+        return;
+      }
+      const disconnect = runOnce(() => {
+        if (!reportedMetricNames['lcpTime']) {
+          processEntries(obs!.takeRecords() as LCPMetric['entries']);
+          obs!.disconnect();
+          reportedMetricNames['lcpTime'] = true;
+        }
+      });
+      ['keydown', 'click'].forEach((type) => {
+        addEventListener(type, () => idlePeriod(disconnect), true);
+      });
+      onHidden(disconnect);
     })
   }
   private FID() {

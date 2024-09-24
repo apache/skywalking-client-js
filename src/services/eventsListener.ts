@@ -30,12 +30,26 @@ export function onHidden (cb: () => void) {
   });
 };
 
-export function runOnce (cb: () => void) {
+export function runOnce (callback: () => void) {
   let called = false;
   return () => {
     if (!called) {
-      cb();
+      callback();
       called = true;
     }
   };
+};
+
+export function idlePeriod(callback: () => void): number {
+  const rIC = self.requestIdleCallback || self.setTimeout;
+
+  let handle = -1;
+  callback = runOnce(callback);
+  if (document.visibilityState === 'hidden') {
+    callback();
+  } else {
+    handle = rIC(callback);
+    onHidden(callback);
+  }
+  return handle;
 };

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {LargestContentfulPaint} from "../services/types";
+import {LargestContentfulPaint, LayoutShift} from "../services/types";
 export interface ICalScore {
   dpss: ICalScore[];
   st: number;
@@ -50,4 +50,8 @@ export interface LCPMetric {
 export interface FIDMetric {
   name: 'FID';
   entries: PerformanceEventTiming[];
+}
+export interface CLSMetric {
+  name: 'CLS';
+  entries: LayoutShift[];
 }
