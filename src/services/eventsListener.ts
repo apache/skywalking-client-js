@@ -29,3 +29,13 @@ export function onHidden (cb: () => void) {
     }
   });
 };
+
+export function runOnce (cb: () => void) {
+  let called = false;
+  return () => {
+    if (!called) {
+      cb();
+      called = true;
+    }
+  };
+};

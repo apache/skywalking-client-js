@@ -17,7 +17,8 @@
 
 import {CustomOptionsType} from '../types';
 import Report from '../services/report';
-import {prerenderChangeListener} from "../services/eventsListener";
+import {prerenderChangeListener, onHidden, runOnce} from "../services/eventsListener";
+import {onBFCacheRestore} from "../services/bfcache";
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
@@ -25,6 +26,20 @@ import {LCPMetric, FIDMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
+
+const handler = {
+  set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
+    target[prop] = value;
+    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
+      const source: {[key: string]: number | string | undefined} = {
+        ...target,
+        collector: undefined,
+      };
+      new TracePerf().reportPerf(source, String(target.collector));
+    }
+    return true;
+  }
+};
 
 class TracePerf {
   private options: CustomOptionsType = {
@@ -133,8 +148,17 @@ class TracePerf {
       const processEntries = (entries: FIDMetric['entries']) => {
         entries.forEach(processEntry);
       };
-  
-      observe('first-input', processEntries);
+      const obs = observe('first-input', processEntries);
+      if (!obs) {
+        return;
+      }
+
+      onHidden(
+        runOnce(() => {
+          processEntries(obs.takeRecords() as FIDMetric['entries']);
+          obs.disconnect();
+        }),
+      );
     })
   }
   private getBasicPerf() {
@@ -166,17 +190,3 @@ class TracePerf {
 }
 
 export default new TracePerf();
-
-const handler = {
-  set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
-    target[prop] = value;
-    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
-      const source: {[key: string]: number | string | undefined} = {
-        ...target,
-        collector: undefined,
-      };
-      new TracePerf().reportPerf(source, String(target.collector));
-    }
-    return true;
-  }
-};
