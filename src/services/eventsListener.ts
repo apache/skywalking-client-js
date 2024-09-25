@@ -41,14 +41,14 @@ export function runOnce (callback: () => void) {
 };
 
 export function idlePeriod(callback: () => void): number {
-  const rIC = self.requestIdleCallback || self.setTimeout;
+  const func = window.requestIdleCallback || window.setTimeout;
 
   let handle = -1;
   callback = runOnce(callback);
   if (document.visibilityState === 'hidden') {
     callback();
   } else {
-    handle = rIC(callback);
+    handle = func(callback);
     onHidden(callback);
   }
   return handle;
