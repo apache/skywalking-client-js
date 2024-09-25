@@ -18,7 +18,6 @@
 import {CustomOptionsType} from '../types';
 import Report from '../services/report';
 import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../services/eventsListener";
-// import {onBFCacheRestore} from "../services/bfcache";
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
@@ -30,7 +29,7 @@ import {getActivationStart} from '../services/getNavigationEntry';
 const handler = {
   set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
     target[prop] = value;
-    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
+    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime))) {
       const source: {[key: string]: number | string | undefined} = {
         ...target,
         collector: undefined,
@@ -101,11 +100,10 @@ class TracePerf {
             entry.startTime - firstEntry.startTime < 5000
           ) {
             partValue += entry.value;
-            entryList.push(entry);
           } else {
             partValue = entry.value;
-            entryList = [entry];
           }
+          entryList.push(entry);
         }
       });
       if (partValue > clsTime) {
@@ -140,10 +138,10 @@ class TracePerf {
         return;
       }
       const disconnect = runOnce(() => {
-        if (!reportedMetricNames['lcpTime']) {
+        if (!reportedMetricNames['lcp']) {
           processEntries(obs!.takeRecords() as LCPMetric['entries']);
           obs!.disconnect();
-          reportedMetricNames['lcpTime'] = true;
+          reportedMetricNames['lcp'] = true;
         }
       });
       ['keydown', 'click'].forEach((type) => {
