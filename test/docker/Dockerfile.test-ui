@@ -33,8 +33,6 @@ RUN tar -xf ${CLIENT_JS_TEST_CODE} --strip 1 \
 COPY test/docker/index.js src/index.js
 
 RUN npm install \
-    && rm -rf node_modules/skywalking-client-js \
-    && npm link skywalking-client-js \
     && npm run build
 
 FROM nginx:1.19
