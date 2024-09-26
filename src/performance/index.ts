@@ -73,7 +73,7 @@ class TracePerf {
   }
 
   private async getCorePerf() {
-    if (this.options.useWebVitals) {
+    if (this.options.useCoreWebVitals) {
       this.LCP();
       this.FID();
       this.CLS();

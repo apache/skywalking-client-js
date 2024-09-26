@@ -61,6 +61,7 @@ The register method supports the following parameters.
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
 |traceTimeInterval|Number|Support setting time interval to report segments.|false|60000|
 |customTags|Array|Custom Tags|false|-|
+|useCoreWebVitals|Boolean|Collect three core web vitals|false|false|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
