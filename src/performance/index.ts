@@ -27,13 +27,17 @@ import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
 
 const handler = {
-  set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
+  set(target: {[key: string]: unknown}, prop: string, value: unknown) {
     target[prop] = value;
-    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime))) {
-      const source: {[key: string]: number | string | undefined} = {
-        ...target,
-        collector: undefined,
-      };
+    const source: {[key: string]: unknown} = {
+      ...target,
+      collector: undefined,
+      useCoreWebVitals: undefined,
+      useFmp: undefined
+    };
+    const isCoreWebVitals = target.useCoreWebVitals && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime));
+    const isFmp = !isNaN(Number(target.fmpTime)) && target.useFmp;
+    if ((!target.useFmp && isCoreWebVitals) || (!target.useCoreWebVitals && isFmp) || (isCoreWebVitals && isFmp)) {
       new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
@@ -48,7 +52,7 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
-  private coreWebMetrics: {[key: string]: string | number | undefined} = {};
+  private coreWebMetrics: Record<string, unknown> = {};
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -56,7 +60,7 @@ class TracePerf {
       serviceVersion: options.serviceVersion,
       service: options.service,
     }
-    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector}, handler);
+    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useCoreWebVitals: options.useCoreWebVitals, useFmp: options.useFmp}, handler);
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
@@ -191,7 +195,7 @@ class TracePerf {
     this.reportPerf({...perfInfo, isPV: true});
   }
 
-  public reportPerf(data: {[key: string]: number | string | boolean}, collector?: string) {
+  public reportPerf(data: {[key: string]: unknown}, collector?: string) {
     const perf = {
       ...data,
       ...this.perfInfo
