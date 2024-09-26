@@ -37,8 +37,8 @@ const handler = {
     };
     const isCoreWebVitals = target.useCoreWebVitals && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime));
     const isFmp = !isNaN(Number(target.fmpTime)) && target.useFmp;
-    // todo (!target.useFmp && isCoreWebVitals) || (!target.useCoreWebVitals && isFmp) || (isCoreWebVitals && isFmp)
-    if (isCoreWebVitals && isFmp) {
+
+    if ((!target.useFmp && isCoreWebVitals) || (!target.useCoreWebVitals && isFmp) || (isCoreWebVitals && isFmp)) {
       new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
