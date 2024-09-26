@@ -198,9 +198,9 @@ The SkyWalking client-js agent would be deployed and running outside of your dat
 There are various kinds of telemetry relative data would be reported to backend separately or through your original HTTP requests.
 
 In order to implement **distributed tracing from the browser**, an HTTP header with the name `sw8` will be added to HTTP requests
-according to [Cross Process Propagation Headers Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/skywalking-cross-process-propagation-headers-protocol-v3/). 
-`client-js` will also report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/next/en/protocols/trace-data-protocol-v3/) and 
-[Browser Protocol](https://skywalking.apache.org/docs/main/next/en/protocols/browser-protocol/).
+according to [Cross Process Propagation Headers Protocol v3](https://skywalking.apache.org/docs/main/latest/en/api/x-process-propagation-headers-v3/). 
+`client-js` will also report spans and browser telemetry data through [Trace Data Protocol v3](https://skywalking.apache.org/docs/main/latest/en/api/trace-data-protocol-v3/) and 
+[Browser Protocol](https://skywalking.apache.org/docs/main/latest/en/api/browser-protocol/).
 
 Because all of this data is reported from an unsecured environment, users should make sure to:
 1. Not expose OAP server to the internet directly.
