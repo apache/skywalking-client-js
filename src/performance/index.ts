@@ -166,7 +166,7 @@ class TracePerf {
             fidTime,
             ...this.perfInfo,
           };
-          this.reportPerf(perfInfo);
+          new Report('WEBINTERACTION', this.options.collector).sendByXhr(perfInfo);
         }
       };
   
@@ -193,17 +193,17 @@ class TracePerf {
       ...perfDetail,
       ...this.perfInfo,
     };
-    this.reportPerf({...perfInfo, isPV: true});
+    new Report('PERF', this.options.collector).sendByXhr(perfInfo);
+    // clear perf data
+    this.clearPerf();
   }
 
-  public reportPerf(data: {[key: string]: unknown}, collector?: string) {
+  public reportPerf(data: {[key: string]: unknown}, collector: string) {
     const perf = {
       ...data,
       ...this.perfInfo
     };
-    new Report('PERF', collector || this.options.collector).sendByXhr(perf);
-    // clear perf data
-    this.clearPerf();
+    new Report('WEBVITALS', collector).sendByXhr(perf);
   }
 
   private clearPerf() {
