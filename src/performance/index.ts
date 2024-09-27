@@ -33,12 +33,8 @@ const handler = {
       ...target,
       collector: undefined,
       useWebVitals: undefined,
-      useFmp: undefined
     };
-    const isCoreWebVitals = target.useWebVitals && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime));
-    const isFmp = !isNaN(Number(target.fmpTime)) && target.useFmp;
-
-    if ((!target.useFmp && isCoreWebVitals) || (!target.useWebVitals && isFmp) || (isCoreWebVitals && isFmp)) {
+    if (target.useWebVitals && !isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
       new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
@@ -61,7 +57,7 @@ class TracePerf {
       serviceVersion: options.serviceVersion,
       service: options.service,
     }
-    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals, useFmp: options.useFmp}, handler);
+    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals}, handler);
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
@@ -82,8 +78,6 @@ class TracePerf {
       this.LCP();
       this.FID();
       this.CLS();
-    }
-    if (this.options.useFmp) {
       const {fmpTime} = await new FMP();
       this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
     }

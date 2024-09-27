@@ -22,7 +22,6 @@ ClientMonitor.register({
   pagePath: 'index.html',
   serviceVersion: 'v1.0.0',
   vue: Vue,
-  useFmp: true,
   traceTimeInterval: 2000,
 });
 
