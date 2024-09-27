@@ -32,13 +32,13 @@ const handler = {
     const source: {[key: string]: unknown} = {
       ...target,
       collector: undefined,
-      useCoreWebVitals: undefined,
+      useWebVitals: undefined,
       useFmp: undefined
     };
-    const isCoreWebVitals = target.useCoreWebVitals && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime));
+    const isCoreWebVitals = target.useWebVitals && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime));
     const isFmp = !isNaN(Number(target.fmpTime)) && target.useFmp;
 
-    if ((!target.useFmp && isCoreWebVitals) || (!target.useCoreWebVitals && isFmp) || (isCoreWebVitals && isFmp)) {
+    if ((!target.useFmp && isCoreWebVitals) || (!target.useWebVitals && isFmp) || (isCoreWebVitals && isFmp)) {
       new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
@@ -61,7 +61,7 @@ class TracePerf {
       serviceVersion: options.serviceVersion,
       service: options.service,
     }
-    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useCoreWebVitals: options.useCoreWebVitals, useFmp: options.useFmp}, handler);
+    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals, useFmp: options.useFmp}, handler);
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
@@ -78,7 +78,7 @@ class TracePerf {
   }
 
   private async getCorePerf() {
-    if (this.options.useCoreWebVitals) {
+    if (this.options.useWebVitals) {
       this.LCP();
       this.FID();
       this.CLS();

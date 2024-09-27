@@ -27,7 +27,7 @@ const ClientMonitor = {
     apiErrors: true,
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
-    useFmp: false, // use first meaningful paint
+    useWebVitals: false,
     enableSPA: false,
     traceSDKInternal: false,
     detailMode: true,
