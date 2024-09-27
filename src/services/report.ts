@@ -19,17 +19,17 @@ class Report {
   private url: string = '';
 
   constructor(type: string, collector: string) {
-    if (type === 'ERROR') {
-      this.url = collector + ReportTypes.ERROR;
-    } else if (type === 'ERRORS') {
-      this.url = collector + ReportTypes.ERRORS;
-    } else if (type === 'SEGMENT') {
-      this.url = collector + ReportTypes.SEGMENT;
-    } else if (type === 'SEGMENTS') {
-      this.url = collector + ReportTypes.SEGMENTS;
-    } else if (type === 'PERF') {
-      this.url = collector + ReportTypes.PERF;
-    }
+    const typesMap: Record<string, string> = {
+      ERROR: ReportTypes.ERROR,
+      ERRORS: ReportTypes.ERRORS,
+      SEGMENT: ReportTypes.SEGMENT,
+      SEGMENTS: ReportTypes.SEGMENTS,
+      PERF: ReportTypes.PERF,
+      WEBVITALS: ReportTypes.WEBVITALS,
+      WEBINTERACTION: ReportTypes.WEBINTERACTION,
+    };
+
+    this.url = `${collector}${typesMap[type]}`;
   }
 
   public sendByFetch(data: any) {

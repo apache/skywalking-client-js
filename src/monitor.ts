@@ -27,7 +27,7 @@ const ClientMonitor = {
     apiErrors: true,
     resourceErrors: true,
     autoTracePerf: true, // trace performance detail
-    useFmp: false, // use first meaningful paint
+    useWebVitals: false,
     enableSPA: false,
     traceSDKInternal: false,
     detailMode: true,
@@ -84,7 +84,6 @@ const ClientMonitor = {
     this.customOptions = {
       ...this.customOptions,
       ...configs,
-      useFmp: false,
     };
     this.validateOptions();
     this.performance(this.customOptions);
@@ -139,7 +138,7 @@ const ClientMonitor = {
       apiErrors,
       resourceErrors,
       autoTracePerf,
-      useFmp,
+      useWebVitals,
       enableSPA,
       traceSDKInternal,
       detailMode,
@@ -173,8 +172,8 @@ const ClientMonitor = {
     if (typeof autoTracePerf !== 'boolean') {
       this.customOptions.autoTracePerf = true;
     }
-    if (typeof useFmp !== 'boolean') {
-      this.customOptions.useFmp = false;
+    if (typeof useWebVitals !== 'boolean') {
+      this.customOptions.useWebVitals = false;
     }
     if (typeof enableSPA !== 'boolean') {
       this.customOptions.enableSPA = false;

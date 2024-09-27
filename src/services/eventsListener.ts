@@ -29,3 +29,27 @@ export function onHidden (cb: () => void) {
     }
   });
 };
+
+export function runOnce (callback: () => void) {
+  let called = false;
+  return () => {
+    if (!called) {
+      callback();
+      called = true;
+    }
+  };
+};
+
+export function idlePeriod(callback: () => void): number {
+  const func = window.requestIdleCallback || window.setTimeout;
+
+  let handle = -1;
+  callback = runOnce(callback);
+  if (document.visibilityState === 'hidden') {
+    callback();
+  } else {
+    handle = func(callback);
+    onHidden(callback);
+  }
+  return handle;
+};

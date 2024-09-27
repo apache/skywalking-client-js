@@ -17,15 +17,30 @@
 
 import {CustomOptionsType} from '../types';
 import Report from '../services/report';
-import {prerenderChangeListener} from "../services/eventsListener";
+import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../services/eventsListener";
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
-import {LCPMetric, FIDMetric} from "./type";
+import {LCPMetric, FIDMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart} from '../services/getNavigationEntry';
 
+const handler = {
+  set(target: {[key: string]: unknown}, prop: string, value: unknown) {
+    target[prop] = value;
+    const source: {[key: string]: unknown} = {
+      ...target,
+      collector: undefined,
+      useWebVitals: undefined,
+    };
+    if (target.useWebVitals && !isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
+      new TracePerf().reportPerf(source, String(target.collector));
+    }
+    return true;
+  }
+};
+const reportedMetricNames: Record<string, boolean> = {};
 class TracePerf {
   private options: CustomOptionsType = {
     pagePath: '',
@@ -34,7 +49,7 @@ class TracePerf {
     collector: ''
   };
   private perfInfo = {};
-  private coreWebMetrics: {[key: string]: string | number | undefined} = {};
+  private coreWebMetrics: Record<string, unknown> = {};
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -42,7 +57,7 @@ class TracePerf {
       serviceVersion: options.serviceVersion,
       service: options.service,
     }
-    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector}, handler);
+    this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals}, handler);
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
@@ -63,8 +78,6 @@ class TracePerf {
       this.LCP();
       this.FID();
       this.CLS();
-    }
-    if (this.options.useFmp) {
       const {fmpTime} = await new FMP();
       this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
     }
@@ -86,11 +99,10 @@ class TracePerf {
             entry.startTime - firstEntry.startTime < 5000
           ) {
             partValue += entry.value;
-            entryList.push(entry);
           } else {
             partValue = entry.value;
-            entryList = [entry];
           }
+          entryList.push(entry);
         }
       });
       if (partValue > clsTime) {
@@ -98,7 +110,15 @@ class TracePerf {
       }
     };
 
-    observe('layout-shift', handleEntries);
+    const obs = observe('layout-shift', handleEntries);
+
+    if (!obs) {
+      return;
+    }
+    onHidden(() => {
+      handleEntries(obs.takeRecords() as CLSMetric['entries']);
+      obs!.disconnect();
+    });
   }
   private LCP() {
     prerenderChangeListener(() => {
@@ -112,7 +132,21 @@ class TracePerf {
         }
       };
   
-     observe('largest-contentful-paint', processEntries);
+      const obs = observe('largest-contentful-paint', processEntries);
+      if (!obs) {
+        return;
+      }
+      const disconnect = runOnce(() => {
+        if (!reportedMetricNames['lcp']) {
+          processEntries(obs!.takeRecords() as LCPMetric['entries']);
+          obs!.disconnect();
+          reportedMetricNames['lcp'] = true;
+        }
+      });
+      ['keydown', 'click'].forEach((type) => {
+        addEventListener(type, () => idlePeriod(disconnect), true);
+      });
+      onHidden(disconnect);
     })
   }
   private FID() {
@@ -126,15 +160,24 @@ class TracePerf {
             fidTime,
             ...this.perfInfo,
           };
-          this.reportPerf(perfInfo);
+          new Report('WEBINTERACTION', this.options.collector).sendByXhr(perfInfo);
         }
       };
   
       const processEntries = (entries: FIDMetric['entries']) => {
         entries.forEach(processEntry);
       };
-  
-      observe('first-input', processEntries);
+      const obs = observe('first-input', processEntries);
+      if (!obs) {
+        return;
+      }
+
+      onHidden(
+        runOnce(() => {
+          processEntries(obs.takeRecords() as FIDMetric['entries']);
+          obs.disconnect();
+        }),
+      );
     })
   }
   private getBasicPerf() {
@@ -144,17 +187,17 @@ class TracePerf {
       ...perfDetail,
       ...this.perfInfo,
     };
-    this.reportPerf({...perfInfo, isPV: true});
+    new Report('PERF', this.options.collector).sendByXhr(perfInfo);
+    // clear perf data
+    this.clearPerf();
   }
 
-  public reportPerf(data: {[key: string]: number | string | boolean}, collector?: string) {
+  public reportPerf(data: {[key: string]: unknown}, collector: string) {
     const perf = {
       ...data,
       ...this.perfInfo
     };
-    new Report('PERF', collector || this.options.collector).sendByXhr(perf);
-    // clear perf data
-    this.clearPerf();
+    new Report('WEBVITALS', collector).sendByXhr(perf);
   }
 
   private clearPerf() {
@@ -166,17 +209,3 @@ class TracePerf {
 }
 
 export default new TracePerf();
-
-const handler = {
-  set(target: {[key: string]: number | string | undefined}, prop: string, value: number | string | undefined) {
-    target[prop] = value;
-    if (!isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
-      const source: {[key: string]: number | string | undefined} = {
-        ...target,
-        collector: undefined,
-      };
-      new TracePerf().reportPerf(source, String(target.collector));
-    }
-    return true;
-  }
-};

@@ -20,7 +20,6 @@ export interface CustomOptionsType extends CustomReportOptions {
   apiErrors?: boolean;
   resourceErrors?: boolean;
   autoTracePerf?: boolean;
-  useFmp?: boolean;
   enableSPA?: boolean;
   vue?: any;
   traceSDKInternal?: boolean;
