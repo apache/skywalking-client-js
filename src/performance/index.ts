@@ -24,7 +24,7 @@ import {observe} from "../services/observe";
 import {LCPMetric, FIDMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
-import {getActivationStart} from '../services/getNavigationEntry';
+import {getActivationStart, getResourceEntry} from '../services/getEntries';
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -71,6 +71,10 @@ class TracePerf {
       );
     }
     this.getCorePerf();
+  }
+
+  private getResourcePerf() {
+    const resourceLoadTiming = getResourceEntry();
   }
 
   private async getCorePerf() {
