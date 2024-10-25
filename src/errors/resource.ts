@@ -57,7 +57,7 @@ class ResourceErrors extends Base {
       } catch (error) {
         throw error;
       }
-    });
+    },true);
   }
   setOptions(opt: CustomReportOptions) {
     this.infoOpt = opt;
