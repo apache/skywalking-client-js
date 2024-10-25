@@ -52,7 +52,7 @@ class ResourceErrors extends Base {
       } catch (error) {
         throw error;
       }
-    });
+    },true);
   }
 }
 export default new ResourceErrors();
