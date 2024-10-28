@@ -61,13 +61,13 @@ class TracePerf {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
-      this.getResourcePerf();
+      this.observeResources();
     } else {
       window.addEventListener(
         'load',
         () => {
           this.getBasicPerf();
-          this.getResourcePerf();
+          this.observeResources();
         },
       );
     }
@@ -75,17 +75,12 @@ class TracePerf {
     window.addEventListener(
       'unload',
       () => {
-        const resourceLoadTiming = getResourceEntry();
+        const list = getResourceEntry();
       },
     );
   }
 
-  private getResourcePerf() {
-    setTimeout(() => {
-      const resourceLoadTiming = getResourceEntry();
-      console.log(resourceLoadTiming);
-    }, 1000);
-    
+  private observeResources() {
     const obs = observe('resource', (list) => {
       console.log(list);
     });
