@@ -41,12 +41,5 @@ export function getResourceEntry() {
     self.performance &&
     performance.getEntriesByType &&
     performance.getEntriesByType('resource');
-
-  if (
-    resourceEntry &&
-    resourceEntry.responseStart > 0 &&
-    resourceEntry.responseStart < performance.now()
-  ) {
     return resourceEntry;
-  }
 };
