@@ -50,6 +50,7 @@ class TracePerf {
   };
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
+  private resources: {name: string, duration: string, size: number, protocol: string}[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -75,14 +76,30 @@ class TracePerf {
     window.addEventListener(
       'unload',
       () => {
-        const list = getResourceEntry();
+        const newResources = getResourceEntry().map((d: PerformanceResourceTiming) => ({
+          name: d.name,
+          duration: d.duration.toFixed(2),
+          size: d.transferSize,
+          protocol: d.nextHopProtocol,
+        }));
       },
     );
   }
 
   private observeResources() {
+    setTimeout(() => {
+      const resourceLoadTiming = getResourceEntry();
+      console.log(resourceLoadTiming);
+    }, 1000);
+    
     const obs = observe('resource', (list) => {
-      console.log(list);
+      const newResources = list.map((d: PerformanceResourceTiming) => ({
+        name: d.name,
+        duration: d.duration.toFixed(2),
+        size: d.transferSize,
+        protocol: d.nextHopProtocol,
+      }));
+      this.resources.push(...newResources);
     });
 
     if (!obs) {
