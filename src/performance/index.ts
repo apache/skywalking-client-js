@@ -60,15 +60,15 @@ class TracePerf {
       service: options.service,
     }
     this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals}, handler);
-    // this.observeResources();
+    this.observeResources();
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
     } else {
-      window.addEventListener('load', this.getBasicPerf);
+      window.addEventListener('load', () => this.getBasicPerf());
     }
     this.getCorePerf();
-    // window.addEventListener('beforeunload', this.reportResources);
+    window.addEventListener('beforeunload', () => this.reportResources);
   }
   private observeResources() {    
     observe('resource', (list) => {
