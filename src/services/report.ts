@@ -27,6 +27,7 @@ class Report {
       PERF: ReportTypes.PERF,
       WEBVITALS: ReportTypes.WEBVITALS,
       WEBINTERACTION: ReportTypes.WEBINTERACTION,
+      RESOURCES: ReportTypes.RESOURCES,
     };
 
     this.url = `${collector}${typesMap[type]}`;

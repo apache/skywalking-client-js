@@ -79,9 +79,10 @@ class TracePerf {
         const newResources = getResourceEntry().map((d: PerformanceResourceTiming) => ({
           name: d.name,
           duration: d.duration.toFixed(2),
-          size: d.transferSize,
+          size: d.transferSize, 
           protocol: d.nextHopProtocol,
         }));
+        new Report('RESOURCES', options.collector).sendByBeacon([...newResources, ...this.resources]);
       },
     );
   }
