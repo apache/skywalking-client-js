@@ -51,7 +51,7 @@ class TracePerf {
   };
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
-  private resources: {name: string, duration: string, size: number, protocol: string, type: string}[] = [];
+  private resources: {name: string, duration: number, size: number, protocol: string, type: string}[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -75,7 +75,7 @@ class TracePerf {
       const newResources = list.filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
       .map((d: PerformanceResourceTiming) => ({
         name: d.name,
-        duration: d.duration.toFixed(2),
+        duration: Math.floor(d.duration),
         size: d.transferSize,
         protocol: d.nextHopProtocol,
         type: d.initiatorType,
@@ -87,12 +87,16 @@ class TracePerf {
     const newResources = getResourceEntry().filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
       .map((d: PerformanceResourceTiming) => ({
         name: d.name,
-        duration: d.duration.toFixed(2),
+        duration: Math.floor(d.duration),
         size: d.transferSize, 
         protocol: d.nextHopProtocol,
         type: d.initiatorType,
       }));
-    new Report('RESOURCES', this.options.collector).sendByBeacon([...newResources, ...this.resources]);
+    const list = [...newResources, ...this.resources];
+    if (!list.length) {
+      return;
+    }
+    new Report('RESOURCES', this.options.collector).sendByBeacon(list);
   }
   private async getCorePerf() {
     if (this.options.useWebVitals) {
