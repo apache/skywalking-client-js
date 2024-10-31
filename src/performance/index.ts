@@ -59,16 +59,15 @@ class TracePerf {
       service: options.service,
     }
     this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals}, handler);
+    this.observeResources();
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
-      this.observeResources();
     } else {
       window.addEventListener(
         'load',
         () => {
           this.getBasicPerf();
-          this.observeResources();
         },
       );
     }
