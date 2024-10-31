@@ -96,7 +96,7 @@ class TracePerf {
     if (!list.length) {
       return;
     }
-    new Report('RESOURCES', this.options.collector).sendByBeacon(list);
+    // new Report('RESOURCES', this.options.collector).sendByBeacon(list);
   }
   private async getCorePerf() {
     if (this.options.useWebVitals) {
