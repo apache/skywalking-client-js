@@ -68,7 +68,7 @@ class TracePerf {
       window.addEventListener('load', () => this.getBasicPerf());
     }
     this.getCorePerf();
-    window.addEventListener('beforeunload', () => this.reportResources);
+    window.addEventListener('beforeunload', () => this.reportResources());
   }
   private observeResources() {    
     observe('resource', (list) => {
