@@ -74,7 +74,7 @@ class TracePerf {
     }
     this.getCorePerf();
     window.addEventListener(
-      'unload',
+      'beforeunload',
       () => {
         const newResources = getResourceEntry().map((d: PerformanceResourceTiming) => ({
           name: d.name,
@@ -87,12 +87,7 @@ class TracePerf {
     );
   }
 
-  private observeResources() {
-    setTimeout(() => {
-      const resourceLoadTiming = getResourceEntry();
-      console.log(resourceLoadTiming);
-    }, 1000);
-    
+  private observeResources() {    
     const obs = observe('resource', (list) => {
       const newResources = list.map((d: PerformanceResourceTiming) => ({
         name: d.name,
