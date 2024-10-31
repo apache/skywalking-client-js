@@ -101,10 +101,6 @@ class TracePerf {
       }));
       this.resources.push(...newResources);
     });
-
-    if (!obs) {
-      return;
-    }
   }
 
   private async getCorePerf() {
