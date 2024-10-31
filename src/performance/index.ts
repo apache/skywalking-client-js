@@ -51,7 +51,7 @@ class TracePerf {
   };
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
-  private resources: {name: string, duration: string, size: number, protocol: string}[] = [];
+  private resources: {name: string, duration: string, size: number, protocol: string, type: string}[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -65,32 +65,13 @@ class TracePerf {
     if (document.readyState === 'complete') {
       this.getBasicPerf();
     } else {
-      window.addEventListener(
-        'load',
-        () => {
-          this.getBasicPerf();
-        },
-      );
+      window.addEventListener('load', this.getBasicPerf);
     }
     this.getCorePerf();
-    window.addEventListener(
-      'beforeunload',
-      () => {
-        const newResources = getResourceEntry().filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
-        .map((d: PerformanceResourceTiming) => ({
-          name: d.name,
-          duration: d.duration.toFixed(2),
-          size: d.transferSize, 
-          protocol: d.nextHopProtocol,
-          type: d.initiatorType,
-        }));
-        new Report('RESOURCES', options.collector).sendByBeacon([...newResources, ...this.resources]);
-      },
-    );
+    window.addEventListener('beforeunload', this.reportResources);
   }
-
   private observeResources() {    
-    const obs = observe('resource', (list) => {
+    observe('resource', (list) => {
       const newResources = list.filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
       .map((d: PerformanceResourceTiming) => ({
         name: d.name,
@@ -102,7 +83,17 @@ class TracePerf {
       this.resources.push(...newResources);
     });
   }
-
+  private reportResources() {
+    const newResources = getResourceEntry().filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
+      .map((d: PerformanceResourceTiming) => ({
+        name: d.name,
+        duration: d.duration.toFixed(2),
+        size: d.transferSize, 
+        protocol: d.nextHopProtocol,
+        type: d.initiatorType,
+      }));
+    new Report('RESOURCES', this.options.collector).sendByBeacon([...newResources, ...this.resources]);
+  }
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();
