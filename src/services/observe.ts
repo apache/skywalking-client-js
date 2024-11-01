@@ -19,6 +19,7 @@ interface PerformanceEntryObj {
   'layout-shift': LayoutShift[];
   'largest-contentful-paint': LargestContentfulPaint[];
   'first-input': PerformanceEventTiming[];
+  'resource': PerformanceResourceTiming[];
 }
 
 export function observe <K extends keyof PerformanceEntryObj>(

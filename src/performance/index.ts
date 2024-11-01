@@ -24,7 +24,7 @@ import {observe} from "../services/observe";
 import {LCPMetric, FIDMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
-import {getActivationStart} from '../services/getNavigationEntry';
+import {getActivationStart, getResourceEntry} from '../services/getEntries';
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -41,6 +41,7 @@ const handler = {
   }
 };
 const reportedMetricNames: Record<string, boolean> = {};
+const InitiatorTypes = ["beacon", "xmlhttprequest", "fetch"];
 class TracePerf {
   private options: CustomOptionsType = {
     pagePath: '',
@@ -50,6 +51,7 @@ class TracePerf {
   };
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
+  private resources: {name: string, duration: number, size: number, protocol: string, type: string}[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -58,21 +60,50 @@ class TracePerf {
       service: options.service,
     }
     this.coreWebMetrics = new Proxy({...this.perfInfo, collector: options.collector, useWebVitals: options.useWebVitals}, handler);
+    this.observeResources();
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
       this.getBasicPerf();
     } else {
-      window.addEventListener(
-        'load',
-        () => {
-          this.getBasicPerf();
-        },
-        false,
-      );
+      window.addEventListener('load', () => this.getBasicPerf());
     }
     this.getCorePerf();
+    window.addEventListener('beforeunload', () => this.reportResources());
   }
-
+  private observeResources() {    
+    observe('resource', (list) => {
+      const newResources = list.filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
+      .map((d: PerformanceResourceTiming) => ({
+        service: this.options.service,
+        serviceVersion: this.options.serviceVersion,
+        pagePath: this.options.pagePath,
+        name: d.name,
+        duration: Math.floor(d.duration),
+        size: d.transferSize,
+        protocol: d.nextHopProtocol,
+        type: d.initiatorType,
+      }));
+      this.resources.push(...newResources);
+    });
+  }
+  private reportResources() {
+    const newResources = getResourceEntry().filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
+      .map((d: PerformanceResourceTiming) => ({
+        service: this.options.service,
+        serviceVersion: this.options.serviceVersion,
+        pagePath: this.options.pagePath,
+        name: d.name,
+        duration: Math.floor(d.duration),
+        size: d.transferSize, 
+        protocol: d.nextHopProtocol,
+        type: d.initiatorType,
+      }));
+    const list = [...newResources, ...this.resources];
+    if (!list.length) {
+      return;
+    }
+    new Report('RESOURCES', this.options.collector).sendByBeacon(list);
+  }
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();

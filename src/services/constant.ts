@@ -33,6 +33,7 @@ export enum ReportTypes {
   PERF = '/browser/perfData',
   WEBVITALS = '/browser/perfData/webVitals',
   WEBINTERACTION = '/browser/perfData/webInteraction',
+  RESOURCES = '/browser/perfData/resources',
   SEGMENT = '/v3/segment',
   SEGMENTS = '/v3/segments',
 }

@@ -30,7 +30,16 @@ export function getNavigationEntry() {
   }
 };
 
+
 export function getActivationStart() {
   const entry = getNavigationEntry();
   return (entry && entry.activationStart) || 0;
+};
+
+export function getResourceEntry() {
+  const resourceEntry: PerformanceEntry | any =
+    self.performance &&
+    performance.getEntriesByType &&
+    performance.getEntriesByType('resource');
+    return resourceEntry;
 };

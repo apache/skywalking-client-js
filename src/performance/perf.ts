@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 import { IPerfDetail } from './type';
-import {getNavigationEntry} from '../services/getNavigationEntry';
+import {getNavigationEntry} from '../services/getEntries';
 class PagePerf {
   public getPerfTiming(): IPerfDetail {
     try {
