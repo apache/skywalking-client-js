@@ -74,6 +74,9 @@ class TracePerf {
     observe('resource', (list) => {
       const newResources = list.filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
       .map((d: PerformanceResourceTiming) => ({
+        service: this.options.service,
+        serviceVersion: this.options.serviceVersion,
+        pagePath: this.options.pagePath,
         name: d.name,
         duration: Math.floor(d.duration),
         size: d.transferSize,
@@ -86,6 +89,9 @@ class TracePerf {
   private reportResources() {
     const newResources = getResourceEntry().filter((d: PerformanceResourceTiming) => !InitiatorTypes.includes(d.initiatorType))
       .map((d: PerformanceResourceTiming) => ({
+        service: this.options.service,
+        serviceVersion: this.options.serviceVersion,
+        pagePath: this.options.pagePath,
         name: d.name,
         duration: Math.floor(d.duration),
         size: d.transferSize, 
