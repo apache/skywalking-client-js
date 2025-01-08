@@ -51,7 +51,7 @@ class TracePerf {
   };
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
-  private resources: {name: string, duration: number, size: number, protocol: string, resourcesType: string}[] = [];
+  private resources: {name: string, duration: number, size: number, protocol: string, resourceType: string}[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -81,7 +81,7 @@ class TracePerf {
         duration: Math.floor(d.duration),
         size: d.transferSize,
         protocol: d.nextHopProtocol,
-        resourcesType: d.initiatorType,
+        resourceType: d.initiatorType,
       }));
       this.resources.push(...newResources);
     });
@@ -96,7 +96,7 @@ class TracePerf {
         duration: Math.floor(d.duration),
         size: d.transferSize, 
         protocol: d.nextHopProtocol,
-        resourcesType: d.initiatorType,
+        resourceType: d.initiatorType,
       }));
     const list = [...newResources, ...this.resources];
     if (!list.length) {
