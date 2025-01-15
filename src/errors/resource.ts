@@ -18,15 +18,22 @@
 import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { CustomReportOptions } from '../types';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: { service: string; pagePath: string; serviceVersion: string; collector: string }) {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
+  public handleErrors(options: CustomReportOptions) {
+    this.infoOpt = options;
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
           return;
         }
-        const target: any = event.target || event.srcElement;
+        const target: any = event.target;
         const isElementTarget =
           target instanceof HTMLScriptElement ||
           target instanceof HTMLLinkElement ||
@@ -37,13 +44,11 @@ class ResourceErrors extends Base {
           return;
         }
         this.logInfo = {
+          ...this.infoOpt,
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
-          errorUrl: target.src || target.href || location.href,
+          errorUrl: (target as HTMLScriptElement).src || (target as HTMLLinkElement).href || location.href,
           message: `load ${target.tagName} resource error`,
           collector: options.collector,
           stack: `load ${target.tagName} resource error`,
@@ -52,7 +57,10 @@ class ResourceErrors extends Base {
       } catch (error) {
         throw error;
       }
-    });
+    },true);
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 export default new ResourceErrors();

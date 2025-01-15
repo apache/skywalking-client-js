@@ -15,18 +15,39 @@
  * limitations under the License.
  */
 
-export interface CustomOptionsType {
-  collector?: string;
+export interface ErrorInfoFields {
+  uniqueId: string;
+  category: string;
+  grade: string;
+  message: any;
+  errorUrl: string;
+  line?: number;
+  col?: number;
+  stack?: string;
+  firstReportedError?: boolean;
+}
+
+export interface ReportFields {
   service: string;
-  pagePath: string;
   serviceVersion: string;
-  jsErrors?: boolean;
-  apiErrors?: boolean;
-  resourceErrors?: boolean;
-  autoTracePerf?: boolean;
-  useFmp?: boolean;
-  enableSPA?: boolean;
-  vue?: any;
-  traceSDKInternal?: boolean;
-  detailMode?: boolean;
+  pagePath: string;
+}
+export interface LargestContentfulPaint extends PerformanceEntry {
+  readonly renderTime: DOMHighResTimeStamp;
+  readonly loadTime: DOMHighResTimeStamp;
+  readonly size: number;
+  readonly id: string;
+  readonly url: string;
+  readonly element: Element | null;
+}
+
+interface LayoutShiftAttribution {
+  node?: Node;
+  previousRect: DOMRectReadOnly;
+  currentRect: DOMRectReadOnly;
+}
+export interface LayoutShift extends PerformanceEntry {
+  value: number;
+  sources: LayoutShiftAttribution[];
+  hadRecentInput: boolean;
 }

@@ -16,11 +16,12 @@
  */
 import Task from './task';
 import { ErrorsCategory, GradeTypeEnum } from './constant';
-import { ErrorInfoFeilds, ReportFields } from './types';
+import { ErrorInfoFields, ReportFields } from './types';
 
-let jsErrorPv = false;
+let pageHasjsError: { [key: string]: boolean } = {};
+let interval: NodeJS.Timeout;
 export default class Base {
-  public logInfo: ErrorInfoFeilds & ReportFields & { collector: string } = {
+  public logInfo: ErrorInfoFields & ReportFields & { collector: string } = {
     uniqueId: '',
     service: '',
     serviceVersion: '',
@@ -35,47 +36,31 @@ export default class Base {
     collector: '',
   };
 
-  public traceInfo() {
+  public traceInfo(logInfo?: ErrorInfoFields & ReportFields & { collector: string }) {
+    this.logInfo = logInfo || this.logInfo;
+    const ExcludeErrorTypes: string[] = [
+      ErrorsCategory.AJAX_ERROR,
+      ErrorsCategory.RESOURCE_ERROR,
+      ErrorsCategory.UNKNOWN_ERROR,
+    ];
     // mark js error pv
-    if (!jsErrorPv && this.logInfo.category === ErrorsCategory.JS_ERROR) {
-      jsErrorPv = true;
+    if (!pageHasjsError[location.href] && !ExcludeErrorTypes.includes(this.logInfo.category)) {
+      pageHasjsError = {
+        [location.href]: true,
+      };
       this.logInfo.firstReportedError = true;
     }
-    this.handleRecordError();
-    setTimeout(() => {
+    const collector = this.logInfo.collector;
+
+    delete this.logInfo.collector;
+    Task.addTask(this.logInfo, collector);
+    Task.finallyFireTasks();
+    if (interval) {
+      return;
+    }
+    // report errors within 1min
+    interval = setInterval(() => {
       Task.fireTasks();
-    }, 100);
-  }
-
-  private handleRecordError() {
-    try {
-      if (!this.logInfo.message) {
-        return;
-      }
-      const errorInfo = this.handleErrorInfo();
-
-      Task.addTask(errorInfo);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  private handleErrorInfo() {
-    let message = `error category:${this.logInfo.category}\r\n log info:${this.logInfo.message}\r\n
-      error url: ${this.logInfo.errorUrl}\r\n `;
-
-    switch (this.logInfo.category) {
-      case ErrorsCategory.JS_ERROR:
-        message += `error line number: ${this.logInfo.line}\r\n error col number:${this.logInfo.col}\r\n`;
-        break;
-      default:
-        message;
-        break;
-    }
-    const recordInfo = {
-      ...this.logInfo,
-      message,
-    };
-    return recordInfo;
+    }, 60000);
   }
 }

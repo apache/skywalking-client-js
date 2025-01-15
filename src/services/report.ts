@@ -19,17 +19,18 @@ class Report {
   private url: string = '';
 
   constructor(type: string, collector: string) {
-    if (type === 'ERROR') {
-      this.url = collector + ReportTypes.ERROR;
-    } else if (type === 'ERRORS') {
-      this.url = collector + ReportTypes.ERRORS;
-    } else if (type === 'SEGMENT') {
-      this.url = collector + ReportTypes.SEGMENT;
-    } else if (type === 'SEGMENTS') {
-      this.url = collector + ReportTypes.SEGMENTS;
-    } else if (type === 'PERF') {
-      this.url = collector + ReportTypes.PERF;
-    }
+    const typesMap: Record<string, string> = {
+      ERROR: ReportTypes.ERROR,
+      ERRORS: ReportTypes.ERRORS,
+      SEGMENT: ReportTypes.SEGMENT,
+      SEGMENTS: ReportTypes.SEGMENTS,
+      PERF: ReportTypes.PERF,
+      WEBVITALS: ReportTypes.WEBVITALS,
+      WEBINTERACTION: ReportTypes.WEBINTERACTION,
+      RESOURCES: ReportTypes.RESOURCES,
+    };
+
+    this.url = `${collector}${typesMap[type]}`;
   }
 
   public sendByFetch(data: any) {
@@ -51,7 +52,6 @@ class Report {
   }
 
   public sendByXhr(data: any) {
-    delete data.collector;
     if (!this.url) {
       return;
     }
@@ -65,6 +65,23 @@ class Report {
       }
     };
     xhr.send(JSON.stringify(data));
+  }
+
+  public sendByBeacon(data: any) {
+    if (!this.url) {
+      return;
+    }
+    if (typeof navigator.sendBeacon === 'function') {
+      navigator.sendBeacon(
+        this.url,
+        new Blob([JSON.stringify(data)], {
+          type: 'application/json'
+        })
+      );
+      return;
+    }
+
+    this.sendByXhr(data);
   }
 }
 export default Report;

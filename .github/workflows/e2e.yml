@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Node CI
+name: E2E
 
 on:
   pull_request:
@@ -23,36 +23,17 @@ on:
       - master
 
 jobs:
-  check-license:
+  JavaScriptClient:
+    name: JavaScript Client
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Check License
-        uses: apache/skywalking-eyes@9bd5feb86b5817aa6072b008f9866a2c3bbc8587
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  build-and-test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x, 20.x]
-    steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: npm install and build
-      run: |
-        npm ci
-        npm run build --if-present
-      env:
-        CI: true
-
-  build:
-    runs-on: ubuntu-latest
-    timeout-minutes: 90
-    needs: [check-license, build-and-test]
-    steps:
-      - name: Placeholder
-        run: echo "Just to make the GitHub merge button green"
+        with:
+          submodules: true
+      - name: Setup go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.18'
+      - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
+        with:
+          e2e-file: test/e2e.yaml

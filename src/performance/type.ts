@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import {LargestContentfulPaint, LayoutShift} from "../services/types";
 export interface ICalScore {
   dpss: ICalScore[];
   st: number;
@@ -39,5 +40,18 @@ export type IPerfDetail = {
   sslTime: number | undefined; // Only valid for HTTPS
   ttlTime: number | undefined; // Time to interact
   firstPackTime: number | undefined; // first pack time
-  fmpTime: number | undefined; // First Meaningful Paint
 };
+
+export interface LCPMetric {
+  name: 'LCP';
+  entries: LargestContentfulPaint[];
+}
+
+export interface FIDMetric {
+  name: 'FID';
+  entries: PerformanceEventTiming[];
+}
+export interface CLSMetric {
+  name: 'CLS';
+  entries: LayoutShift[];
+}

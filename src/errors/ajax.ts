@@ -17,53 +17,53 @@
 
 import uuid from '../services/uuid';
 import Base from '../services/base';
-import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
+import { GradeTypeEnum, ErrorsCategory, ReportTypes } from '../services/constant';
+import { CustomReportOptions } from '../types';
 
 class AjaxErrors extends Base {
+  private infoOpt: CustomReportOptions = {
+    service: '',
+    pagePath: '',
+    serviceVersion: '',
+  };
   // get http error info
-  public handleError(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  public handleError(options: CustomReportOptions) {
+    // XMLHttpRequest Object
     if (!window.XMLHttpRequest) {
       return;
     }
-    const xhrSend = XMLHttpRequest.prototype.send;
-    const xhrEvent = (event: any) => {
-      try {
-        if (event && event.currentTarget && (event.currentTarget.status >= 400 || event.currentTarget.status === 0)) {
-          this.logInfo = {
-            uniqueId: uuid(),
-            service: options.service,
-            serviceVersion: options.serviceVersion,
-            pagePath: options.pagePath,
-            category: ErrorsCategory.AJAX_ERROR,
-            grade: GradeTypeEnum.ERROR,
-            errorUrl: event.target.responseURL,
-            message: event.target.response,
-            collector: options.collector,
-            stack: event.type + ':' + event.target.response,
-          };
-          this.traceInfo();
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
+    this.infoOpt = options;
+    window.addEventListener(
+      'xhrReadyStateChange',
+      (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
+        const detail = event.detail;
 
-    XMLHttpRequest.prototype.send = function () {
-      if (this.addEventListener) {
-        this.addEventListener('error', xhrEvent);
-        this.addEventListener('abort', xhrEvent);
-        this.addEventListener('timeout', xhrEvent);
-      } else {
-        const stateChange = this.onreadystatechange;
-        this.onreadystatechange = function (event: any) {
-          stateChange.apply(this, arguments);
-          if (this.readyState === 4) {
-            xhrEvent(event);
-          }
+        if (detail.readyState !== 4) {
+          return;
+        }
+        if (detail.getRequestConfig[1] === options.collector + ReportTypes.ERRORS) {
+          return;
+        }
+        if (detail.status !== 0 && detail.status < 400) {
+          return;
+        }
+
+        this.logInfo = {
+          ...this.infoOpt,
+          uniqueId: uuid(),
+          category: ErrorsCategory.AJAX_ERROR,
+          grade: GradeTypeEnum.ERROR,
+          errorUrl: detail.getRequestConfig[1],
+          message: `status: ${detail.status}; statusText: ${detail.statusText};`,
+          collector: options.collector,
+          stack: detail.responseText,
         };
-      }
-      return xhrSend.apply(this, arguments);
-    };
+        this.traceInfo();
+      },
+    );
+  }
+  setOptions(opt: CustomReportOptions) {
+    this.infoOpt = opt;
   }
 }
 

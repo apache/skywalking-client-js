@@ -14,35 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { ErrorInfoFields, ReportFields } from './types';
-import Report from './report';
 
-class TaskQueue {
-  private queues: ((ErrorInfoFields & ReportFields) | undefined)[] = [];
-  private collector: string = '';
-
-  public addTask(data: ErrorInfoFields & ReportFields, collector: string) {
-    this.queues.push(data);
-    this.collector = collector;
-  }
-
-  public fireTasks() {
-    if (!(this.queues && this.queues.length)) {
-      return;
-    }
-
-    new Report('ERRORS', this.collector).sendByXhr(this.queues);
-    this.queues = [];
-  }
-
-  public finallyFireTasks() {
-    window.addEventListener('beforeunload', () => {
-      if (!this.queues.length) {
-        return;
-      }
-      new Report('ERRORS', this.collector).sendByBeacon(this.queues);
-    });
-  }
+interface onBFCacheRestoreCallback {
+  (event: PageTransitionEvent): void;
 }
 
-export default new TaskQueue();
+let bfcacheRestoreTime = -1;
+
+export const getBFCacheRestoreTime = () => bfcacheRestoreTime;
+
+export function onBFCacheRestore(cb: onBFCacheRestoreCallback) {
+  addEventListener(
+    'pageshow',
+    (event) => {
+      if (event.persisted) {
+        bfcacheRestoreTime = event.timeStamp;
+        cb(event);
+      }
+    },
+    true,
+  );
+};

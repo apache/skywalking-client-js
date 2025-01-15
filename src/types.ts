@@ -15,7 +15,29 @@
  * limitations under the License.
  */
 
-import { fetch } from 'whatwg-fetch';
-export default function windowFetch() {
-  window.fetch = fetch;
+export interface CustomOptionsType extends CustomReportOptions {
+  jsErrors?: boolean;
+  apiErrors?: boolean;
+  resourceErrors?: boolean;
+  autoTracePerf?: boolean;
+  enableSPA?: boolean;
+  vue?: any;
+  traceSDKInternal?: boolean;
+  detailMode?: boolean;
+  noTraceOrigins?: (string | RegExp)[];
+  traceTimeInterval?: number;
+  customTags?: TagOption[];
+  useWebVitals?: boolean;
 }
+
+export interface CustomReportOptions {
+  collector?: string;
+  service: string;
+  pagePath: string;
+  serviceVersion: string;
+}
+
+export type TagOption = {
+  key: string;
+  value: string;
+};

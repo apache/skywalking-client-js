@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
  * this work for additional information regarding copyright ownership.
@@ -14,25 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import ClientMonitor from 'skywalking-client-js';
+import Vue from 'vue';
 
-export interface SegmentFeilds {
-  traceId: string;
-  service: string;
-  spans: SpanFeilds[];
-  serviceInstance: string;
-  traceSegmentId: string;
-}
+ClientMonitor.register({
+  service: 'test-ui',
+  pagePath: 'index.html',
+  serviceVersion: 'v1.0.0',
+  vue: Vue,
+  traceTimeInterval: 2000,
+});
 
-export interface SpanFeilds {
-  operationName: string;
-  startTime: number;
-  endTime: number;
-  spanId: number;
-  spanLayer: string;
-  spanType: string;
-  isError: boolean;
-  parentSpanId: number;
-  componentId: number;
-  peer: string;
-  tags?: any;
-}
+// vue error
+new Vue({
+  methods: {
+    test() {
+      throw {
+        msg: 'vue error',
+        status: 3000
+      }
+    }
+  },
+  created() {
+    this.test();
+  }
+})
+
+fetch('http://provider:9091/info', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+}).then((data) => {
+  console.log(data.body);
+})

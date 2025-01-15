@@ -15,20 +15,31 @@
  * limitations under the License.
  */
 
-export interface ErrorInfoFeilds {
-  uniqueId: string;
-  category: string;
-  grade: string;
-  message: any;
-  errorUrl: string;
-  line?: number;
-  col?: number;
-  stack?: string;
-  firstReportedError?: boolean;
-}
+export function getNavigationEntry() {
+  const navigationEntry: PerformanceEntry | any =
+    self.performance &&
+    performance.getEntriesByType &&
+    performance.getEntriesByType('navigation')[0];
 
-export interface ReportFields {
-  service: string;
-  serviceVersion: string;
-  pagePath: string;
-}
+  if (
+    navigationEntry &&
+    navigationEntry.responseStart > 0 &&
+    navigationEntry.responseStart < performance.now()
+  ) {
+    return navigationEntry;
+  }
+};
+
+
+export function getActivationStart() {
+  const entry = getNavigationEntry();
+  return (entry && entry.activationStart) || 0;
+};
+
+export function getResourceEntry() {
+  const resourceEntry: PerformanceEntry | any =
+    self.performance &&
+    performance.getEntriesByType &&
+    performance.getEntriesByType('resource');
+    return resourceEntry;
+};

@@ -16,11 +16,12 @@
  */
 const path = require('path');
 const webpack = require('webpack');
+const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 
-module.exports = {
+const isDev = process.env.NODE_ENV !== 'production';
+const config = {
   entry: './src/index.ts',
   devtool: 'inline-source-map',
-  mode: 'development',
   module: {
     rules: [
       {
@@ -39,9 +40,23 @@ module.exports = {
     path: path.resolve(__dirname, 'lib'),
     publicPath: '/',
   },
-  plugins: [new webpack.NamedModulesPlugin(), new webpack.HotModuleReplacementPlugin()],
-  devServer: {
-    contentBase: './lib',
-    hot: true,
+  plugins: [
+    new WebpackConcatPlugin({
+      bundles: [
+        {
+          dest: './lib/src/types.ts',
+          src: './src/**/*.ts',
+        },
+      ],
+    }),
+  ],
+  optimization: {
+    moduleIds: 'named',
   },
 };
+if (isDev) {
+  config.mode = 'development';
+} else {
+  config.mode = 'production';
+}
+module.exports = config;

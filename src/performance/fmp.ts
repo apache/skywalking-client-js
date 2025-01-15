@@ -38,7 +38,7 @@ const IGNORE_TAG_SET: string[] = ['SCRIPT', 'STYLE', 'META', 'HEAD', 'LINK'];
 const LIMIT: number = 3000;
 const WW: number = window.innerWidth;
 const WH: number = window.innerHeight;
-const DELAY: number = 500; // fmp retry interval
+const DELAY: number = 2000; // fmp retry interval
 
 class FMPTiming {
   public fmpTime: number = 0;
@@ -83,51 +83,44 @@ class FMPTiming {
       childList: true,
       subtree: true,
     });
-    // calculate score when page loaded
-    if (document.readyState === 'complete') {
-      this.calculateFinalScore();
-    } else {
-      window.addEventListener(
-        'load',
-        () => {
-          this.calculateFinalScore();
-        },
-        false,
-      );
-    }
+    this.calculateFinalScore();
   }
   private calculateFinalScore() {
-    if (MutationEvent && this.flag) {
-      if (this.checkNeedCancel(START_TIME)) {
-        // cancel observer for dom change
-        this.observer.disconnect();
-        this.flag = false;
-        const res = this.getTreeScore(document.body);
-        let tp: ICalScore = null;
-        for (const item of res.dpss) {
-          if (tp && tp.st) {
-            if (tp.st < item.st) {
-              tp = item;
-            }
-          } else {
+    if (!this.flag) {
+      return;
+    }
+    if (!MutationObserver) {
+      return;
+    }
+    if (this.checkNeedCancel(START_TIME)) {
+      // cancel observer for dom change
+      this.observer.disconnect();
+      this.flag = false;
+      const res = this.getTreeScore(document.body);
+      let tp: ICalScore = null;
+      for (const item of res.dpss) {
+        if (tp && tp.st) {
+          if (tp.st < item.st) {
             tp = item;
           }
+        } else {
+          tp = item;
         }
-        // Get all of soures load time
-        performance.getEntries().forEach((item: PerformanceResourceTiming) => {
-          this.entries[item.name] = item.responseEnd;
-        });
-        if (!tp) {
-          return false;
-        }
-        const resultEls: ElementList = this.filterResult(tp.els);
-        const fmpTiming: number = this.getFmpTime(resultEls);
-        this.fmpTime = fmpTiming;
-      } else {
-        setTimeout(() => {
-          this.calculateFinalScore();
-        }, DELAY);
       }
+      // Get all of soures load time
+      performance.getEntries().forEach((item: PerformanceResourceTiming) => {
+        this.entries[item.name] = item.responseEnd;
+      });
+      if (!tp) {
+        return false;
+      }
+      const resultEls: ElementList = this.filterResult(tp.els);
+      const fmpTiming: number = this.getFmpTime(resultEls);
+      this.fmpTime = fmpTiming;
+    } else {
+      setTimeout(() => {
+        this.calculateFinalScore();
+      }, DELAY);
     }
   }
   private getFmpTime(resultEls: ElementList): number {
@@ -136,21 +129,21 @@ class FMPTiming {
       let time: number = 0;
       if (item.weight === 1) {
         const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
-        time = this.statusCollector[index].time;
+        time = this.statusCollector[index] && this.statusCollector[index].time;
       } else if (item.weight === 2) {
         if (item.ele.tagName === 'IMG') {
           time = this.entries[(item.ele as HTMLImageElement).src];
         } else if (item.ele.tagName === 'SVG') {
           const index: number = parseInt(item.ele.getAttribute('fmp_c'), 10);
-          time = this.statusCollector[index].time;
+          time = this.statusCollector[index] && this.statusCollector[index].time;
         } else {
           const match = getStyle(item.ele, 'background-image').match(/url\(\"(.*?)\"\)/);
-          let url: string;
+          let url: string = '';
           if (match && match[1]) {
             url = match[1];
-          }
-          if (!url.includes('http')) {
-            url = location.protocol + match[1];
+            if (!url.includes('http')) {
+              url = location.protocol + match[1];
+            }
           }
           time = this.entries[url];
         }
