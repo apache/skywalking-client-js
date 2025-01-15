@@ -21,7 +21,7 @@ import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../service
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
-import {LCPMetric, FIDMetric, CLSMetric} from "./type";
+import {LCPMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart, getResourceEntry} from '../services/getEntries';
@@ -107,7 +107,6 @@ class TracePerf {
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();
-      this.FID();
       this.CLS();
       const {fmpTime} = await new FMP();
       this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
@@ -178,37 +177,6 @@ class TracePerf {
         addEventListener(type, () => idlePeriod(disconnect), true);
       });
       onHidden(disconnect);
-    })
-  }
-  private FID() {
-    prerenderChangeListener(() => {
-      const visibilityWatcher = getVisibilityObserver();
-      const processEntry = (entry: PerformanceEventTiming) => {
-        // Only report if the page wasn't hidden prior to the first input.
-        if (entry.startTime < visibilityWatcher.firstHiddenTime) {
-          const fidTime = Math.floor(entry.processingStart - entry.startTime);
-          const perfInfo = {
-            fidTime,
-            ...this.perfInfo,
-          };
-          new Report('WEBINTERACTION', this.options.collector).sendByXhr(perfInfo);
-        }
-      };
-  
-      const processEntries = (entries: FIDMetric['entries']) => {
-        entries.forEach(processEntry);
-      };
-      const obs = observe('first-input', processEntries);
-      if (!obs) {
-        return;
-      }
-
-      onHidden(
-        runOnce(() => {
-          processEntries(obs.takeRecords() as FIDMetric['entries']);
-          obs.disconnect();
-        }),
-      );
     })
   }
   private getBasicPerf() {
