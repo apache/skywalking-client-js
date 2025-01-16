@@ -21,10 +21,11 @@ import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../service
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
-import {LCPMetric, CLSMetric} from "./type";
+import {LCPMetric, INPMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart, getResourceEntry} from '../services/getEntries';
+import {handleInteractionEntry, DEFAULT_DURATION_THRESHOLD} from "../services/interactions";
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -107,6 +108,7 @@ class TracePerf {
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();
+      this.INP();
       this.CLS();
       const {fmpTime} = await new FMP();
       this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
@@ -177,6 +179,28 @@ class TracePerf {
         addEventListener(type, () => idlePeriod(disconnect), true);
       });
       onHidden(disconnect);
+    })
+  }
+  private INP() {
+    prerenderChangeListener(() => {
+      const processEntries = (entries: INPMetric['entries']) => {
+        idlePeriod(() => {
+          entries.forEach(handleInteractionEntry);
+        })
+      };
+      const obs = observe('event', processEntries, {
+        durationThreshold: DEFAULT_DURATION_THRESHOLD,
+      });
+      if (!obs) {
+        return;
+      }
+      obs.observe({type: 'first-input', buffered: true});
+      onHidden(
+        runOnce(() => {
+          processEntries(obs.takeRecords() as INPMetric['entries']);
+          obs.disconnect();
+        }),
+      );
     })
   }
   private getBasicPerf() {
