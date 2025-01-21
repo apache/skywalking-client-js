@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {LargestContentfulPaint, LayoutShift} from "./types";
+import {LargestContentfulPaint, LayoutShift, PerformanceEventTiming, PerformanceObserverInit} from "./types";
 interface PerformanceEntryObj {
   'layout-shift': LayoutShift[];
   'largest-contentful-paint': LargestContentfulPaint[];
-  'first-input': PerformanceEventTiming[];
   'resource': PerformanceResourceTiming[];
+  'event': PerformanceEventTiming[];
 }
 
 export function observe <K extends keyof PerformanceEntryObj>(
@@ -42,7 +42,7 @@ export function observe <K extends keyof PerformanceEntryObj>(
             buffered: true,
           },
           opts || {},
-        ) as PerformanceObserverInit,
+        ),
       );
       return perfObs;
     }

@@ -51,3 +51,18 @@ export interface LayoutShift extends PerformanceEntry {
   sources: LayoutShiftAttribution[];
   hadRecentInput: boolean;
 }
+export interface PerformanceEventTiming extends PerformanceEntry {
+  duration: DOMHighResTimeStamp;
+  interactionId: number;
+}
+export interface Interaction {
+  id: number;
+  latency: number;
+  entries: PerformanceEventTiming[];
+}
+export interface EntryPreProcessingHook {
+  (entry: PerformanceEventTiming): void;
+}
+export interface PerformanceObserverInit {
+  durationThreshold?: number;
+}

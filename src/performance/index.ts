@@ -21,10 +21,12 @@ import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../service
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from "../services/observe";
-import {LCPMetric, FIDMetric, CLSMetric} from "./type";
+import {LCPMetric, INPMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
-import {getVisibilityObserver} from '../services/getVisibilityObserver';
-import {getActivationStart, getResourceEntry} from '../services/getEntries';
+import {getVisibilityObserver} from "../services/getVisibilityObserver";
+import {getActivationStart, getResourceEntry} from "../services/getEntries";
+import {onBFCacheRestore} from "../services/bfcache";
+import {handleInteractionEntry, clearInteractions, getLongestInteraction, DEFAULT_DURATION_THRESHOLD} from "../services/interactions";
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -52,6 +54,7 @@ class TracePerf {
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
   private resources: {name: string, duration: number, size: number, protocol: string, resourceType: string}[] = [];
+  private inp: number = NaN;
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -107,7 +110,7 @@ class TracePerf {
   private async getCorePerf() {
     if (this.options.useWebVitals) {
       this.LCP();
-      this.FID();
+      this.INP();
       this.CLS();
       const {fmpTime} = await new FMP();
       this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
@@ -180,35 +183,39 @@ class TracePerf {
       onHidden(disconnect);
     })
   }
-  private FID() {
+  private INP() {
     prerenderChangeListener(() => {
-      const visibilityWatcher = getVisibilityObserver();
-      const processEntry = (entry: PerformanceEventTiming) => {
-        // Only report if the page wasn't hidden prior to the first input.
-        if (entry.startTime < visibilityWatcher.firstHiddenTime) {
-          const fidTime = Math.floor(entry.processingStart - entry.startTime);
-          const perfInfo = {
-            fidTime,
-            ...this.perfInfo,
-          };
-          new Report('WEBINTERACTION', this.options.collector).sendByXhr(perfInfo);
-        }
+      const processEntries = (entries: INPMetric['entries']) => {
+        idlePeriod(() => {
+          entries.forEach(handleInteractionEntry);
+          const interaction = getLongestInteraction();
+          if (interaction && interaction.latency !== this.inp) {
+            this.inp = interaction.latency;
+            const param = {
+              inpTime: interaction.latency,
+              ...this.perfInfo,
+            };
+            new Report('WEBINTERACTION', this.options.collector).sendByXhr(param);
+          }
+        })
       };
-  
-      const processEntries = (entries: FIDMetric['entries']) => {
-        entries.forEach(processEntry);
-      };
-      const obs = observe('first-input', processEntries);
+      const obs = observe('event', processEntries, {
+        durationThreshold: DEFAULT_DURATION_THRESHOLD,
+      });
       if (!obs) {
         return;
       }
-
+      obs.observe({type: 'first-input', buffered: true});
       onHidden(
         runOnce(() => {
-          processEntries(obs.takeRecords() as FIDMetric['entries']);
+          processEntries(obs.takeRecords() as INPMetric['entries']);
           obs.disconnect();
         }),
       );
+      onBFCacheRestore(() => {
+        clearInteractions();
+        this.inp = NaN;
+      })
     })
   }
   private getBasicPerf() {
