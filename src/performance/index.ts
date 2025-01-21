@@ -192,7 +192,7 @@ class TracePerf {
           if (interaction && interaction.latency !== this.inp) {
             this.inp = interaction.latency;
             const param = {
-              inp: interaction.latency,
+              inpTime: interaction.latency,
               ...this.perfInfo,
             };
             new Report('WEBINTERACTION', this.options.collector).sendByXhr(param);
