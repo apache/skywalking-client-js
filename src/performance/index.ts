@@ -54,7 +54,7 @@ class TracePerf {
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
   private resources: {name: string, duration: number, size: number, protocol: string, resourceType: string}[] = [];
-  private inp: number = NaN;
+  private inpList: Record<string, string|number>[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -71,7 +71,10 @@ class TracePerf {
       window.addEventListener('load', () => this.getBasicPerf());
     }
     this.getCorePerf();
-    window.addEventListener('beforeunload', () => this.reportResources());
+    window.addEventListener('beforeunload', () => {
+      this.reportINP();
+      this.reportResources();
+    });
   }
   private observeResources() {    
     observe('resource', (list) => {
@@ -189,13 +192,14 @@ class TracePerf {
         idlePeriod(() => {
           entries.forEach(handleInteractionEntry);
           const interaction = getLongestInteraction();
-          if (interaction && interaction.latency !== this.inp) {
-            this.inp = interaction.latency;
+          const len = this.inpList.length;
+
+          if (interaction && (!len ||  this.inpList[len - 1].inpTime !== interaction.latency)) {
             const param = {
               inpTime: interaction.latency,
               ...this.perfInfo,
             };
-            new Report('WEBINTERACTION', this.options.collector).sendByXhr(param);
+            this.inpList.push(param);
           }
         })
       };
@@ -214,9 +218,16 @@ class TracePerf {
       );
       onBFCacheRestore(() => {
         clearInteractions();
-        this.inp = NaN;
+        this.inpList.length = 0;
       })
     })
+  }
+  private reportINP() {
+    if (!this.inpList.length) {
+      return;
+    }
+
+    new Report('WEBINTERACTIONS', this.options.collector).sendByBeacon(this.inpList);
   }
   private getBasicPerf() {
     // auto report pv and perf data
