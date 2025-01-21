@@ -23,9 +23,10 @@ import FMP from './fmp';
 import {observe} from "../services/observe";
 import {LCPMetric, INPMetric, CLSMetric} from "./type";
 import {LayoutShift} from "../services/types";
-import {getVisibilityObserver} from '../services/getVisibilityObserver';
-import {getActivationStart, getResourceEntry} from '../services/getEntries';
-import {handleInteractionEntry, DEFAULT_DURATION_THRESHOLD} from "../services/interactions";
+import {getVisibilityObserver} from "../services/getVisibilityObserver";
+import {getActivationStart, getResourceEntry} from "../services/getEntries";
+import {onBFCacheRestore} from "../services/bfcache";
+import {handleInteractionEntry, clearInteractions, getLongestInteraction, DEFAULT_DURATION_THRESHOLD} from "../services/interactions";
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -53,6 +54,7 @@ class TracePerf {
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
   private resources: {name: string, duration: number, size: number, protocol: string, resourceType: string}[] = [];
+  private inp: number = NaN;
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -186,6 +188,15 @@ class TracePerf {
       const processEntries = (entries: INPMetric['entries']) => {
         idlePeriod(() => {
           entries.forEach(handleInteractionEntry);
+          const interaction = getLongestInteraction();
+          if (interaction && interaction.latency !== this.inp) {
+            this.inp = interaction.latency;
+            const param = {
+              inp: this.inp,
+              ...this.perfInfo,
+            };
+            new Report('WEBINTERACTION', this.options.collector).sendByXhr(param);
+          }
         })
       };
       const obs = observe('event', processEntries, {
@@ -201,6 +212,10 @@ class TracePerf {
           obs.disconnect();
         }),
       );
+      onBFCacheRestore(() => {
+        clearInteractions();
+        this.coreWebMetrics.inp = NaN;
+      })
     })
   }
   private getBasicPerf() {

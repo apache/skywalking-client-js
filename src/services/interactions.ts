@@ -14,15 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { Interaction, EntryPreProcessingHook, PerformanceEventTiming } from "./types";
 
 export const DEFAULT_DURATION_THRESHOLD = 40;
-// A list of longest interactions
+// Longest interactions list
 export const interactionList: Interaction[] = [];
 export const interactionsMap: Map<number, Interaction> = new Map();
 export const entryPreProcessingCallbacks: EntryPreProcessingHook[] = [];
 
 const MAX_INTERACTIONS_TO_CONSIDER = 10;
+
+let prevInteractionCount = 0;
 
 export const handleInteractionEntry = (entry: PerformanceEventTiming) => {
   entryPreProcessingCallbacks.forEach((cb) => cb(entry));
@@ -65,4 +68,25 @@ export const handleInteractionEntry = (entry: PerformanceEventTiming) => {
         .forEach((i) => interactionsMap.delete(i.id));
     }
   }
+};
+const getInteractionCountForNavigation = () => {
+  return getInteractionCount() - prevInteractionCount;
+};
+export const getLongestInteraction = () => {
+  const candidateInteractionIndex = Math.min(
+    interactionList.length - 1,
+    Math.floor(getInteractionCountForNavigation() / 50),
+  );
+
+  return interactionList[candidateInteractionIndex];
+};
+
+export const clearInteractions = () => {
+  prevInteractionCount = getInteractionCount();
+  interactionList.length = 0;
+  interactionsMap.clear();
+};
+
+export const getInteractionCount = () => {
+  return (performance.eventCounts as any).size || 0;
 };
