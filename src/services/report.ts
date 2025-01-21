@@ -26,7 +26,7 @@ class Report {
       SEGMENTS: ReportTypes.SEGMENTS,
       PERF: ReportTypes.PERF,
       WEBVITALS: ReportTypes.WEBVITALS,
-      WEBINTERACTION: ReportTypes.WEBINTERACTION,
+      WEBINTERACTIONS: ReportTypes.WEBINTERACTIONS,
       RESOURCES: ReportTypes.RESOURCES,
     };
 
