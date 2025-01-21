@@ -27,7 +27,7 @@ const MAX_INTERACTIONS_TO_CONSIDER = 10;
 
 let prevInteractionCount = 0;
 
-export const handleInteractionEntry = (entry: PerformanceEventTiming) => {
+export function handleInteractionEntry (entry: PerformanceEventTiming) {
   entryPreProcessingCallbacks.forEach((cb) => cb(entry));
 
   if (!(entry.interactionId || entry.entryType === 'first-input')) return;
@@ -69,24 +69,23 @@ export const handleInteractionEntry = (entry: PerformanceEventTiming) => {
     }
   }
 };
-const getInteractionCountForNavigation = () => {
+
+function getInteractionCountForNavigation() {
   return getInteractionCount() - prevInteractionCount;
 };
-export const getLongestInteraction = () => {
-  const candidateInteractionIndex = Math.min(
-    interactionList.length - 1,
-    Math.floor(getInteractionCountForNavigation() / 50),
-  );
 
-  return interactionList[candidateInteractionIndex];
+export function getLongestInteraction() {
+  const index = Math.min(interactionList.length - 1, Math.floor(getInteractionCountForNavigation() / 50));
+
+  return interactionList[index];
 };
 
-export const clearInteractions = () => {
+export function clearInteractions() {
   prevInteractionCount = getInteractionCount();
   interactionList.length = 0;
   interactionsMap.clear();
 };
 
-export const getInteractionCount = () => {
+export function getInteractionCount() {
   return (performance.eventCounts as any).size || 0;
 };
