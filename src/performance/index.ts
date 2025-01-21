@@ -214,7 +214,7 @@ class TracePerf {
       );
       onBFCacheRestore(() => {
         clearInteractions();
-        this.coreWebMetrics.inp = NaN;
+        this.inp = NaN;
       })
     })
   }
