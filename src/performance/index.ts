@@ -30,6 +30,9 @@ import {handleInteractionEntry, clearInteractions, getLongestInteraction, DEFAUL
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
+    if (target[prop] !== undefined) {
+      return true
+    }
     target[prop] = value;
     const source: {[key: string]: unknown} = {
       ...target,
