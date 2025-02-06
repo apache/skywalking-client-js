@@ -288,4 +288,4 @@ class FMPTiming {
   }
 }
 
-export default FMPTiming;
+export default new FMPTiming();

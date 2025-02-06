@@ -110,17 +110,18 @@ class TracePerf {
     }
     new Report('RESOURCES', this.options.collector).sendByBeacon(list);
   }
-  private async getCorePerf() {
-    if (this.options.useWebVitals) {
-      this.LCP();
-      this.INP();
-      this.CLS();
-      const {fmpTime} = await new FMP();
-      this.coreWebMetrics.fmpTime = Math.floor(fmpTime);
+  private getCorePerf() {
+    if (!this.options.useWebVitals) {
+      return;
     }
+    this.LCP();
+    this.INP();
+    this.CLS();
+    setTimeout(() => {
+      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime);
+    }, 5000);
   }
   private CLS() {
-    let clsTime = 0;
     let partValue = 0;
     let entryList: LayoutShift[] = [];
 
@@ -142,7 +143,7 @@ class TracePerf {
           entryList.push(entry);
         }
       });
-      if (partValue > clsTime) {
+      if (partValue > 0) {
         this.coreWebMetrics.clsTime = Math.floor(partValue);
       }
     };
