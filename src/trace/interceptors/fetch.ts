@@ -38,7 +38,9 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
     } as SegmentFields;
     let url = {} as URL;
     // for args[0] is Request object see: https://developer.mozilla.org/zh-CN/docs/Web/API/fetch
-    if (Object.prototype.toString.call(args[0]) === '[object Request]') {
+    if (Object.prototype.toString.call(args[0]) === '[object URL]') {
+      url = args[0]
+    } else if (Object.prototype.toString.call(args[0]) === '[object Request]') {
       url = new URL(args[0].url);
     } else {
       if (args[0].startsWith('http://') || args[0].startsWith('https://')) {
