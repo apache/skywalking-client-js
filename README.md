@@ -8,7 +8,7 @@ Apache SkyWalking Client JS
 - Lightweight
 - Make browser as a start of whole distributed tracing
 
-NOTICE,  SkyWalking Client JS 0.8.0 and later versions require SkyWalking v9.
+NOTICE,  SkyWalking Client JS 1.0+ and later versions require SkyWalking 10.2+.
 # Usage
 
 ## Install  
@@ -20,7 +20,7 @@ npm install skywalking-client-js --save
 
 ## Quick Start
 
-**`skywalking-client-js` requires SkyWalking 8.2+**
+**`skywalking-client-js` requires SkyWalking v10, and 10.2+ provides complete features.**
 
 User could use `register` method to load and report data automatically.
 
