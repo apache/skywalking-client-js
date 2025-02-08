@@ -115,8 +115,7 @@ class FMPTiming {
         return false;
       }
       const resultEls: ElementList = this.filterResult(tp.els);
-      const fmpTiming: number = this.getFmpTime(resultEls);
-      this.fmpTime = fmpTiming;
+      this.fmpTime = this.getFmpTime(resultEls);
     } else {
       setTimeout(() => {
         this.calculateFinalScore();
@@ -288,4 +287,4 @@ class FMPTiming {
   }
 }
 
-export default FMPTiming;
+export default new FMPTiming();
