@@ -16,11 +16,6 @@
  */
 import ClientMonitor from 'skywalking-client-js';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-
-createApp(App).mount('#app')
-
 ClientMonitor.register({
   service: 'test-ui',
   pagePath: 'index.html',

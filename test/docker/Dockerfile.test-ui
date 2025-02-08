@@ -28,7 +28,9 @@ ARG CLIENT_JS_TEST_CODE_URL=https://github.com/SkyAPMTest/skywalking-client-test
 WORKDIR /skywalking-client-test
 ADD ${CLIENT_JS_TEST_CODE_URL} .
 RUN tar -xf ${CLIENT_JS_TEST_CODE} --strip 1 \
-    && rm ${CLIENT_JS_TEST_CODE}
+    && rm ${CLIENT_JS_TEST_CODE} \
+    && rm src/index.js
+COPY test/docker/index.js src/index.js
 
 RUN npm install \
     && rm -rf node_modules/skywalking-client-js \
