@@ -23,8 +23,8 @@ logs:
   message: {{ notEmpty .message }}
   line: 0
   col: 0
-  stack: ""
-  errorurl: http://testui/
+  stack: {{ .stack }}
+  errorurl: {{ notEmpty .errorurl }}
   firstreportederror: {{ .firstreportederror }}
 {{- end }}
 total: {{ gt .total 0 }}
