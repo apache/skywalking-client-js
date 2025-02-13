@@ -122,12 +122,12 @@ class TracePerf {
     this.INP();
     this.CLS();
     setTimeout(() => {
-      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime) || 0;
+      this.coreWebMetrics.fmpTime = isNaN(FMP.fmpTime) ? -1 : Math.floor(FMP.fmpTime);
     }, 5000);
   }
   private CLS() {
     if (!isLayoutShiftSupported()) {
-      return this.coreWebMetrics.clsTime = 0;
+      return this.coreWebMetrics.clsTime = -1;
     }
     let partValue = 0;
     let entryList: LayoutShift[] = [];
@@ -169,7 +169,7 @@ class TracePerf {
   }
   private LCP() {
     if (!isLargestContentfulPaintSupported()) {
-      return this.coreWebMetrics.lcpTime = 0;
+      return this.coreWebMetrics.lcpTime = -1;
     }
     prerenderChangeListener(() => {
       const visibilityObserver = getVisibilityObserver();
