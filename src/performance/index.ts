@@ -122,7 +122,7 @@ class TracePerf {
     this.INP();
     this.CLS();
     setTimeout(() => {
-      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime);
+      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime) || 0;
     }, 5000);
   }
   private CLS() {
@@ -151,7 +151,9 @@ class TracePerf {
         }
       });
       if (partValue > 0) {
-        this.coreWebMetrics.clsTime = Math.floor(partValue);
+        setTimeout(() => {
+          this.coreWebMetrics.clsTime = partValue;
+        }, 3000);
       }
     };
 
