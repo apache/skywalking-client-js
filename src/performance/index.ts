@@ -17,16 +17,17 @@
 
 import {CustomOptionsType} from '../types';
 import Report from '../services/report';
-import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from "../services/eventsListener";
+import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from '../services/eventsListener';
 import pagePerf from './perf';
 import FMP from './fmp';
-import {observe} from "../services/observe";
-import {LCPMetric, INPMetric, CLSMetric} from "./type";
-import {LayoutShift} from "../services/types";
-import {getVisibilityObserver} from "../services/getVisibilityObserver";
-import {getActivationStart, getResourceEntry} from "../services/getEntries";
-import {onBFCacheRestore} from "../services/bfcache";
-import {handleInteractionEntry, clearInteractions, getLongestInteraction, DEFAULT_DURATION_THRESHOLD} from "../services/interactions";
+import {observe} from '../services/observe';
+import {LCPMetric, INPMetric, CLSMetric} from './type';
+import {LayoutShift} from '../services/types';
+import {getVisibilityObserver} from '../services/getVisibilityObserver';
+import {getActivationStart, getResourceEntry} from '../services/getEntries';
+import {onBFCacheRestore} from '../services/bfcache';
+import {handleInteractionEntry, clearInteractions, getLongestInteraction, DEFAULT_DURATION_THRESHOLD} from '../services/interactions';
+import {isLayoutShiftSupported, isEventSupported, isLargestContentfulPaintSupported} from '../services/apiDetectSupported';
 
 const handler = {
   set(target: {[key: string]: unknown}, prop: string, value: unknown) {
@@ -121,10 +122,13 @@ class TracePerf {
     this.INP();
     this.CLS();
     setTimeout(() => {
-      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime);
+      this.coreWebMetrics.fmpTime = Math.floor(FMP.fmpTime) || 0;
     }, 5000);
   }
   private CLS() {
+    if (!isLayoutShiftSupported()) {
+      return this.coreWebMetrics.clsTime = 0;
+    }
     let partValue = 0;
     let entryList: LayoutShift[] = [];
 
@@ -147,7 +151,9 @@ class TracePerf {
         }
       });
       if (partValue > 0) {
-        this.coreWebMetrics.clsTime = Math.floor(partValue);
+        setTimeout(() => {
+          this.coreWebMetrics.clsTime = partValue;
+        }, 3000);
       }
     };
 
@@ -162,6 +168,9 @@ class TracePerf {
     });
   }
   private LCP() {
+    if (!isLargestContentfulPaintSupported()) {
+      return this.coreWebMetrics.lcpTime = 0;
+    }
     prerenderChangeListener(() => {
       const visibilityObserver = getVisibilityObserver();
       const processEntries = (entries: LCPMetric['entries']) => {
@@ -191,6 +200,9 @@ class TracePerf {
     })
   }
   private INP() {
+    if (!isEventSupported()) {
+      return;
+    }
     prerenderChangeListener(() => {
       const processEntries = (entries: INPMetric['entries']) => {
         idlePeriod(() => {

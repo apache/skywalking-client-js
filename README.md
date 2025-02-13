@@ -52,7 +52,7 @@ The register method supports the following parameters.
 |jsErrors|Boolean|Support js errors monitoring|false|true|
 |apiErrors|Boolean|Support API errors monitoring|false|true|
 |resourceErrors|Boolean|Support resource errors monitoring|false|true|
-|useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen. Deprecated: This is no longer recommended. Please use the useWebVitals instead. |false|false|
+|useFmp|Boolean|Collect FMP (first meaningful paint) data of the first screen. Deprecated: This is no longer recommended. Please use the `useWebVitals` instead. |false|false|
 |enableSPA|Boolean|Monitor the page hashchange event and report PV, which is suitable for [single page application scenarios](https://github.com/apache/skywalking-client-js#spa-page). |false|false|
 |autoTracePerf|Boolean|Support sending of performance data automatically.|false|true|
 |vue|Vue|Support vue2 errors monitoring. Deprecated: This is no longer recommended. Please use the [Catching errors in frames](https://github.com/apache/skywalking-client-js#catching-errors-in-frames-including-react-angular-vue) scenario instead. |false|undefined|
@@ -61,7 +61,7 @@ The register method supports the following parameters.
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
 |traceTimeInterval|Number|Support setting time interval to report segments.|false|60000|
 |customTags|Array|Custom Tags|false|-|
-|useWebVitals|Boolean|Collect three core web vitals|false|false|
+|useWebVitals|Boolean|Collect three core web vitals. NOTE, Safari does not support all core web vitals, and Firefox does not support `CLS`.|false|false|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
