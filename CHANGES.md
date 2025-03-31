@@ -1,5 +1,17 @@
 # Changes
 
+## 1.0.0
+
+1. Monitor Core Web Vitals.
+2. Monitor static resource metrics.
+3. Bump up `infra-e2e`.
+4. Bump dependencies to fix vulnerabilities.
+5. Adjust readme for 1.0 release.
+6. Fix can't catch the resource error.
+7. Fix append http method to tags error.
+8. Bump up `test ui`.
+9. Fix the caught fetch request does not work when it receives a URL.
+
 ## 0.12.0
 1. Fix native fetch implementation when using Request object.
 2. Fix fetch implementation when using the Header object in http queries.
