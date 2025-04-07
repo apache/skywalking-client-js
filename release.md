@@ -147,6 +147,7 @@ SkyWalking Resources:
 Login to NPM, the username is `apache-skywalking` and the password has been sent to `private@skwalking.apache.org`.
 
 ```bash
+> export NPM_TOKEN=npm_token_here
 > npm login
 > Username: apache-skywalking
 > Password:
