@@ -21,7 +21,7 @@ import { CustomOptionsType } from '../../types';
 import { SegmentFields, SpanFields } from '../type';
 
 interface EnhancedXMLHttpRequest extends XMLHttpRequest {
-  getRequestConfig?: IArguments;
+  getRequestConfig?: any;
 }
 
 let customConfig: CustomOptionsType = {} as CustomOptionsType;
@@ -113,7 +113,10 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       traceSegmentId: '',
     } as SegmentFields;
     const xhrState = event.detail.readyState;
-    const config = (event.detail.getRequestConfig || []) as IArguments;
+    const config = event.detail.getRequestConfig;
+    if (!config || config.length < 2) {
+      return;
+    }
     let url: URL;
     
     const urlString = config[1] as string;
@@ -202,6 +205,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
               value: segCollector[i].event.responseURL || `${url.protocol}//${url.host}${url.pathname}`,
             },
           ];
+          const combinedTags = customConfig.detailMode ? [...tags, ...(customConfig.customTags || [])] : undefined;
           const exitSpan: SpanFields = {
             operationName: customConfig.pagePath,
             startTime: segCollector[i].startTime,
@@ -213,11 +217,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
             peer: responseURL?.host || url.host,
-            tags: customConfig.detailMode
-              ? customConfig.customTags
-                ? [...tags, ...(customConfig.customTags || [])]
-                : tags
-              : undefined,
+            tags: combinedTags,
           };
           segment = {
             ...segment,
