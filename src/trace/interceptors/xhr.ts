@@ -81,12 +81,17 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
   }
 
   // Preserve the prototype chain by setting the prototype of our custom constructor
-  customizedXHR.prototype = originalXHR.prototype;
+  Object.defineProperty(customizedXHR, 'prototype', {
+    value: originalXHR.prototype,
+    writable: false,
+    configurable: false,
+    enumerable: false,
+  });
   
   // Ensure the constructor property points to our custom constructor and make it non-writable
   Object.defineProperty(customizedXHR.prototype, 'constructor', {
     value: customizedXHR,
-    writable: false,
+    writable: true,
     configurable: true,
     enumerable: false,
   });
