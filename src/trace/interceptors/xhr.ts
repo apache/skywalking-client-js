@@ -20,28 +20,35 @@ import { encode } from 'js-base64';
 import { CustomOptionsType } from '../../types';
 import { SegmentFields, SpanFields } from '../type';
 
-let customConfig: CustomOptionsType | any = {};
+interface EnhancedXMLHttpRequest extends XMLHttpRequest {
+  getRequestConfig?: any;
+}
+
+let customConfig: CustomOptionsType = {} as CustomOptionsType;
 export default function xhrInterceptor(options: CustomOptionsType, segments: SegmentFields[]) {
   setOptions(options);
   const originalXHR = window.XMLHttpRequest as any;
-  const xhrSend = XMLHttpRequest.prototype.send;
-  const xhrOpen = XMLHttpRequest.prototype.open;
 
-  if (!(xhrSend && xhrOpen)) {
-    console.error('Tracing is not supported');
+  if (!originalXHR || !originalXHR.prototype || !originalXHR.prototype.open || !originalXHR.prototype.send) {
+    console.error('Tracing is not supported - XMLHttpRequest not available');
     return;
   }
-  originalXHR.getRequestConfig = [];
 
-  function ajaxEventTrigger(event: string) {
+  function ajaxEventTrigger(this: EnhancedXMLHttpRequest, event: string): void {
     const ajaxEvent = new CustomEvent(event, { detail: this });
 
     window.dispatchEvent(ajaxEvent);
   }
 
-  function customizedXHR() {
+  function customizedXHR(): EnhancedXMLHttpRequest {
+    // Create a new XMLHttpRequest instance using the original constructor
     const liveXHR = new originalXHR();
 
+    // Store the original methods before overriding
+    const originalOpen = liveXHR.open;
+    const originalSend = liveXHR.send;
+
+    // Add the readystatechange event listener for tracing
     liveXHR.addEventListener(
       'readystatechange',
       function () {
@@ -50,6 +57,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       false,
     );
 
+    // Override the open method to capture request configuration
     liveXHR.open = function (
       method: string,
       url: string,
@@ -57,22 +65,46 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       username?: string | null,
       password?: string | null,
     ) {
-      this.getRequestConfig = arguments;
-
-      return xhrOpen.apply(this, arguments);
+      // Store the request configuration for later use in tracing
+      (this as EnhancedXMLHttpRequest).getRequestConfig = arguments;
+      
+      // Call the original open method with the correct context
+      return originalOpen.apply(this, arguments);
     };
+
+    // Override the send method and keeping original functionality
     liveXHR.send = function (body?: Document | BodyInit | null) {
-      return xhrSend.apply(this, arguments);
+      return originalSend.apply(this, arguments);
     };
 
     return liveXHR;
   }
 
+  // Preserve the prototype chain by setting the prototype of our custom constructor
+  Object.defineProperty(customizedXHR, 'prototype', {
+    value: originalXHR.prototype,
+    writable: false,
+    configurable: false,
+    enumerable: false,
+  });
+  
+  // Ensure the constructor property points to our custom constructor and make it non-writable
+  Object.defineProperty(customizedXHR.prototype, 'constructor', {
+    value: customizedXHR,
+    writable: true,
+    configurable: true,
+    enumerable: false,
+  });
+
+  // Set the prototype of our custom constructor to inherit static properties from original XMLHttpRequest
+  // This automatically provides access to all static properties like UNSENT, OPENED, etc.
+  Object.setPrototypeOf(customizedXHR, originalXHR);
+
   (window as any).XMLHttpRequest = customizedXHR;
 
-  const segCollector: { event: XMLHttpRequest; startTime: number; traceId: string; traceSegmentId: string }[] = [];
+  const segCollector: { event: EnhancedXMLHttpRequest; startTime: number; traceId: string; traceSegmentId: string }[] = [];
 
-  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<XMLHttpRequest & { getRequestConfig: any[] }>) => {
+  window.addEventListener('xhrReadyStateChange', (event: CustomEvent<EnhancedXMLHttpRequest>) => {
     let segment = {
       traceId: '',
       service: customConfig.service,
@@ -82,27 +114,38 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
     } as SegmentFields;
     const xhrState = event.detail.readyState;
     const config = event.detail.getRequestConfig;
-    let url = {} as URL;
-    if (config[1].startsWith('http://') || config[1].startsWith('https://')) {
-      url = new URL(config[1]);
-    } else if (config[1].startsWith('//')) {
-      url = new URL(`${window.location.protocol}${config[1]}`);
-    } else {
-      url = new URL(window.location.href);
-      url.pathname = config[1];
+    if (!config || config.length < 2) {
+      return;
+    }
+    let url: URL;
+    
+    const urlString = config[1] as string;
+    if (!urlString) {
+      return;
+    }
+    
+    try {
+      if (urlString.startsWith('http://') || urlString.startsWith('https://')) {
+        url = new URL(urlString);
+      } else if (urlString.startsWith('//')) {
+        url = new URL(`${window.location.protocol}${urlString}`);
+      } else {
+        url = new URL(window.location.href);
+        url.pathname = urlString;
+      }
+    } catch (error) {
+      console.warn('Invalid URL in XHR request:', urlString, error);
+      return;
     }
 
-    const noTraceOrigins = customConfig.noTraceOrigins.some((rule: string | RegExp) => {
+    const noTraceOrigins = customConfig.noTraceOrigins?.some((rule: string | RegExp): boolean => {
       if (typeof rule === 'string') {
-        if (rule === url.origin) {
-          return true;
-        }
+        return rule === url.origin;
       } else if (rule instanceof RegExp) {
-        if (rule.test(url.origin)) {
-          return true;
-        }
+        return rule.test(url.origin);
       }
-    });
+      return false;
+    }) || false;
     if (noTraceOrigins) {
       return;
     }
@@ -144,9 +187,13 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
       const endTime = new Date().getTime();
       for (let i = 0; i < segCollector.length; i++) {
         if (segCollector[i].event.readyState === ReadyStatus.DONE) {
-          let responseURL = {} as URL;
-          if (segCollector[i].event.status) {
-            responseURL = new URL(segCollector[i].event.responseURL);
+          let responseURL: URL | null = null;
+          if (segCollector[i].event.status && segCollector[i].event.responseURL) {
+            try {
+              responseURL = new URL(segCollector[i].event.responseURL);
+            } catch (error) {
+              console.warn('Invalid response URL:', segCollector[i].event.responseURL, error);
+            }
           }
           const tags = [
             {
@@ -158,6 +205,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
               value: segCollector[i].event.responseURL || `${url.protocol}//${url.host}${url.pathname}`,
             },
           ];
+          const combinedTags = customConfig.detailMode ? [...tags, ...(customConfig.customTags || [])] : undefined;
           const exitSpan: SpanFields = {
             operationName: customConfig.pagePath,
             startTime: segCollector[i].startTime,
@@ -168,12 +216,8 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
             isError: event.detail.status === 0 || event.detail.status >= 400, // when requests failed, the status is 0
             parentSpanId: segment.spans.length - 1,
             componentId: ComponentId,
-            peer: responseURL.host,
-            tags: customConfig.detailMode
-              ? customConfig.customTags
-                ? [...tags, ...customConfig.customTags]
-                : tags
-              : undefined,
+            peer: responseURL?.host || url.host,
+            tags: combinedTags,
           };
           segment = {
             ...segment,
