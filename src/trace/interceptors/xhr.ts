@@ -83,8 +83,13 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
   // Preserve the prototype chain by setting the prototype of our custom constructor
   customizedXHR.prototype = originalXHR.prototype;
   
-  // Ensure the constructor property points to our custom constructor
-  customizedXHR.prototype.constructor = customizedXHR;
+  // Ensure the constructor property points to our custom constructor and make it non-writable
+  Object.defineProperty(customizedXHR.prototype, 'constructor', {
+    value: customizedXHR,
+    writable: false,
+    configurable: true,
+    enumerable: false,
+  });
 
   // Set the prototype of our custom constructor to inherit static properties from original XMLHttpRequest
   // This automatically provides access to all static properties like UNSENT, OPENED, etc.
