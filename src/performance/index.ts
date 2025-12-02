@@ -152,7 +152,7 @@ class TracePerf {
       });
       if (partValue > 0) {
         setTimeout(() => {
-          this.coreWebMetrics.clsTime = partValue;
+          this.coreWebMetrics.clsTime = Math.floor(partValue);
         }, 3000);
       }
     };
@@ -212,7 +212,7 @@ class TracePerf {
 
           if (interaction && (!len ||  this.inpList[len - 1].inpTime !== interaction.latency)) {
             const param = {
-              inpTime: interaction.latency,
+              inpTime: Math.floor(interaction.latency),
               ...this.perfInfo,
             };
             this.inpList.push(param);
