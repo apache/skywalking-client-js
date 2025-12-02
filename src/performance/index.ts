@@ -242,11 +242,11 @@ class TracePerf {
     if (!this.inpList.length) {
       return;
     }
-    this.inpList = this.inpList.map((item: INPListItem) => ({
+    const inpList = this.inpList.map((item: INPListItem) => ({
       ...item,
       inpTime: item.inpTime > 1 ? Math.floor(item.inpTime) : Math.round(item.inpTime),
     }));
-    new Report('WEBINTERACTIONS', this.options.collector).sendByBeacon(this.inpList);
+    new Report('WEBINTERACTIONS', this.options.collector).sendByBeacon(inpList);
   }
   private getBasicPerf() {
     // auto report pv and perf data
