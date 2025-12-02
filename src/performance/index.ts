@@ -40,7 +40,7 @@ const handler = {
       collector: undefined,
       useWebVitals: undefined,
     };
-    if (target.useWebVitals && !isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.clsTime))) {
+    if (target.useWebVitals && !isNaN(Number(target.fmpTime)) && !isNaN(Number(target.lcpTime)) && !isNaN(Number(target.cls))) {
       new TracePerf().reportPerf(source, String(target.collector));
     }
     return true;
@@ -127,7 +127,7 @@ class TracePerf {
   }
   private CLS() {
     if (!isLayoutShiftSupported()) {
-      return this.coreWebMetrics.clsTime = -1;
+      return this.coreWebMetrics.cls = -1;
     }
     let partValue = 0;
     let entryList: LayoutShift[] = [];
@@ -152,7 +152,7 @@ class TracePerf {
       });
       if (partValue > 0) {
         setTimeout(() => {
-          this.coreWebMetrics.clsTime = partValue;
+          this.coreWebMetrics.cls = partValue;
         }, 3000);
       }
     };
@@ -210,9 +210,9 @@ class TracePerf {
           const interaction = getLongestInteraction();
           const len = this.inpList.length;
 
-          if (interaction && (!len ||  this.inpList[len - 1].inpTime !== interaction.latency)) {
+          if (interaction && (!len ||  this.inpList[len - 1].inpTime !== Math.floor(interaction.latency))) {
             const param = {
-              inpTime: interaction.latency,
+              inpTime: Math.floor(interaction.latency),
               ...this.perfInfo,
             };
             this.inpList.push(param);
