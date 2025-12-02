@@ -54,3 +54,10 @@ export interface CLSMetric {
   name: 'CLS';
   entries: LayoutShift[];
 }
+
+export interface INPListItem {
+  inpTime: number;
+  service: string;
+  serviceVersion: string;
+  pagePath: string;
+}

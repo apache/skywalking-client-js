@@ -21,7 +21,7 @@ import {prerenderChangeListener, onHidden, runOnce, idlePeriod} from '../service
 import pagePerf from './perf';
 import FMP from './fmp';
 import {observe} from '../services/observe';
-import {LCPMetric, INPMetric, CLSMetric} from './type';
+import {LCPMetric, INPMetric, CLSMetric, INPListItem} from './type';
 import {LayoutShift} from '../services/types';
 import {getVisibilityObserver} from '../services/getVisibilityObserver';
 import {getActivationStart, getResourceEntry} from '../services/getEntries';
@@ -58,7 +58,7 @@ class TracePerf {
   private perfInfo = {};
   private coreWebMetrics: Record<string, unknown> = {};
   private resources: {name: string, duration: number, size: number, protocol: string, resourceType: string}[] = [];
-  private inpList: Record<string, string|number>[] = [];
+  private inpList: INPListItem[] = [];
   public getPerf(options: CustomOptionsType) {
     this.options = options;
     this.perfInfo = {
@@ -152,7 +152,7 @@ class TracePerf {
       });
       if (partValue > 0) {
         setTimeout(() => {
-          this.coreWebMetrics.clsTime = Math.floor(partValue);
+          this.coreWebMetrics.clsTime = partValue > 1 ? Math.floor(partValue) : Math.round(partValue);
         }, 3000);
       }
     };
@@ -212,9 +212,9 @@ class TracePerf {
 
           if (interaction && (!len ||  this.inpList[len - 1].inpTime !== interaction.latency)) {
             const param = {
-              inpTime: Math.floor(interaction.latency),
+              inpTime: interaction.latency,
               ...this.perfInfo,
-            };
+            } as INPListItem;
             this.inpList.push(param);
           }
         })
@@ -242,7 +242,10 @@ class TracePerf {
     if (!this.inpList.length) {
       return;
     }
-
+    this.inpList = this.inpList.map((item: INPListItem) => ({
+      ...item,
+      inpTime: item.inpTime > 1 ? Math.floor(item.inpTime) : Math.round(item.inpTime),
+    }));
     new Report('WEBINTERACTIONS', this.options.collector).sendByBeacon(this.inpList);
   }
   private getBasicPerf() {
