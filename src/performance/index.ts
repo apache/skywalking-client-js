@@ -210,7 +210,7 @@ class TracePerf {
           const interaction = getLongestInteraction();
           const len = this.inpList.length;
 
-          if (interaction && (!len ||  this.inpList[len - 1].inpTime !== Math.floor(interaction.latency))) {
+          if (interaction && (!len ||  this.inpList[len - 1].inpTime !== interaction.latency)) {
             const param = {
               inpTime: interaction.latency,
               ...this.perfInfo,
