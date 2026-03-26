@@ -82,6 +82,8 @@ services:
       - e2e
     expose:
       - 4444
+    healthcheck:
+      disable: true
     depends_on:
       testui:
         condition: service_started
@@ -94,6 +96,8 @@ services:
       - e2e
     volumes:
       - /dev/shm:/dev/shm
+    healthcheck:
+      disable: true
     depends_on:
       selenium-hub:
         condition: service_started
