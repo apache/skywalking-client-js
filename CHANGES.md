@@ -1,5 +1,13 @@
 # Changes
 
+## 1.1.0
+
+1. Optimze E2E.
+2. Bump up dependencies.
+3. Add the `NPM_TOKEN` for publishing.
+4. Optimize the XHR interceptor to preserve the prototype chain by setting the prototype of custom constructor.
+5. Fix metric name and value.
+
 ## 1.0.0
 
 1. Monitor Core Web Vitals.
