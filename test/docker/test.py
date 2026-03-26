@@ -15,28 +15,64 @@
 
 import os
 import time
+from urllib import request
 
 from selenium import webdriver as wd
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
+from selenium.webdriver.chrome.options import Options
 
 hub_remote_url = os.environ.get("HUB_REMOTE_URL", "http://selenium-hub:4444/wd/hub")
 test_url = os.environ.get("TEST_URL", "http://testui:80/")
+retry_interval = int(os.environ.get("RETRY_INTERVAL", "5"))
+page_interval = int(os.environ.get("PAGE_INTERVAL", "10"))
+hub_status_url = os.environ.get("HUB_STATUS_URL", "http://selenium-hub:4444/wd/hub/status")
+
+
+def log(message):
+    print(message, flush=True)
 
 
 def test_screenshot():
-    try:
-        driver.get(test_url)
-    except Exception as e:
-        print(e)
+    log("Opening %s" % test_url)
+    driver.get(test_url)
+    log("Loaded %s" % driver.current_url)
 
-try:
-    driver = wd.Remote(
-        command_executor=hub_remote_url,
-        desired_capabilities=DC.CHROME)
 
+def wait_for_hub():
     while True:
-        test_screenshot()
-        time.sleep(10)
+        try:
+            with request.urlopen(hub_status_url, timeout=5) as response:
+                body = response.read().decode("utf-8", errors="replace")
+                log("Selenium hub is ready: %s" % body)
+                return
+        except Exception as e:
+            log("Waiting for Selenium hub at %s: %s" % (hub_status_url, e))
+            time.sleep(retry_interval)
 
-finally:
-    driver.quit()
+def create_driver():
+    wait_for_hub()
+    options = Options()
+    options.set_capability("browserName", "chrome")
+    log("Creating remote Chrome driver via %s" % hub_remote_url)
+    return wd.Remote(command_executor=hub_remote_url, options=options)
+
+
+driver = None
+
+while True:
+    try:
+        if driver is None:
+            driver = create_driver()
+            log("Remote Chrome driver created")
+
+        test_screenshot()
+        time.sleep(page_interval)
+    except Exception as e:
+        log("Traffic generator loop failed: %s" % e)
+        if driver is not None:
+            try:
+                driver.quit()
+                log("Closed remote Chrome driver")
+            except Exception as quit_error:
+                log("Failed to close remote Chrome driver: %s" % quit_error)
+        driver = None
+        time.sleep(retry_interval)

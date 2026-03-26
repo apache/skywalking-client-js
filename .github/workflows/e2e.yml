@@ -37,3 +37,21 @@ jobs:
       - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e.yaml
+      - name: Dump Docker State On Failure
+        if: failure()
+        run: |
+          echo "=== docker ps -a ==="
+          docker ps -a
+
+          for service in generate-traffic selenium-hub chrome provider testui ui oap; do
+            echo "=== logs for ${service} ==="
+            ids="$(docker ps -aq --filter "label=com.docker.compose.service=${service}")"
+            if [ -z "${ids}" ]; then
+              echo "No containers found for service ${service}"
+              continue
+            fi
+            for id in ${ids}; do
+              echo "--- container ${id} ---"
+              docker logs "${id}" || true
+            done
+          done

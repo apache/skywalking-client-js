@@ -19,4 +19,6 @@ COPY docker/test.py .
 
 RUN pip3 install selenium==4.9.1
 
+ENV PYTHONUNBUFFERED=1
+
 CMD ["python3", "/test.py"]

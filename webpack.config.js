@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 const path = require('path');
-const webpack = require('webpack');
 const WebpackConcatPlugin = require('webpack-concat-files-plugin');
 
 const isDev = process.env.NODE_ENV !== 'production';
