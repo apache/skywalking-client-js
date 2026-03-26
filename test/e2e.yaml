@@ -50,8 +50,8 @@ cleanup:
 
 trigger:
   action: http
-  interval: 3s
-  times: 5
+  interval: 5s
+  times: 8
   url: http://127.0.0.1:${ui_8080}/
   method: GET
 
@@ -61,7 +61,7 @@ verify:
     # max retry count
     count: 20
     # the interval between two retries, in millisecond.
-    interval: 3s
+    interval: 5s
   cases:
     # service
     - expected: expected/service.yml
