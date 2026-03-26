@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:18.12 AS builder
+FROM node:22 AS builder
 
 ADD . /skywalking-client-js
 WORKDIR /skywalking-client-js

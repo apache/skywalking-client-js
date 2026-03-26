@@ -17,10 +17,11 @@ import os
 import time
 
 from selenium import webdriver as wd
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities as DC
+from selenium.webdriver.chrome.options import Options
 
 hub_remote_url = os.environ.get("HUB_REMOTE_URL", "http://selenium-hub:4444/wd/hub")
 test_url = os.environ.get("TEST_URL", "http://testui:80/")
+retry_interval = int(os.environ.get("RETRY_INTERVAL", "5"))
 
 
 def test_screenshot():
@@ -29,14 +30,27 @@ def test_screenshot():
     except Exception as e:
         print(e)
 
-try:
-    driver = wd.Remote(
-        command_executor=hub_remote_url,
-        desired_capabilities=DC.CHROME)
+def create_driver():
+    options = Options()
+    options.set_capability("browserName", "chrome")
+    return wd.Remote(command_executor=hub_remote_url, options=options)
 
-    while True:
+
+driver = None
+
+while True:
+    try:
+        if driver is None:
+            driver = create_driver()
+
         test_screenshot()
         time.sleep(10)
-
-finally:
-    driver.quit()
+    except Exception as e:
+        print(e)
+        if driver is not None:
+            try:
+                driver.quit()
+            except Exception as quit_error:
+                print(quit_error)
+        driver = None
+        time.sleep(retry_interval)
