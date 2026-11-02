@@ -27,14 +27,14 @@ jobs:
     name: JavaScript Client
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Setup go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v7
         with:
           go-version: '1.18'
-      - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
+      - uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
         with:
           e2e-file: test/e2e.yaml
       - name: Dump Docker State On Failure
