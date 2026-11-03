@@ -16,6 +16,7 @@
 #
 
 github:
+  dependabot_updates: false
   description: Client-side JavaScript exception and tracing library for Apache SkyWalking APM.
   homepage: https://skywalking.apache.org/
   labels:
