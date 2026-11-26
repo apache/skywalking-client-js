@@ -27,9 +27,12 @@ endif
 
 .PHONY: release-src
 release-src:
-	tar -zcvf $(RELEASE_SRC).tgz \
-	--exclude .git/ \
-	--exclude .idea/ \
+	# The archive is written into the directory it packs. Creating it first keeps that directory
+	# unchanged while GNU tar reads it, which would otherwise fail with "file changed as we read it".
+	touch $(RELEASE_SRC).tgz
+	bash tools/releasing/linux-tar.sh pack . -zcvf $(RELEASE_SRC).tgz \
+	--exclude .git \
+	--exclude .idea \
 	--exclude .gitignore \
 	--exclude .DS_Store \
 	--exclude .github \
@@ -38,6 +41,7 @@ release-src:
 	--exclude release \
 	--exclude $(RELEASE_SRC).tgz \
 	.
+	bash tools/releasing/linux-tar.sh verify $(RELEASE_SRC).tgz
 
 	gpg $(GPG_UID_FLAG) --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
 	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512

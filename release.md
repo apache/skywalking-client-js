@@ -10,6 +10,11 @@ All committer should follow these steps to do release for this repo.
 > make release-src
 ```
 
+`make release-src` packs the tarball with GNU tar in a Linux container (`tools/releasing/linux-tar.sh`), not with the
+host's `tar`, so a release made on macOS carries no macOS metadata (AppleDouble `._*` files or extended-attribute
+headers). This needs Docker running. Before signing, it unpacks the tarball with GNU tar in the same image, and
+stops if tar prints any warning or finds a `._*` entry.
+
 Use SVN to upload the files(tgz, asc and sha512) in the `release` folder to `https://dist.apache.org/repos/dist/dev/skywalking/client-js/x.y.z`.
 
 3. Make the internal announcements. Send an announcement mail in dev mail list.
